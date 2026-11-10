@@ -469,7 +469,7 @@ button.chip:hover{background:var(--ix-tint2)}
   const KIND_ORDER = ["fs", "itr", "minutes", "dividend", "div7a", "slip", "other"];
   // where: "trf" (Tax Returns and Financials), "wp" (Workpapers), "prior" (last year), or "" (dropped in)
   function classify(name, text, where) {
-    const n = name.toLowerCase(), t = (text || "").slice(0, 6000);
+    const n = name.toLowerCase(), t = (text || "").slice(0, 8000).replace(/\s+/g, " ");
     if (/\.json$/.test(n)) return "data";
     if (/\.(msg|eml|docx?|png|jpe?g)$/.test(n)) return "skip";
     if (/\.xls[xmb]?$/.test(n)) {
@@ -482,7 +482,9 @@ button.chip:hover{background:var(--ix-tint2)}
     if (/(company|individual|trust|partnership) tax return \d{4}/i.test(t) || /tax return.*cannot be lodged as a paper/i.test(t)) return "itr";
     if (/activity statement|\b(bas|ias)\b|payroll tax|bank statement|loan statement|credit card|general ledger|trial balance|journal|depreciation schedule|disposal schedule|payroll|amorti[sz]ation|invoice|receipt/.test(n)) return "skip";
     if (/organi[sz]ational chart|org chart|structure chart|structure diagram/.test(n)) return "org";
-    if (/payment slip|payment advice/.test(n) || /^\s*(ato )?payment slip/i.test(t)) return "slip";
+    if (/payment slip|payment advice/.test(n) || /^\s*(ato )?payment slip/i.test(t) || (/Biller code\s+75556/i.test(t) && /ATO direct credit account|OnlineServices\/Pay/i.test(t))) return "slip";
+    if (/TRUSTEE RESOLUTION|TRUST DISTRIBUTIONS FOR \d{4}/i.test(t)) return "minutes";
+    if (/Shareholder Dividend Statement/i.test(t)) return "dividend";
     if (/amended minutes/.test(n) || /^\s*amended minutes/i.test(t)) return "amendedMinutes";
     if (/minutes/.test(n) || /^\s*minutes of (a )?(meeting|resolution)/i.test(t)) return "minutes";
     if (/dividend statement/.test(n) || /^\s*dividend statement/i.test(t)) return "dividend";
@@ -787,6 +789,96 @@ button.chip:hover{background:var(--ix-tint2)}
     return v;
   }
 
+  // ---------- Reading the supporting documents ----------
+  const numTok = s => { if (s === undefined || s === null) return undefined; s = String(s).trim(); if (s === "-" || s === "") return 0; const neg = /^\(.*\)$/.test(s) || /^-/.test(s); const v = Math.round(parseFloat(s.replace(/[()$,\s-]/g, "")) * 100); return isNaN(v) ? undefined : (neg ? -v : v); };
+  const NUM = "(\\(?-?\\$?[\\d,]+(?:\\.\\d+)?\\)?|-)";
+  function grabPair(t, label) {
+    const re = new RegExp(label + "\\s+" + NUM + "(?:\\s+" + NUM + ")?", "i");
+    const m = t.match(re); if (!m) return null;
+    return { cur: numTok(m[1]), prior: m[2] !== undefined ? numTok(m[2]) : undefined };
+  }
+  const titleName = s => s.replace(/\s+/g, " ").trim();
+  // Financial statements (the firm's Xero/Ascend layout)
+  function parseFS(text) {
+    const t = text.replace(/\s+/g, " ");
+    const out = { name: null, year: null, signers: [], role: null, fig: {}, prior: {}, divs: [], dist: [] };
+    const nm = t.match(/Compilation Report\s+(.+?)\s+For the year ended/i) || t.match(/Financial Statements\s+(.+?)\s+(?:Compilation Report|Directors'? Declaration|Trustees?'? Declaration)/i);
+    if (nm) out.name = titleName(nm[1]);
+    const yr = t.match(/For the year ended 30 June (\d{4})/i); if (yr) out.year = +yr[1];
+    // who signs: the declaration page lists each name followed by the role
+    const decl = t.match(/((?:Directors?|Trustees?|Partners?)['’]?\s*Declaration.+?)(?:Trading Statement|Income Statement|Profit and Loss|Statement of)/i);
+    if (decl) {
+      const seen = new Set();
+      const re = /([A-Z][A-Za-z'’\-]+(?:\s+[A-Z][A-Za-z'’\-]+){1,4})\s+(Director|Trustee|Partner|Sole Director)\b/g; let m;
+      while ((m = re.exec(decl[1]))) { const n = titleName(m[1]).replace(/^(?:Date:?\s*)/i, ""); if (/Renee Cooper|Indepth|Board of|The$/.test(n) || seen.has(n)) continue; seen.add(n); out.signers.push(n); out.role = m[2]; }
+    }
+    const sales = grabPair(t, "Total Sales"), cos = grabPair(t, "Total Cost of Sales"), gp = grabPair(t, "Gross Profit"), oth = grabPair(t, "Total Other Income"), ti = grabPair(t, "Total Income");
+    const np = grabPair(t, "Profit\\s*/?\\s*\\(Loss\\)\\s*before\\s*Taxation") || grabPair(t, "Profit\\s*/\\s*\\(Loss\\)\\s*Before\\s*Distribution") || grabPair(t, "Net Profit Before Distribution") || grabPair(t, "Net Profit\\s*/?\\s*\\(?Loss\\)?") || grabPair(t, "Net Profit");
+    const rev = (p) => sales ? (sales[p] || 0) + ((oth && oth[p]) || 0) : ti ? ti[p] : undefined;
+    out.fig.revenue = rev("cur"); out.prior.revenue = rev("prior");
+    if (cos) { out.fig.cogs = cos.cur; }
+    if (gp) out.prior.gross = gp.prior; else if (out.prior.revenue !== undefined) out.prior.gross = out.prior.revenue;
+    if (np) { out.fig.fsProfit = np.cur; out.prior.net = np.prior; }
+    const ca = grabPair(t, "Total Current Assets"), cl = grabPair(t, "Total Current Liabilities");
+    if (ca) out.fig.curAssets = ca.cur; if (cl) out.fig.curLiab = cl.cur;
+    // dividends declared (company)
+    const dd = t.match(/Dividends & Franking Credits Declared & Paid(.+?)Total Dividends & Franking Credits/i);
+    if (dd) { const re = /(.+?)\s+Dividend\s+([\d,]+)\s+Franking credit\s+([\d,]+)\s+Total\s+.+?\s+[\d,]+\s*/g; let m; while ((m = re.exec(dd[1]))) out.divs.push({ name: titleName(m[1]), amount: numTok(m[2]), franking: numTok(m[3]) }); }
+    // trust distributions
+    const db = t.match(/Distributions to Beneficiaries(.+?)Total Distributions to Beneficiaries/i);
+    if (db) { const re = /Distribution of (?:profit|income)\s*-\s*(.+?)\s+([\d,()]+)(?:\s+[\d,()-]+)?(?=\s+Distribution of|\s*$)/gi; let m; while ((m = re.exec(db[1].trim()))) out.dist.push({ name: titleName(m[1]), amount: numTok(m[2]) }); }
+    return out;
+  }
+  // Company minutes (dividends) and trust distribution minutes
+  function parseMinutes(text) {
+    const t = text.replace(/\s+/g, " ");
+    const out = { kind: null, entity: null, year: null, divs: [], shares: [], signers: [] };
+    if (/TRUSTEE RESOLUTION|TRUST DISTRIBUTIONS FOR \d{4}/i.test(t)) {
+      out.kind = "trust";
+      const tn = t.match(/as trustee for\s+(.+?)\s+TRUST DISTRIBUTIONS/i); if (tn) out.entity = titleName(tn[1]);
+      const y = t.match(/TRUST DISTRIBUTIONS FOR (\d{4})/i); if (y) out.year = +y[1];
+      const bal = t.match(/DISTRIBUTION OF BALANCE OF INCOME.+?distribute.+?to:?(.+?)(?:PRIOR PAYMENTS|ABSOLUTE ENTITLEMENT|DEFAULT|SIGNED BY|$)/i) || t.match(/DISTRIBUTION OF INCOME.+?to:?(.+?)(?:PRIOR PAYMENTS|ABSOLUTE|SIGNED BY|$)/i);
+      if (bal) { const re = /([A-Z][A-Za-z&'’.\-]+(?:\s+[A-Za-z&'’.\-]+){1,6}?)\s+(\$[\d,]+(?:\.\d{2})?|[\d.]+%)/g; let m; while ((m = re.exec(bal[1]))) out.shares.push({ name: titleName(m[1]).replace(/^(?:IT WAS RESOLVED.*?)\s/i, ""), pct: /%$/.test(m[2]) ? parseFloat(m[2]) : null, amount: /^\$/.test(m[2]) ? numTok(m[2]) : null }); }
+      const sg = t.match(/SIGNED BY THE (?:DIRECTORS OF TRUSTEE|TRUSTEES?)(.+)$/i);
+      if (sg) { const re = /Dated:?\s+\d{1,2}\s+\w+\s+\d{4}\s+([A-Z][A-Za-z'’\-]+(?:\s+[A-Z][A-Za-z'’\-]+){1,4})/g; let m; while ((m = re.exec(sg[1]))) out.signers.push(titleName(m[1])); }
+    } else {
+      out.kind = "company";
+      const en = t.match(/(?:meeting|resolution)s? of (?:the )?directors of\s+(.+?)\s+\(A\.?C\.?N/i); if (en) out.entity = titleName(en[1]);
+      const re = /([A-Z][A-Za-z&'’.\- ]+?)\s+(?:Unfranked amount\s+\$([\d,\.]+)\s+)?Franked amount\s+\$([\d,\.]+)\s+Franking credits?\s+\$([\d,\.]+)/g; let m;
+      while ((m = re.exec(t))) out.divs.push({ name: titleName(m[1]).replace(/^.*shareholders?:?\s*/i, ""), amount: numTok(m[3]) + (m[2] ? numTok(m[2]) : 0), franking: numTok(m[4]) });
+    }
+    return out;
+  }
+  function parseDividendStatement(text) {
+    const t = text.replace(/\s+/g, " ");
+    const out = { company: null, holder: null, amount: null, franking: null };
+    const co = t.match(/^\s*(.+?)\s+\(A\.?C\.?N/i); if (co) out.company = titleName(co[1]);
+    const h = t.match(/Shareholder Dividend Statement\s+(.+?)\s+\d/i); if (h) out.holder = titleName(h[1]);
+    const fa = t.match(/Franked amount:?\s+\$([\d,\.]+)/i), uf = t.match(/Unfranked amount:?\s+(\$[\d,\.]+|Nil)/i), fc = t.match(/Franking credits?:?\s+\$([\d,\.]+)/i);
+    if (fa) out.amount = numTok(fa[1]) + (uf && uf[1] !== "Nil" ? numTok(uf[1]) : 0); if (fc) out.franking = numTok(fc[1]);
+    return out;
+  }
+  // Same person or entity, allowing middle names ("Russell Lyle Johansen" and "Russell Johansen")
+  function samePerson(a, b) {
+    if (sameName(a, b)) return true;
+    const ta = norm(a).split(" ").filter(Boolean), tb = norm(b).split(" ").filter(Boolean);
+    if (ta.length < 2 || tb.length < 2) return false;
+    return ta[0] === tb[0] && ta[ta.length - 1] === tb[tb.length - 1];
+  }
+  // Compare the trust return's distributions with the minute; returns a list of differences
+  function compareMinute(dist, shares) {
+    const rows = (dist || []).filter(d => d.name && d.amount); const total = rows.reduce((s, d) => s + d.amount, 0);
+    const diffs = [];
+    shares.forEach(s => {
+      const r = rows.find(d => samePerson(d.name, s.name));
+      if (!r) { diffs.push(`${s.name} is in the minute but has no distribution on the return`); return; }
+      if (s.pct !== null && total) { const p = r.amount / total * 100; if (Math.abs(p - s.pct) > 0.5) diffs.push(`${s.name}: ${s.pct}% in the minute, ${p.toFixed(2)}% on the return`); }
+      if (s.amount !== null && Math.abs(r.amount - s.amount) > 100) diffs.push(`${s.name}: ${absMoney(s.amount)} in the minute, ${absMoney(r.amount)} on the return`);
+    });
+    rows.forEach(r => { if (!shares.some(s => samePerson(r.name, s.name))) diffs.push(`${r.name} receives ${absMoney(r.amount)} on the return but isn’t in the minute`); });
+    return diffs;
+  }
+
   // ---------- Dates ----------
   function nextBusinessDay(d) { const x = new Date(d.getTime()); while (x.getUTCDay() === 0 || x.getUTCDay() === 6) x.setUTCDate(x.getUTCDate() + 1); return x; }
   function defaultDue(e, model) {
@@ -905,6 +997,9 @@ button.chip:hover{background:var(--ix-tint2)}
       if (gaps.length) add("warn", `${e.name}: the workpaper has adjustments with no approved wording yet (${joinList(gaps)}). Add a sentence in the client-specific paragraph if the client needs it explained.`);
       Object.entries(e.paras || {}).forEach(([id, p]) => { if (!p.on) return; const r = fillText(id, p, e, model, LIB); if (r.missing.length) add("block", `${e.name}, ${LIB[id].title}: fill in ${[...new Set(r.missing)].join(", ")}.`); });
       if (e.plan && e.plan.est !== undefined && e.plan.est !== null && isTaxpayer(e)) { const d = ((e.fig || {}).final || 0) - e.plan.est; if (Math.abs(d) > Math.max(100000, Math.abs(e.plan.est) * 0.05) && !e.plan.reason && !String(e.plan.note || "").trim()) add("block", `${e.name}: the result is ${absMoney(d)} different from the tax planning estimate. Choose a reason or type a short note.`); }
+      if (e.minuteDiffs && e.minuteDiffs.length) add("warn", `${e.name}: the distributions on the trust return don’t match the trust distribution minute. ${e.minuteDiffs.join("; ")}. Check the minute and update it before it goes in the pack.`);
+      if (e.divDiffs && e.divDiffs.length) add("warn", `${e.name}: the dividends don’t agree between documents. ${e.divDiffs.join("; ")}.`);
+      if (e.fsCheck && e.br1 && e.br1.fsProfit !== undefined && Math.abs(e.fsCheck - e.br1.fsProfit) > 100) add("warn", `${e.name}: net profit in the financial statements (${money(e.fsCheck)}) is different from the workpaper (${money(e.br1.fsProfit)}). Check you have the final versions of both.`);
       if (e.bench && e.bench.on && (e.bench.expPct === undefined || e.bench.expPct === "" || !e.bench.industry || !e.bench.year)) add("block", `${e.name}: fill in the ATO benchmark business type, data year and total expenses percentage, or untick the benchmarks.`);
       if (e.d7 && e.d7.on && (!String(e.d7.borrowers || "").trim() || !String(e.d7.agreementYear || "").trim() || !(e.d7.rows || []).some(r => r.desc || r.rep || r.bal))) add("block", `${e.name}: the Division 7A section is ticked but the loan agreement details or repayments aren’t filled in.`);
       if (e.d7 && !e.d7.on && e.wpTabs && e.wpTabs["Div 7A"] && isBiz(e)) add("info", `${e.name}: the Div 7A tab is in use in the workpaper. Tick “Include the Division 7A loans section” in step 3 and enter the figures if the report needs it.`);
@@ -1813,7 +1908,7 @@ button.chip:hover{background:var(--ix-tint2)}
     return `Correspondence - ${model.year} - ${hasFS ? "Financial Statements and " : ""}Income Tax Return${multi ? "s" : ""}.pdf`;
   }
 
-  root.PRCore = { defaultDue, parseProgressTemplate, MONTHS, SHORTM, D, fmtDate, isoDate, fromIso, todayUTC, toCents, money, absMoney, pct, abbrev, joinList, norm, sameName, pdfText, classify, KIND_LABEL, KIND_ORDER, otherLabel, parseReturn, parseWorkpaper, parseCollationSheet, suggest, autoVals, fillText, checks, coverLetter, voiceOf, reportName, totals, yearsAvailable, dueCell, isTaxpayer, buildReport, buildPack, packName, returnsCount, grandFinal };
+  root.PRCore = { parseFS, parseMinutes, parseDividendStatement, compareMinute, samePerson, defaultDue, parseProgressTemplate, MONTHS, SHORTM, D, fmtDate, isoDate, fromIso, todayUTC, toCents, money, absMoney, pct, abbrev, joinList, norm, sameName, pdfText, classify, KIND_LABEL, KIND_ORDER, otherLabel, parseReturn, parseWorkpaper, parseCollationSheet, suggest, autoVals, fillText, checks, coverLetter, voiceOf, reportName, totals, yearsAvailable, dueCell, isTaxpayer, buildReport, buildPack, packName, returnsCount, grandFinal };
 })(typeof window !== "undefined" ? window : globalThis);
 
 </script>
@@ -2098,6 +2193,9 @@ async function addFiles(list) {
         let tx = { text: "" }; try { tx = await C.pdfText(pdfjsLib, bytes.slice()); } catch (e) { f.note = "This PDF couldn’t be read, so set what it is yourself"; }
         f.text = tx.text; f.kind = C.classify(item.name, tx.text, f.where);
         if (f.kind === "itr") f.parsed = C.parseReturn(tx.text);
+        else if (f.kind === "fs") f.parsed = C.parseFS(tx.text);
+        else if (f.kind === "minutes") f.parsed = C.parseMinutes(tx.text);
+        else if (f.kind === "dividend") f.parsed = C.parseDividendStatement(tx.text);
       } else if (/\.json$/i.test(item.name)) { f.kind = "data"; f.parsed = JSON.parse(new TextDecoder().decode(bytes)); }
       else {
         f.kind = C.classify(item.name, "", f.where);
@@ -2198,6 +2296,9 @@ function matchDocs() {
     if (!e) { const biz = S.entities.filter(x => x.type !== "individual"); if (biz.length === 1) e = biz[0]; }
     if (e) { f.pendingWp && useWorkpaper(f, f.pendingWp); if (f.entityId) delete f.pendingWp; }
   });
+  S.files.filter(f => !f.entityId && !f.userSet && f.parsed && ["fs", "minutes", "dividend"].includes(f.kind)).forEach(f => {
+    const said = f.parsed.name || f.parsed.entity || f.parsed.company; const e = said && findEntity(said); if (e) f.entityId = e.id;
+  });
   S.files.filter(f => !f.entityId && !f.userSet && ["fs", "minutes", "amendedMinutes", "dividend", "div7a", "slip", "other"].includes(f.kind)).forEach(f => {
     const hay = " " + C.norm(f.name + " " + (f.text || "").slice(0, 5000)) + " ";
     let best = null; S.entities.forEach(e => { const n = " " + C.norm(e.name) + " "; if (n.trim() && hay.includes(n) && (!best || n.length > C.norm(best.name).length + 2)) best = e; });
@@ -2206,7 +2307,44 @@ function matchDocs() {
     if (!best && S.entities.length === 1) best = S.entities[0];
     if (best) f.entityId = best.id;
   });
+  applyDocFacts();
   if (S.order && S.order.length) { const pos = e => { const i = S.order.findIndex(n => C.sameName(n, e.name)); return i < 0 ? 999 : i; }; S.entities.sort((a, b) => pos(a) - pos(b)); }
+}
+// Fill the entity from what its documents say. Figures already typed by staff stay as they are; for the
+// accounting figures (revenue, cost of sales, net profit) the financial statements are the source, as in the firm's process.
+function applyDocFacts() {
+  const Y = +$("year").value;
+  S.entities.forEach(e => { e.minuteDiffs = []; e.divDiffs = []; });
+  S.files.filter(f => f.entityId && f.parsed && !f.factsApplied && f.kind === "fs").forEach(f => {
+    const e = S.entities.find(x => x.id === f.entityId); if (!e) return; const p = f.parsed;
+    if (p.year && p.year !== Y) return;
+    f.factsApplied = true;
+    ["revenue", "cogs", "fsProfit"].forEach(k => { if (p.fig[k] !== undefined && !(e.typed || {})[k]) e.fig[k] = p.fig[k]; });
+    ["curAssets", "curLiab"].forEach(k => { if (p.fig[k] !== undefined && e.fig[k] === undefined) e.fig[k] = p.fig[k]; });
+    if (p.fig.fsProfit !== undefined) e.fsCheck = p.fig.fsProfit;
+    f.note = [p.signers.length ? `Signed by ${p.signers.join(", ")}` : "", p.fig.fsProfit !== undefined ? `${p.fig.fsProfit < 0 ? "loss" : "profit"} ${C.absMoney(p.fig.fsProfit)}` : "", p.divs.length ? `dividends to ${p.divs.map(d => d.name).join(", ")}` : "", p.dist.length ? `distributions to ${p.dist.map(d => d.name).join(", ")}` : ""].filter(Boolean).join("; ");
+    e.prior[Y - 1] = e.prior[Y - 1] || {}; fillMissing(e.prior[Y - 1], p.prior);
+    if (p.signers.length && !String(e.signatories || "").trim()) { e.signatories = p.signers.join("\n"); e.signSrc = "the " + (p.role === "Trustee" ? "trustee" : p.role === "Partner" ? "partners’" : "directors’") + " declaration in the financial statements"; }
+    if (p.divs.length && !(e.divs || []).some(d => d.name)) { e.divs = p.divs.map(d => Object.assign({}, d)); e.divSrc = "the dividend declaration in the financial statements"; }
+    if (p.dist.length && !(e.dist || []).some(d => d.name)) e.dist = p.dist.map(d => Object.assign({}, d));
+    e.src = Object.assign(e.src || {}, { fs: true });
+  });
+  S.files.filter(f => f.entityId && f.parsed && f.kind === "minutes").forEach(f => {
+    const e = S.entities.find(x => x.id === f.entityId); if (!e) return; const p = f.parsed;
+    if (p.kind === "trust" && p.shares.length && (!p.year || p.year === Y)) { e.minute = p; e.minuteDiffs = C.compareMinute(e.dist, p.shares); }
+    if (p.kind === "trust" && p.shares.length) f.note = "Distribution minute: " + p.shares.map(s => s.name + " " + (s.pct !== null ? s.pct + "%" : C.absMoney(s.amount))).join(", ");
+    if (p.kind === "company" && p.divs.length) f.note = "Dividends: " + p.divs.map(d => `${d.name} ${C.absMoney(d.amount)}`).join(", ");
+    if (p.kind === "company" && p.divs.length) {
+      if (!(e.divs || []).some(d => d.name)) { e.divs = p.divs.map(d => Object.assign({}, d)); e.divSrc = "the minutes"; }
+      p.divs.forEach(m => { const d = (e.divs || []).find(x => C.samePerson(x.name, m.name)); if (!d) e.divDiffs.push(`${m.name} is paid ${C.absMoney(m.amount)} in the minutes but isn’t in the dividends table`); else if (Math.abs((d.amount || 0) - m.amount) > 100) e.divDiffs.push(`${m.name}: ${C.absMoney(m.amount)} in the minutes, ${C.absMoney(d.amount || 0)} in the dividends table`); });
+    }
+  });
+  S.files.filter(f => f.entityId && f.parsed && f.kind === "dividend").forEach(f => {
+    const e = S.entities.find(x => x.id === f.entityId); if (!e) return; const p = f.parsed; if (!p.holder || p.amount === null) return;
+    const d = (e.divs || []).find(x => C.samePerson(x.name, p.holder));
+    if (!d) e.divDiffs.push(`the dividend statement for ${p.holder} (${C.absMoney(p.amount)}) isn’t in the dividends table`);
+    else if (Math.abs((d.amount || 0) - p.amount) > 100) e.divDiffs.push(`${p.holder}: ${C.absMoney(p.amount)} on the dividend statement, ${C.absMoney(d.amount || 0)} in the dividends table`);
+  });
 }
 function fileRow(f) {
   const kindSel = h("select", { "aria-label": "What " + f.name + " is", onchange: ev => { f.kind = ev.target.value; f.userSet = true; matchDocs(); renderAll(); } },
@@ -2236,7 +2374,7 @@ function renderFiles() {
 // ---------- step 3: entities ----------
 function moneyField(obj, key, label, onChange) {
   const inp = h("input", { type: "text", inputmode: "decimal", value: obj[key] === undefined || obj[key] === null ? "" : C.money(obj[key]), "aria-label": label });
-  inp.addEventListener("change", () => { const v = C.toCents(inp.value); if (inp.value.trim() === "") delete obj[key]; else obj[key] = v; inp.value = obj[key] === undefined ? "" : C.money(obj[key]); if (onChange) onChange(); refreshChecks(); });
+  inp.addEventListener("change", () => { const own = S.entities.find(x => x.fig === obj); if (own) { own.typed = own.typed || {}; own.typed[key] = true; } const v = C.toCents(inp.value); if (inp.value.trim() === "") delete obj[key]; else obj[key] = v; inp.value = obj[key] === undefined ? "" : C.money(obj[key]); if (onChange) onChange(); refreshChecks(); });
   return inp;
 }
 function textField(obj, key, label, opts) {
@@ -2326,7 +2464,7 @@ function renderEntities() {
       yrs.forEach(y => { const o = e.prior[y] || (e.prior[y] = {}); pb.appendChild(h("tr", {}, h("td", {}, String(y)), cols.map(c => h("td", {}, moneyField(o, c[0], `${y} ${c[1]}`))))); });
       eb.appendChild(h("div", { class: "wrapx" }, pt));
       eb.appendChild(h("p", { class: "hint" }, "Filled from the progress report template, last year’s returns or the data file. Leave a year empty to leave it out of the graphs."));
-      if (e.type === "company") { const db = fold(inner, e.id + "div", "Dividends paid", (e.divs || []).filter(x => x.name).length ? `${e.divs.filter(x => x.name).length} shareholder(s)` : "none entered"); db.appendChild(tableEditor(e.divs, [{ key: "name", label: "Shareholder" }, { key: "amount", label: "Dividend", money: true }, { key: "franking", label: "Franking credit", money: true }])); }
+      if (e.type === "company") { const db = fold(inner, e.id + "div", "Dividends paid", (e.divs || []).filter(x => x.name).length ? `${e.divs.filter(x => x.name).length} shareholder(s)${e.divSrc ? ", from " + e.divSrc : ""}` : "none entered"); db.appendChild(tableEditor(e.divs, [{ key: "name", label: "Shareholder" }, { key: "amount", label: "Dividend", money: true }, { key: "franking", label: "Franking credit", money: true }])); }
       if (e.type === "trust" || e.type === "partnership") { const db = fold(inner, e.id + "dist", e.type === "trust" ? "Distributions to beneficiaries" : "Distributions to partners", (e.dist || []).filter(x => x.name).length ? `${e.dist.filter(x => x.name).length} from the return` : "none entered"); db.appendChild(tableEditor(e.dist, [{ key: "name", label: "Name" }, { key: "amount", label: "Distribution", money: true }, { key: "franking", label: "Franking credit", money: true }])); }
       if (biz) {
         e.bench = e.bench || { on: false };
@@ -2353,7 +2491,11 @@ function renderEntities() {
           inner2.appendChild(h("label", { class: "tick", style: "margin-top:8px" }, h("input", { type: "checkbox", checked: d.met !== false, onchange: ev => { d.met = ev.target.checked; refreshChecks(); } }), `The ${Y} minimum repayment was met`));
         }
       }
-      if (S.files.some(x => x.entityId === e.id && x.kind === "fs")) inner.appendChild(labelled("Who signs the financial statements (one per line)", textField(e, "signatories", "Signatories", { area: true, rows: 2, attrs: { placeholder: "[Director or trustee name]" } })));
+      if (S.files.some(x => x.entityId === e.id && x.kind === "fs")) {
+        inner.appendChild(labelled("Who signs the financial statements (one per line)", textField(e, "signatories", "Signatories", { area: true, rows: 2, attrs: { placeholder: "[Director or trustee name]" } })));
+        if (e.signSrc) inner.appendChild(h("p", { class: "hint" }, `Read from ${e.signSrc}. Change it if someone else signs.`));
+      }
+      if (e.minute) inner.appendChild(h("p", { class: e.minuteDiffs && e.minuteDiffs.length ? "note" : "hint" }, e.minuteDiffs && e.minuteDiffs.length ? `The trust distribution minute doesn’t match the return: ${e.minuteDiffs.join("; ")}. Check the minute.` : `The trust distribution minute matches the distributions on the return (${e.minute.shares.map(s => s.name + " " + (s.pct !== null ? s.pct + "%" : C.absMoney(s.amount))).join(", ")}).`));
     }
     inner.appendChild(h("div", { class: "actions" }, h("button", { class: "linkbtn", onclick: () => { if (confirm(`Remove ${e.name} from this report?`)) { S.entities.splice(idx, 1); S.files.forEach(x => { if (x.entityId === e.id) x.entityId = null; }); renderAll(); } } }, "Remove this entity")));
     box.appendChild(h("details", { class: "ent", open: idx < 1 || S.openAll }, head, inner));
