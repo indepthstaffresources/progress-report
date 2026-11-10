@@ -92,6 +92,13 @@ iframe{width:100%;height:72vh;border:1px solid var(--ix-line);border-radius:10px
 .sffiles{max-height:220px;overflow:auto;border:1px solid var(--ix-line);border-radius:10px;padding:6px 10px;margin-top:8px}
 .sffiles label{margin:4px 0;font-weight:400}
 .sr{position:absolute;left:-9999px}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;align-items:center}
+.chip{border:1px solid var(--ix-sage);background:var(--ix-tint);color:var(--ix-ink);border-radius:20px;font:inherit;font-size:12.5px;padding:4px 11px;cursor:pointer}
+button.chip:hover{background:var(--ix-tint2)}
+.fold{border-top:1px solid var(--ix-line);margin-top:10px}
+.fold>summary{cursor:pointer;padding:9px 0;font-size:13px;font-weight:600;color:var(--ix-deep)}
+.fold>summary .ty{font-weight:400;color:var(--ix-muted)}
+.foldin{padding:0 0 10px}
 @media (prefers-reduced-motion:no-preference){.btn{transition:background-color .15s}}
 </style>
 </head>
@@ -143,15 +150,19 @@ iframe{width:100%;height:72vh;border:1px solid var(--ix-line);border-radius:10px
     <input type="file" id="files" accept=".pdf,.xlsx,.xlsm,.xls,.json" multiple hidden>
     <div id="sfBox" hidden>
       <p class="sub">Add from SuiteFiles</p>
+      <p class="hint" style="margin-top:0">Add the folder for every entity in the group, then show the files. Bank statements, payroll and other source documents in Workpapers are left out.</p>
       <div class="row">
-        <div><label for="sfFilter">Find the client folder</label><input type="text" id="sfFilter" placeholder="Start typing a client name"></div>
+        <div><label for="sfFilter">Find a client folder</label><input type="text" id="sfFilter" placeholder="Start typing a client name"></div>
         <div><label for="sfClient">Client folder</label><select id="sfClient"><option value="">Loading…</option></select></div>
       </div>
-      <div class="actions"><button class="btn small" id="sfShow">Show this year’s files</button></div>
+      <div class="actions"><button class="btn small" id="sfAdd">Add this folder</button></div>
+      <div class="chips" id="sfChosen"></div>
+      <div class="chips" id="sfSuggest"></div>
+      <div class="actions"><button class="btn small primary" id="sfShow">Show this year’s files</button></div>
       <div id="sfList"></div>
     </div>
     <p class="status" id="readStatus"></p>
-    <ul class="files" id="fileList"></ul>
+    <div id="fileList"></div>
   </section>
 
   <section class="step" aria-labelledby="s3">
@@ -303,12 +314,65 @@ iframe{width:100%;height:72vh;border:1px solid var(--ix-line);border-radius:10px
       text: "We have adjusted your [Years] Income Tax Returns to include a fringe benefit adjustment for your vehicle using the statutory method. We recommend that you keep a motor vehicle log book for a 12-week period in the current year to allow for a more accurate private use adjustment." },
     mv_pct: { group: "other", applies: ALL, title: "Motor vehicle (business use percentages)", heading: "Motor Vehicle Expenses",
       text: "We have adjusted your [Financial year] Income Tax Returns to allow for the business use percentages listed below.\n[Vehicles and percentages]" },
+    // ---- From the Annual Summary Report template (draft: years and names turned into blanks) ----
+    cash_basis: { group: "avt", applies: B, title: "Cash basis adjustment", heading: "Cash Basis Adjustment",
+      text: "We have deducted the amounts owed by the Trade Debtors of your business as at [Year end date] from the revenue amount in the Income Tax Return of your business. This is because your Financial Statements are prepared on an accruals basis, whereas your taxable income is calculated on a cash basis. Under a cash basis, revenue is only recognised when cash is received from customers and expenses when they are paid to a supplier.\nYou will need to make adequate provision for increased tax payments in the future created by this adjustment." },
+    skills_boost: { group: "avt", applies: B, title: "Skills and training boost (check still current)", heading: "Small Business Skills and Training Boost",
+      text: "Small businesses (with an aggregated annual turnover of less than $50 million) can deduct an additional 20% of expenditure incurred for the provision of eligible external training courses to their employees by registered providers in Australia. The boost applied to eligible expenditure incurred from 7:30 pm AEDT on 29 March 2022 until 30 June 2024.\nWe carefully reviewed your Financial Statements, and we have made the following adjustments to your [Financial year] Tax Return to claim extra tax deductions for you:\n- [Eligible expenditure] Eligible Expenditure, [Bonus deduction] Bonus Tax Deduction" },
+    energy_boost: { group: "avt", applies: B, title: "Small business energy incentive (check still current)", heading: "Small Business Energy Incentive",
+      text: "Businesses with an annual turnover of less than $50 million can claim an additional 20% deduction on spending that supports electrification and more efficient use of energy. The energy incentive applied to eligible expenditure on assets, and on improvements to existing assets, between 1 July 2023 and 30 June 2024. Up to $100,000 of total expenditure is eligible, with a maximum bonus tax deduction of $20,000 per business.\nWe have carefully reviewed your Financial Statements, and we have made the following adjustments to your [Financial year] Tax Return to claim extra tax deductions for you:\n- [Eligible expenditure] Eligible Expenditure, [Bonus deduction] Bonus Tax Deduction" },
+    tech_boost: { group: "avt", applies: B, title: "Technology investment boost (check still current)", heading: "Small Business Technology Investment Boost",
+      text: "Small businesses (with an aggregated annual turnover of less than $50 million) could deduct an additional 20% of expenditure incurred for business digital operations or digitising operations, such as portable payment devices, cyber security systems or subscriptions to cloud-based services. The boost applied to eligible expenditure incurred between 7:30 pm AEDT on 29 March 2022 and 30 June 2023, capped at $100,000 of expenditure per income year.\nWe carefully reviewed your Financial Statements, and we have made the following adjustments to claim extra tax deductions for you:\n[Years, expenditure and bonus deductions]" },
+    software_upgrade: { group: "other", applies: B, title: "Upgrade of accounting software", heading: "Upgrade of Your Accounting Software",
+      text: "During the preparation of your [Financial year] Financial Statements, we have noted that you are currently using an older version of [Software]. As a rule, we recommend that our clients always stay up to date with the latest version of their accounting software. The benefits of having the latest version of your software include having access to the latest product developments and features, and ensuring your software is compliant with all relevant changes to GST and taxation law.\nPlease feel free to contact our office if you would like to discuss these issues further or require assistance with the upgrade process." },
+    assumptions: { group: "other", applies: ALL, title: "Tell us if any assumptions are wrong", heading: "Our Assumptions",
+      text: "***Please inform us IMMEDIATELY if any of these assumptions are incorrect so that we can amend your Financial Statements and Income Tax Returns prior to lodgement.***" },
+    travel_exp: { group: "other", applies: ALL, title: "Travel expenses", heading: "Travel Expenses",
+      text: "You have advised us that all travel and accommodation expenses were in relation to business activities. The Taxation Office requires that you keep a travel diary to substantiate any travel period of more than 6 days." },
+    tools_trade: { group: "company", applies: B, title: "Tools of trade / notebook computer", heading: "Tools of Trade / Notebook Computer",
+      text: "An immediate deduction for the salary packaged tools of trade / notebook computer purchased during the year has been claimed by [Business name].\n**Total tax saving: [Tax saving]**" },
+    travel_allow: { group: "other", applies: ALL, title: "Travel allowance", heading: "Travel Allowance",
+      text: "A Travel Allowance totalling [Total allowance] has been included for the following individuals [based upon the business travel indicated in your Travel Schedule/based upon your details provided to our office].\n[Individuals and amounts]\n**Total tax saving: [Tax saving]**" },
+    late_lodge: { group: "other", applies: ALL, title: "Tax return lodgement deadline passed", heading: "Tax Return Lodgement Deadline",
+      text: "As all extensions of time for lodgement of your Income Tax Returns have now lapsed, late lodgement penalties are likely to be charged by the ATO. In order to minimise such penalties, we recommend that you make all tax payments indicated in this report **as soon as possible**.\nLate lodgement penalties and General Interest Charge may accrue from the due date for lodgement of [Lodgement due date]." },
+    stp: { group: "company", applies: B, title: "Single Touch Payroll with Xero (check dates)", heading: "Single Touch Payroll",
+      text: "Single Touch Payroll (STP) is an ATO initiative that **requires all employers** to report salaries and wages, PAYG withholding, and superannuation electronically to the ATO each time they pay their employees. Your payroll software provider must be STP compliant.\nXero has made STP available for all businesses, **so we have now registered [Business name] for STP with the ATO.** With Xero, it simply involves an additional step of clicking one button to file the pay event with the ATO.\nAt the end of the financial year, you will provide an STP finalisation declaration to the ATO via Xero. You will not be required to provide employees with payment summaries for the information you report through STP. Income statements replace payment summaries, and these are available to employees through myGov.\nFor the [Financial year] financial year, the STP Finalisation Report is due for lodgement to the Australian Taxation Office by [STP finalisation date]." },
+    asset_balancing: { group: "other", applies: B, title: "Sale of business asset: balancing adjustment", heading: "Sale of Business Asset: Balancing Adjustment",
+      text: "In [Financial year], you sold [an asset/assets] where the purchase price was 100% claimed as a tax deduction using either the temporary full expensing or instant asset write-off tax laws.\nYou need to be aware that the amount you received from the sale will be included in your taxable income for [Financial year], and tax will be payable on this amount.\nWhile it may seem unfair that you have this extra tax payable now, we take this opportunity to remind you that you had a major tax benefit in prior years when you originally purchased the asset and your tax payable was reduced." },
+    record_keeping: { group: "other", applies: ALL, title: "Record-keeping recommendations", heading: "Record-Keeping Recommendations",
+      text: "After our review of your financial information, we recommend that you make the following changes to your procedures:\n[Recommendations, one per line starting with - ]\nIn addition, please refer to the enclosed list of [Software] adjusting entries for further details on how to improve your record keeping.\nPlease feel free to contact our office for any additional help you may need to improve your financial record-keeping." },
+    pcg2021_4: { group: "other", applies: B, title: "Professional practices: allocation of profits (PCG 2021/4)", heading: "Professional Practices: Allocation of Profits",
+      text: "The ATO has released PCG 2021/4 Allocation of Professional Firm Profits, ATO Compliance Approach, which applies from 1 July 2022. It sets out the ATO's approach to the allocation of profits or income from professional firms in the assessable income of the individual professional practitioner (IPP). This affects professional firms such as doctors, dentists, accountants, engineers, lawyers, architects, consultants, quantity surveyors and IT consultants.\nThe ATO is concerned that the income earned by an IPP is not appropriately taxed to the IPP due to the IPP diverting the income to another entity or family member who pays a lower rate of tax. The guideline requires two qualifying gateways to be passed before applying a risk assessment framework, which gives an overall risk rating of low, medium or high based on:\n- the proportion of profit entitlement from the whole of the firm group that is returned in the hands of the IPP\n- the total effective tax rate for income received from the firm by the IPP and associated entities\n- the remuneration returned in the hands of the IPP as a percentage of the commercial benchmark for the services provided to the firm.\nWhere arrangements featuring high risk features or lacking apparent commercial rationale are identified, the ATO will apply the tax integrity provisions, including Part IVA. This is a highly complex area of tax law, and we recommend that you seek separate advice from us about this.\nGiven that the income generated by [Trading entity] is mostly due to professional services provided by [Practitioners], we have recommended that each individual receives the net income that they have generated during the year. We have achieved this by way of wages, super and trust distributions being allocated to each individual." },
+    psi_business: { group: "company", applies: B, title: "Personal services income (personal services business)", heading: "Personal Services Income",
+      text: "The purpose of the personal services income (PSI) rules is to ensure that income derived from personal services is taxed in the hands of the individual who performs the work, regardless of whether the income is derived by an individual, partnership, company or trust. The PSI rules do not apply if the entity is treated as carrying on a personal services business (by passing certain tests). It appears that your [entity type] is carrying on a personal services business as it passes the [PSI test]. We have prepared your [Financial year] Tax Return on this basis." },
+    paygw_vary: { group: "individual", applies: ["individual"], title: "PAYG withholding variation", heading: "Pay As You Go Withholding (PAYGW)",
+      text: "We have identified during our annual review of your financial position that there is an opportunity to increase your cashflow.\nWe can achieve this by varying the PAYG amount withheld from your employment income. This will reduce the amount of tax you pay each cycle, giving you more money in hand throughout the year, and reduces the refund you receive when finalising your tax return at the end of the year. Our calculations will ensure you are still covering your tax liability at the end of the year.\nWe have identified that: [Reason for the variation]\nTo decrease your PAYG withholding for the year we need to lodge a form on your behalf. Please sign the variation form where indicated and return it to our office for lodgement with the Australian Taxation Office." },
+    overtime_meal: { group: "other", applies: ALL, title: "Overtime meal allowance", heading: "Overtime Meal Allowance",
+      text: "An allowance of [Total allowance] for the individuals below has been included. This is non-taxable. We have enclosed a letter that explains the calculation of your Overtime Meal Allowance and the basis for your claim. You will need to sign and return this letter to us for us to keep on our files.\n[Individuals and amounts]\n**Total tax saving: [Tax saving]**" },
+    fees_invoice: { group: "other", applies: ALL, title: "Invoice for our accounting services", heading: "Invoice for our Accounting Services",
+      text: "Since we have now completed your Financial Statements and Income Tax Returns, we have enclosed an Invoice for our services. The Invoice gives you a detailed description of work performed.\nThe amount that we have invoiced you this year has increased due to the following reasons:\n[Reasons, one per line starting with - ]\nFor the future, should you want our office to complete your Financial Statements and Income Tax Returns more efficiently (and hence at less cost to you), we recommend the following:\n- Ensure that all bank accounts are regularly reconciled, including cheque accounts and credit cards.\n- Ensure that all transactions entered into your [Software] system have accurate descriptions.\n- Ensure that all bank statements containing business and investment transactions are provided with detailed descriptions on them.\n- Ensure that all private expenses are removed from the business accounts and placed in the appropriate loan account.\n- Ensure that your [Software] file is up to date and contains all adjusting entries prepared by our office.\n- Ensure all balance sheet items at year-end are still in existence and are accurately recorded at cost.\n- Ensure that the correct GST codes appear on each transaction.\nPlease refer to the enclosed list of [Software] adjusting entries for further details on how to improve your record keeping." },
+    gst_adj_us: { group: "other", applies: B, title: "GST adjustment (BAS prepared by us)", heading: "GST Adjustment",
+      text: "As part of our overall review of your accounting records for the year, we carefully check to see that your lodged Business Activity Statements (BAS) were correct. Due to various adjustments made during the preparation of your [Financial year] Financial Statements, it will be necessary to amend your [BAS period] Business Activity Statement. This GST adjustment is due primarily to [Reasons].\nWe have prepared an Activity Statement Revision Request Form on your behalf to reflect the adjustments. Can you please sign it where indicated and return it to our office for lodgement with the Australian Taxation Office?\n**Total payable/(refundable): [Amount]**" },
+    gst_adj_client: { group: "other", applies: B, title: "GST adjustment (BAS prepared by the client)", heading: "GST Adjustment",
+      text: "As part of our overall review of your accounting records for the year, we carefully check to see that your lodged Business Activity Statements (BAS) were correct. Due to various adjustments made during the preparation of your [Financial year] Financial Statements, it will be necessary to amend your [BAS period] Business Activity Statement. This GST adjustment is due primarily to [Reasons].\nThe total GST adjustment required is [Amount]. This will [increase/decrease] your liability on your next BAS by [Amount]. You will need to adjust the following figures on your next BAS:\n[BAS labels and amounts]" },
+    fte: { group: "trust", applies: ["trust"], title: "Family trust election", heading: "Family Trust Election",
+      text: "Recent changes to the taxation laws have required that we make a Family Trust Election (FTE) in your Trust's tax return this year. This is required when:\n- Your Trust has made losses that need to be carried forward to future years;\n- You wish to distribute franking credits from investments held in your Trust; or\n- You wish to make a Trust distribution into another Trust to use its tax losses.\nIn making the FTE, we have had to nominate a specified individual. The specified individual that we have used is [Specified individual].\nThe drawback to making this FTE is that future Trust distributions must be made to the specified individual, or a relative or entity controlled by the specified individual, or tax at 47% may apply to the Trust distribution." },
+    lodge_options: { group: "other", applies: ["company"], title: "Extended time for lodgement (payment dates)", heading: "Extended Time for Lodgement of your Tax Returns",
+      text: "Because [Business name] has tax payable, lodgement can be delayed should you desire. When the payment is due, however, relies upon the actual lodgement date of the return:\n[Lodgement dates and payment dates, one per line starting with - ]\nAs you can see, there are options that allow you to choose when you pay the ATO, and can allow you to have the funds working for you a little longer.\n**Would you please advise when you would like us to lodge [Business name]'s return?**" },
+    employee_super: { group: "company", applies: B, title: "Employee superannuation shortfall", heading: "Employee Superannuation",
+      text: "During the [Financial year] financial year, it appears that [Business name] has not paid the required [SG rate] employer superannuation contribution for employees. The shortfall of superannuation contributions for the [Financial year] financial year is [Shortfall].\nThe above payments were due to be paid by [Due date for super]. If your superannuation payment was made after that date, a Superannuation Guarantee Charge Statement must be completed and sent to the ATO, and the rules about offsetting the charge depend on when and where the payment was made.\nIf you haven't paid these amounts, please contact our office immediately to determine the best outcome for your situation, as these issues can be quite complex. If needed, we can also prepare the appropriate documents for you to send to the ATO along with your payment." },
+    loss_carry_back: { group: "company", applies: ["company"], title: "Company tax loss carry back (check still current)", heading: "Company Tax Loss Carry Back",
+      text: "A company that had a tax loss in any one or more of the 2020, 2021, 2022 or 2023 years could (subject to qualifying conditions) choose to carry back the whole or part of the tax loss against its previously taxed profits of the 2019, 2020, 2021 or 2022 years. The benefit is received as a refundable tax offset called the loss carry back tax offset. Only tax losses can be carried back; capital losses cannot.\nIn the [Financial year] year, we have applied a company tax loss carry back of [Tax loss amount] for you, resulting in an additional tax refund to your company of [Refund amount]." },
+    asset_protection: { group: "other", applies: ALL, title: "Asset protection", heading: "Asset Protection for your Personal and Business Assets",
+      text: "It is important to put strategies in place that protect your hard-earned key asset, your business. You should consider the following matters:\n- Protect the equity in your family home.\n- Estate planning: do you have up to date Wills and procedures in place that will ensure that upon your death, your assets will be distributed as per your wishes and kept in your family bloodline?\n- Insurances: does your business have sufficient insurance? If you were no longer able to work, do you have enough insurance?\n- Business succession plan: do you have a plan for retiring from the business? Who will run the business for you?\n- Secure loan accounts: would you like to protect the working capital that you have injected into your business, so if anything goes wrong you get your money back first?\n- Business structure: does your current business structure provide optimum asset protection for you?\nPlease contact our office if any of the above topics concern you and you would like peace of mind to properly protect your family assets and wealth." },
+    adjusting_entries: { group: "other", applies: B, title: "Adjusting entries for your accounting system", heading: "Adjusting Entries for your Accounting System",
+      text: "Please find enclosed a list of [Software] adjusting entries required to update your [Financial year] computerised Financial Statements. You will need to update your computer file with these entries so that our records reconcile. Once you have recorded these transactions, please send our office a copy of your Balance Sheet as at [Year end date] so that we can ensure your records and our records match.\nPlease feel free to contact our office if you require assistance with the above entries." },
   };
   // Picklists for some blanks
   const CHOICES = {
     "Concession": ["15-year exemption", "50% active asset reduction", "retirement exemption", "small business rollover"],
     "sale/surrender": ["sale", "surrender"], "payable/refundable": ["payable", "refundable"], "trust/company": ["trust", "company"],
-    "Method": ["statutory formula", "operating cost"],
+    "Method": ["statutory formula", "operating cost"], "an asset/assets": ["an asset", "assets"], "increase/decrease": ["increase", "decrease"], "Software": ["Xero", "MYOB", "QuickBooks"], "based upon the business travel indicated in your Travel Schedule/based upon your details provided to our office": ["based upon the business travel indicated in your Travel Schedule", "based upon your details provided to our office"],
   };
   let i = 0; Object.values(LIB).forEach(p => p.order = i++);
   root.PRLib = { LIB, CHOICES };
@@ -374,22 +438,30 @@ iframe{width:100%;height:72vh;border:1px solid var(--ix-line);border-radius:10px
   }
 
   // ---------- What kind of document is it ----------
-  const KIND_LABEL = { itr: "Income Tax Return", fs: "Financial Statements", minutes: "Minutes", amendedMinutes: "Amended Minutes (to be emailed)", dividend: "Dividend Statements", div7a: "Div 7A Loan Agreement", slip: "ATO Payment Slip", org: "Organisational Chart", workpaper: "Workpaper", collation: "Collation spreadsheet", data: "Last year’s report data", own: "Earlier output (not used)", other: "Other document" };
+  const KIND_LABEL = { template: "Progress report template", skip: "Not in the pack", itr: "Income Tax Return", fs: "Financial Statements", minutes: "Minutes", amendedMinutes: "Amended Minutes (to be emailed)", dividend: "Dividend Statements", div7a: "Div 7A Loan Agreement", slip: "ATO Payment Slip", org: "Organisational Chart", workpaper: "Workpaper", collation: "Collation spreadsheet", data: "Last year’s report data", own: "Earlier output (not used)", other: "Other document" };
   const KIND_ORDER = ["fs", "itr", "minutes", "dividend", "div7a", "slip", "other"];
-  function classify(name, text) {
+  // where: "trf" (Tax Returns and Financials), "wp" (Workpapers), "prior" (last year), or "" (dropped in)
+  function classify(name, text, where) {
     const n = name.toLowerCase(), t = (text || "").slice(0, 6000);
     if (/\.json$/.test(n)) return "data";
-    if (/\.xls[xmb]?$/.test(n)) return /collation/.test(n) ? "collation" : "workpaper";
+    if (/\.(msg|eml|docx?|png|jpe?g)$/.test(n)) return "skip";
+    if (/\.xls[xmb]?$/.test(n)) {
+      if (/collation/.test(n)) return "collation";
+      if (/progress report.*template|progress reports? calcs/.test(n)) return "template";
+      if (/workpaper|\btr4|\bbtr4|tax checklist/.test(n)) return "workpaper";
+      return "skip";
+    }
     if (/cover letter & progress report|^correspondence - /.test(n)) return "own";
     if (/(company|individual|trust|partnership) tax return \d{4}/i.test(t) || /tax return.*cannot be lodged as a paper/i.test(t)) return "itr";
-    if (/organi[sz]ational chart|org chart|structure chart/.test(n)) return "org";
-    if (/payment slip|payment advice/.test(n) || /payment slip|payment reference number|bpay/i.test(t) && (text || "").length < 4000) return "slip";
+    if (/activity statement|\b(bas|ias)\b|payroll tax|bank statement|loan statement|credit card|general ledger|trial balance|journal|depreciation schedule|disposal schedule|payroll|amorti[sz]ation|invoice|receipt/.test(n)) return "skip";
+    if (/organi[sz]ational chart|org chart|structure chart|structure diagram/.test(n)) return "org";
+    if (/payment slip|payment advice/.test(n) || /^\s*(ato )?payment slip/i.test(t)) return "slip";
     if (/amended minutes/.test(n) || /^\s*amended minutes/i.test(t)) return "amendedMinutes";
-    if (/minutes/.test(n) || /minutes of (a )?(meeting|resolution)|resolutions? of (the )?(sole )?(director|trustee)/i.test(t)) return "minutes";
-    if (/dividend statement/.test(n) || /dividend statement/i.test(t)) return "dividend";
-    if (/div(ision)? ?7a|loan agreement/.test(n) || /loan agreement/i.test(t) && /division 7a/i.test(t)) return "div7a";
-    if (/financial statements|financials/.test(n) || /compilation report|balance sheet|statement of financial position|income statement|profit and loss/i.test(t)) return "fs";
-    return "other";
+    if (/minutes/.test(n) || /^\s*minutes of (a )?(meeting|resolution)/i.test(t)) return "minutes";
+    if (/dividend statement/.test(n) || /^\s*dividend statement/i.test(t)) return "dividend";
+    if (/div(ision)? ?7a|loan agreement/.test(n) || (/loan agreement/i.test(t) && /division 7a/i.test(t))) return "div7a";
+    if (/financial statements|financials/.test(n) || /compilation report/i.test(t)) return "fs";
+    return where === "wp" ? "skip" : "other";
   }
   function otherLabel(name) { return name.replace(/\.[a-z0-9]+$/i, "").replace(/^\d{4}\s+(?=\D)/, "").replace(/\s+-\s+.*$/, "").trim() || name; }
 
@@ -422,13 +494,14 @@ iframe{width:100%;height:72vh;border:1px solid var(--ix-line);border-radius:10px
       const pr = grab(t, "Total Profit", "T"); const ls = grab(t, "Total Loss", "T");
       set("net", pr !== null ? pr : ls !== null ? -Math.abs(ls) : null);
       set("taxable", grab(t, "Taxable or net income", "A") ?? grab(t, "Taxable/net income", "T"));
-      set("taxPayable", grab(t, "Tax Payable", "T5") ?? grab(t, "Gross tax", "B"));
+      set("taxPayable", grab(t, "Gross tax", "B") ?? grab(t, "Tax Payable", "T5"));
       const pay = t.match(new RegExp("Amount (payable|refundable)\\s+" + AMT));
       if (pay) set("final", (pay[1] === "refundable" ? -1 : 1) * Math.abs(toCents(pay[2])));
       set("curAssets", grab(t, "All current assets", "D"));
       set("curLiab", grab(t, "All current liabilities", "G"));
       set("franking", grab(t, "Franking credits", "J"));
       const ic = t.match(/Industry code\s+(\d{4,5})/); if (ic) f.industry = ic[1];
+      const da = t.match(/DESCRIPTION OF MAIN BUSINESS ACTIVITY\s+(.+?)\s+Industry code/i); if (da) f.industryDesc = da[1].trim();
       const sb = t.match(/Small business entity\s+(Yes|No)/); if (sb) f.sbe = sb[1] === "Yes";
       const q = t.match(/September quarter\s+\$([\d,]+\.\d{2}).*?December quarter\s+\$([\d,]+\.\d{2}).*?March quarter\s+\$([\d,]+\.\d{2}).*?June quarter\s+\$([\d,]+\.\d{2})/);
       if (q) r.inst = [q[1], q[2], q[3], q[4]].map(toCents);
@@ -486,33 +559,130 @@ iframe{width:100%;height:72vh;border:1px solid var(--ix-line);border-radius:10px
     "deductible super (prior year closing balance paid before 28 july 2025)": "dedSuperPrior",
   };
   const WP_TABS = ["Div 7A", "Borrowing Costs", "Blackhole", "Employee contribution", "Vehicles - Pvt Use", "Prepayments", "Inter-entity loans"];
+  const WP_LABELS = [
+    [/^profit \/ \(loss\) from financial statements$|^profit as per final financial statements$/, "fsProfit"],
+    [/^accounting depreciation$/, "accDep"], [/^taxation depreciation$/, "taxDep"],
+    [/^assets ?< ?\$?20(,000|k)$/, "under20k"], [/^small business pool$/, "sbPool"],
+    [/^fines (&|and) penalties$/, "fines"], [/^donations (&|and) gifts/, "donations"], [/^legal fees/, "legal"],
+    [/^entertainment/, "entertainment"], [/^interest - non-deductible$/, "interestNonDed"],
+    [/^non-deductible super|^current year superannuation creditor$/, "nondedSuper"],
+    [/^deductible super \(prior year|^prior year superannuation creditor$/, "dedSuperPrior"],
+    [/^amortisation$/, "amort"], [/^accounting capital (gains|profits)$/, "accCG"], [/^net taxable capital gains$|^capital gains - taxable$/, "taxCG"],
+    [/^(less: )?tax losses deducted$/, "lossesDeducted"], [/^total tax losses carried forward$|^loss carried forward$/, "lossesCF"],
+    [/^taxable income or loss$|^taxable income \/ \(tax loss before adjustments\)$/, "wpTaxable"],
+    [/^blackhole expenditure deductions$|^section 40-880 deduction/, "blackhole"],
+    [/^small business skills and training boost|^skills and training boost/, "skillsBoost"], [/^small business energy incentive/, "energyBoost"],
+    [/^cash basis adjustment|cash basis small business/, "cash"],
+    [/^taxable or net income$/, "ctTaxable"], [/^tax payable$/, "ctTaxPayable"], [/^tax payable \/ \(refundable\)$/, "ctFinal"],
+  ];
+  const isCode = c => typeof c === "string" && /^[A-Z]\d{0,2}$/.test(c.trim());
   function parseWorkpaper(XLSX, bytes) {
     const wb = XLSX.read(bytes, { type: "array" });
     const meta = (wb.Workbook && wb.Workbook.Sheets) || [];
-    const visible = name => { const i = wb.SheetNames.indexOf(name); return i >= 0 && !(meta[i] && meta[i].Hidden); };
+    const hidden = name => { const i = wb.SheetNames.indexOf(name); return !(i >= 0 && !(meta[i] && meta[i].Hidden)); };
     const rows = name => wb.Sheets[name] ? XLSX.utils.sheet_to_json(wb.Sheets[name], { header: 1, raw: true, defval: null }) : [];
-    const out = { client: null, br1: {}, others: [], tabs: {}, hasBR1: false };
-    rows("Home").forEach(r => { const i = r.findIndex(c => typeof c === "string" && /^client name:?\s*$/i.test(c.trim())); if (i >= 0) { const v = r.slice(i + 1).find(c => typeof c === "string" && c.trim()); if (v) out.client = v.trim(); } });
-    WP_TABS.forEach(n => out.tabs[n] = visible(n));
-    const br = rows("Tax Reconciliation");
+    const out = { client: null, br1: {}, others: [], tabs: {}, hasBR1: false, fig: {} };
+    rows("Home").forEach(r => { const i = r.findIndex(c => typeof c === "string" && /^client name:?\s*$/i.test(c.trim())); if (i >= 0 && !out.client) { const v = r.slice(i + 1).find(c => typeof c === "string" && c.trim()); if (v) out.client = v.trim(); } });
+    const recon = wb.SheetNames.find(n => /tax reconciliation/i.test(n) && !hidden(n)) || wb.SheetNames.find(n => /tax reconciliation/i.test(n));
+    const br = recon ? rows(recon) : [];
+    if (!out.client) br.slice(0, 6).forEach(r => { const i = r.findIndex(c => typeof c === "string" && /^client:?\s*$/i.test(c.trim())); if (i >= 0 && !out.client) { const v = r.slice(i + 1).find(c => typeof c === "string" && c.trim()); if (v) out.client = v.trim(); } });
+    if (!out.client) { const h = rows("Home").slice(0, 6).flat().filter(c => typeof c === "string" && c.trim() && !/workpaper|accounts preparation|checklist/i.test(c)); if (h.length) out.client = h[0].trim(); }
+    const vis = wb.SheetNames.filter(n => !hidden(n));
+    out.tabs = { "Div 7A": vis.some(n => /div ?7a/i.test(n)), "Borrowing Costs": vis.some(n => /borrowing/i.test(n)), "Blackhole": vis.some(n => /blackhole/i.test(n)), "Employee contribution": vis.some(n => /employee contribution|fbt contribution/i.test(n)), "Prepayments": vis.some(n => /prepayment/i.test(n)) };
     if (br.length) out.hasBR1 = true;
-    let minus = false;
+    let sign = 1, inTaxDep = false;
     br.forEach(r => {
-      if (r.some(c => typeof c === "string" && /^less:?\s*$/i.test(c.trim()))) minus = true;
-      if (r.some(c => typeof c === "string" && /^(carry forward losses|taxable income or loss)/i.test(c.trim()))) minus = false;
+      const strs = r.filter(c => typeof c === "string" && c.trim()).map(c => c.trim());
+      if (strs.some(c => /^less:?$/i.test(c))) sign = -1;
+      if (strs.some(c => /^add:?$/i.test(c))) sign = 1;
+      if (strs.some(c => /^(carry forward losses|tax loss carried forward|taxable income)/i.test(c))) sign = 1;
       for (let i = 0; i < r.length; i++) {
-        if (typeof r[i] !== "string" || !r[i].trim()) continue;
+        if (typeof r[i] !== "string" || !r[i].trim() || isCode(r[i])) continue;
         let label = r[i].trim(), j = i + 1;
-        if (/^other:?$/i.test(label)) { const nx = r.findIndex((c, k) => k > i && typeof c === "string" && c.trim()); if (nx < 0) continue; label = "Other: " + r[nx].trim(); j = nx + 1; i = nx; }
-        let val = null; for (let k = j; k < r.length; k++) { if (typeof r[k] === "string" && r[k].trim()) break; if (typeof r[k] === "number") { val = r[k]; break; } }
+        if (/^taxation depreciation:?$/i.test(label)) inTaxDep = true;
+        if (/^other:?$/i.test(label)) { const nx = r.findIndex((c, k) => k > i && typeof c === "string" && c.trim() && !isCode(c)); if (nx < 0) continue; label = "Other: " + r[nx].trim(); j = nx + 1; i = nx; }
+        let val = null; for (let k = j; k < r.length; k++) { if (typeof r[k] === "string" && r[k].trim() && !isCode(r[k])) break; if (typeof r[k] === "number") { val = r[k]; break; } }
         if (val === null) continue;
-        const key = BR1[label.toLowerCase()];
-        const cents = Math.round(val * 100);
-        if (key) { if (key === "cash") out.br1.cash = (out.br1.cash || 0) + Math.abs(cents); else if (out.br1[key] === undefined) out.br1[key] = cents; }
-        else if (/^other: /i.test(label) && cents) out.others.push({ label: label.replace(/^other: /i, ""), amount: minus ? -Math.abs(cents) : cents });
+        const cents = Math.round(val * 100), low = label.toLowerCase();
+        if (inTaxDep && /^general$/.test(low)) { out.br1.taxDep = (out.br1.taxDep || 0) + Math.abs(cents); inTaxDep = false; continue; }
+        if (/prepayment/.test(low)) { out.br1.prepayNet = (out.br1.prepayNet || 0) + sign * Math.abs(cents); continue; }
+        if (/provision for (annual leave|long service leave)|^provisions \(/.test(low)) { out.br1.provNet = (out.br1.provNet || 0) + sign * Math.abs(cents); continue; }
+        if (/accrued expenses/.test(low)) { out.br1.accruedNet = (out.br1.accruedNet || 0) + sign * Math.abs(cents); continue; }
+        if (/profit on disposal of depreciable assets|gain on sale/.test(low)) { if (cents) out.others.push({ label: label.replace(/^other: /i, "").replace(/profit on disposal of depreciable assets/i, "Gain on sale of assets"), amount: sign * Math.abs(cents) }); continue; }
+        const hit = WP_LABELS.find(([re]) => re.test(low));
+        if (hit) {
+          const key = hit[1];
+          if (key === "cash") out.br1.cash = (out.br1.cash || 0) + Math.abs(cents);
+          else if (key === "ctTaxable") out.fig.taxable = cents; else if (key === "ctTaxPayable") out.fig.taxPayable = cents; else if (key === "ctFinal") out.fig.final = cents;
+          else if (out.br1[key] === undefined) out.br1[key] = (key === "fsProfit" || key === "wpTaxable") ? cents : Math.abs(cents);
+        } else if (/^other: /i.test(label) && cents) out.others.push({ label: label.replace(/^other: /i, ""), amount: sign * Math.abs(cents) });
       }
     });
-    if (out.br1.lossesCF) out.br1.lossesCF = Math.abs(out.br1.lossesCF);
+    if (out.fig.taxPayable !== undefined && out.fig.final !== undefined) out.fig.taxPaid = out.fig.taxPayable - out.fig.final;
+    if (out.fig.taxable === undefined && out.br1.wpTaxable !== undefined) out.fig.taxable = out.br1.wpTaxable;
+    return out;
+  }
+  // The firm's "Progress Report - Template" spreadsheet: one tab per entity plus an Individuals tab
+  function parseProgressTemplate(XLSX, bytes) {
+    const wb = XLSX.read(bytes, { type: "array" });
+    const out = { entities: [], people: [] };
+    const num = v => typeof v === "number" ? Math.round(v * 100) : null;
+    const INC = /^(salary\/wages|capital gains|rental income|investment income|business income|other income|capital loss|rental deductions|investment deductions|business expenses|other deductions)$/i;
+    wb.SheetNames.forEach(sn => {
+      if (/calcs|spare|^company \d|^trust \d/i.test(sn)) return;
+      const rows = XLSX.utils.sheet_to_json(wb.Sheets[sn], { header: 1, raw: true, defval: null });
+      if (/^individuals?$/i.test(sn)) {
+        const head = rows.findIndex(r => r.some(c => typeof c === "string" && c.trim()) && (rows[rows.indexOf(r) + 1] || []).some(c => typeof c === "number" && c > 2000 && c < 2100));
+        if (head < 0) return;
+        const yr = rows[head + 1] || [];
+        rows[head].forEach((c, col) => {
+          if (typeof c !== "string" || !c.trim()) return;
+          const name = c.trim(), lab = Math.max(0, col - 1);
+          const yc = []; for (let k = col; k < col + 6; k++) if (typeof yr[k] === "number" && yr[k] > 2000 && yr[k] < 2100) yc.push([yr[k], k]);
+          if (!yc.length) return;
+          const p = { name, years: {}, inst: [0, 0, 0, 0] }; yc.forEach(([y]) => p.years[y] = { income: {} });
+          let cat = null, after = null;
+          rows.slice(head + 2).forEach(r => {
+            const l = typeof r[lab] === "string" ? r[lab].trim() : "";
+            const vals = yc.map(([y, k]) => [y, num(r[k])]);
+            if (INC.test(l)) { cat = l.toLowerCase(); return; }
+            if (/^taxable income$/i.test(l)) { vals.forEach(([y, v]) => { if (v !== null) p.years[y].taxable = v; }); return; }
+            if (/^- plus other liabilities$/i.test(l)) { after = "tax"; return; }
+            if (/^tax payable\/?\s*\(?refundable\)?$/i.test(l)) { vals.forEach(([y, v]) => { if (v !== null) p.years[y].final = v; }); return; }
+            if (/^tax paid$/i.test(l)) { vals.forEach(([y, v]) => { if (v !== null) p.years[y].taxPaid = v; }); return; }
+            const q = l.match(/^- (sep|dec|mar|jun)/i); if (q) { const v = num(r[col]); if (v !== null) p.inst[["sep", "dec", "mar", "jun"].indexOf(q[1].toLowerCase())] = v; return; }
+            if (!l && vals.some(([, v]) => v !== null)) {
+              if (after === "tax") { vals.forEach(([y, v]) => { if (v !== null) p.years[y].taxPayable = v; }); after = null; return; }
+              if (cat) { vals.forEach(([y, v]) => { if (v !== null) p.years[y].income[cat] = v; }); cat = null; }
+            }
+          });
+          if (Object.values(p.years).some(v => v.taxable || v.taxPayable || v.final)) out.people.push(p);
+        });
+        return;
+      }
+      const head = rows.findIndex(r => r.some(c => typeof c === "number" && c > 2000 && c < 2100));
+      if (head < 0) return;
+      const yc = []; rows[head].forEach((c, k) => { if (typeof c === "number" && c > 2000 && c < 2100) yc.push([c, k]); });
+      const e = { name: sn.trim(), type: /trust/i.test(sn) ? "trust" : /partnership/i.test(sn) ? "partnership" : "company", years: {}, inst: [0, 0, 0, 0] };
+      yc.forEach(([y]) => e.years[y] = {});
+      let owners = false;
+      rows.slice(head + 1).forEach(r => {
+        const l = typeof r[0] === "string" ? r[0].trim() : "";
+        const vals = yc.map(([y, k]) => [y, num(r[k])]);
+        const put = key => vals.forEach(([y, v]) => { if (v !== null) e.years[y][key] = v; });
+        if (r.some(c => typeof c === "string" && /revenue increase or \(decrease\)/i.test(c))) { put("revenue"); return; }
+        if (/^gross profit$/i.test(l)) return put("gross");
+        if (/^net profit$/i.test(l)) return put("net");
+        if (/^owners salaries/i.test(l)) { owners = true; return; }
+        if (owners && !l && vals.some(([, v]) => v !== null)) { put("owners"); owners = false; return; }
+        if (/^taxable income$/i.test(l)) return put("taxable");
+        if (/^tax assessed$/i.test(l)) return put("taxPayable");
+        if (/^tax payable\/?\s*\(?refundable\)?$/i.test(l)) return put("final");
+        if (/^tax paid$/i.test(l)) return put("taxPaid");
+        const q = l.match(/^- (sep|dec|mar|jun)/i); if (q) { const v = num(r[yc[0][1]]); if (v !== null) e.inst[["sep", "dec", "mar", "jun"].indexOf(q[1].toLowerCase())] = v; }
+      });
+      if (Object.values(e.years).some(v => v.revenue || v.net || v.taxable)) out.entities.push(e);
+    });
     return out;
   }
   function parseCollationSheet(XLSX, bytes) {
@@ -543,18 +713,21 @@ iframe{width:100%;height:72vh;border:1px solid var(--ix-line);border-radius:10px
         else if (f.sbe === false) add("dep_nonsbe", "The return shows the entity is not a small business entity.");
         else add("dep_sbe", "Accounting depreciation is added back in the workpaper.");
       }
-      if (b.amort || (e.wpTabs && e.wpTabs["Borrowing Costs"])) add("borrowing", "Borrowing costs are in the workpaper.");
-      if (e.type === "company" && (b.blackhole || (e.wpTabs && e.wpTabs["Blackhole"]))) add("formation", "The Blackhole tab is in use in the workpaper.");
+      if (b.amort || b.blackhole && e.wpTabs && e.wpTabs["Borrowing Costs"] || (e.wpTabs && e.wpTabs["Borrowing Costs"])) add("borrowing", "Borrowing costs are in the workpaper.");
+      if (e.type === "company" && (b.blackhole || (e.wpTabs && e.wpTabs["Blackhole"])) && !(e.wpTabs && e.wpTabs["Borrowing Costs"])) add("formation", "Blackhole expenses are claimed in the workpaper.");
       if ((e.wpOthers || []).some(o => /borrowing/i.test(o.label)) && !b.amort) add("borrowing", "Borrowing costs are in the workpaper.");
-      if ((e.wpOthers || []).some(o => /gain on sale/i.test(o.label))) add("gain_tfe", "The workpaper has a gain on sale of assets. Switch to the small business pool version if that fits better.");
+      if ((e.wpOthers || []).some(o => /gain on sale|disposal/i.test(o.label))) add("gain_tfe", "The workpaper has a gain on sale of assets. Switch to the small business pool version if that fits better.");
       if (b.nondedSuper) add("unpaid_super", "Non-deductible super is added back in the workpaper.");
       if (b.lossesDeducted) add("losses", "Tax losses were deducted this year.", { "Losses carried forward": b.lossesCF ? money(b.lossesCF) : "$0.00", "Year end date": "30 June " + Y });
       if (b.entertainment) add("entertainment", "Entertainment is added back in the workpaper.");
       if (b.fines) add("fines", "Fines are added back in the workpaper.");
-      if (b.provCur || b.provPrior) add("leave", "Provisions are adjusted in the workpaper.");
-      if (b.prepayCur || b.prepayPrior) add("prepay", "Prepayments are adjusted in the workpaper.");
-      if (b.accruedCur || b.accruedPrior) add("accrued", "Accrued expenses are adjusted in the workpaper.");
+      if (b.provCur || b.provPrior || b.provNet) add("leave", "Provisions are adjusted in the workpaper.");
+      if (b.prepayCur || b.prepayPrior || b.prepayNet) add("prepay", "Prepayments are adjusted in the workpaper.");
+      if (b.accruedCur || b.accruedPrior || b.accruedNet) add("accrued", "Accrued expenses are adjusted in the workpaper.");
       if (b.taxCG && e.type !== "company") add("cgt_discount", "Net taxable capital gains are in the workpaper.");
+      if (b.cash) add("cash_basis", "Cash basis adjustments are in the workpaper.");
+      if (b.skillsBoost) add("skills_boost", "The skills and training boost is claimed in the workpaper.");
+      if (b.energyBoost) add("energy_boost", "The energy incentive is claimed in the workpaper.");
     }
     if (biz && (b.franking || f.franking > 0)) add("franking", "The entity received franking credits.", { "entity type": e.type });
     if (e.type === "company") {
@@ -581,7 +754,8 @@ iframe{width:100%;height:72vh;border:1px solid var(--ix-line);border-radius:10px
     const v = { "Financial year": String(Y), "Financial year end": "30 June " + Y, "Year end date": "30 June " + Y, "entity type": e.type, "trust/company": e.type === "company" ? "company" : "trust" };
     if (id === "pay_tax") { v["Amount payable"] = money(f.final); v["Due date"] = dueWords(e, model); }
     if (id === "losses" && e.br1 && e.br1.lossesCF !== undefined) v["Losses carried forward"] = money(e.br1.lossesCF);
-    if (id === "tfe") { v["Business name"] = e.name; v["Financial year"] = String(Y - 1); }
+    if (id === "tfe") { v["Financial year"] = String(Y - 1); }
+    v["Business name"] = e.name; v["entity type"] = e.type;
     return v;
   }
 
@@ -685,23 +859,25 @@ iframe{width:100%;height:72vh;border:1px solid var(--ix-line);border-radius:10px
         ["taxable", "taxPayable", "final"].forEach(k => { if (f[k] === undefined || f[k] === null) add("block", `${e.name}: ${{ taxable: "taxable income", taxPayable: "tax payable", final: "final payable or refundable amount" }[k]} is missing.`); });
         if (f.taxPaid !== undefined && f.taxPayable !== undefined && f.final !== undefined && Math.abs(f.taxPayable - f.taxPaid - f.final) > 1) add("warn", `${e.name}: tax payable less tax paid doesn’t equal the final position. Check the figures.`);
       }
-      if (isBiz(e) && (f.revenue === undefined || f.net === undefined)) add("warn", `${e.name}: revenue or net profit is missing, so the business income lines will be incomplete.`);
+      if (isBiz(e) && (f.revenue === undefined || (f.net === undefined && f.fsProfit === undefined))) add("warn", `${e.name}: revenue or net profit is missing, so the business income lines will be incomplete.`);
       if (isBiz(e) && f.netFromReturn && f.fsProfit === undefined) add("warn", `${e.name}: net profit was worked out from the return. Check it against the financial statements, or add the workpaper.`);
       if (e.type === "company" && f.final > 0 && !(e.docs || []).some(d => d.kind === "slip")) add("warn", `${e.name} has an amount payable but no ATO payment slip has been added for the collation.`);
       if ((e.docs || []).some(d => d.kind === "slip") && !(f.final > 0 && (e.type === "company" || e.type === "partnership"))) add("warn", `${e.name} has an ATO payment slip, but payment slips only go to companies and partnerships with an amount payable.`);
       if ((e.docs || []).some(d => d.kind === "fs") && !String(e.signatories || "").trim()) add("warn", `${e.name}: type who signs the financial statements, so the declaration has the right signature lines.`);
       if (isTaxpayer(e) && !(e.docs || []).some(d => d.kind === "itr" && d.year === model.year)) add("warn", `${e.name}: no ${model.year} income tax return has been added for the collation.`);
       const b = e.br1 || {};
-      const gaps = [["cash", "cash basis adjustments"], ["donations", "donations and gifts"], ["legal", "legal fees"], ["skillsBoost", "the skills and training boost"], ["energyBoost", "the energy incentive"]].filter(([k]) => b[k]).map(x => x[1]);
+      const gaps = [["donations", "donations and gifts"], ["legal", "legal fees"], ["interestNonDed", "non-deductible interest"]].filter(([k]) => b[k]).map(x => x[1]);
       (e.wpOthers || []).filter(o => /wip|work in progress|retention/i.test(o.label)).forEach(o => gaps.push(o.label));
       if (gaps.length) add("warn", `${e.name}: the workpaper has adjustments with no approved wording yet (${joinList(gaps)}). Add a sentence in the client-specific paragraph if the client needs it explained.`);
       Object.entries(e.paras || {}).forEach(([id, p]) => { if (!p.on) return; const r = fillText(id, p, e, model, LIB); if (r.missing.length) add("block", `${e.name}, ${LIB[id].title}: fill in ${[...new Set(r.missing)].join(", ")}.`); });
       if (e.plan && e.plan.est !== undefined && e.plan.est !== null && isTaxpayer(e)) { const d = ((e.fig || {}).final || 0) - e.plan.est; if (Math.abs(d) > Math.max(100000, Math.abs(e.plan.est) * 0.05) && !e.plan.reason && !String(e.plan.note || "").trim()) add("block", `${e.name}: the result is ${absMoney(d)} different from the tax planning estimate. Choose a reason or type a short note.`); }
+      if (e.bench && e.bench.on && (e.bench.cogsPct === undefined || e.bench.cogsPct === "" || e.bench.expPct === undefined || e.bench.expPct === "" || !e.bench.industry || !e.bench.year)) add("block", `${e.name}: fill in the ATO benchmark industry, data year and both percentages, or untick the benchmarks.`);
       if (e.d7 && e.d7.on && (!String(e.d7.borrowers || "").trim() || !String(e.d7.agreementYear || "").trim() || !(e.d7.rows || []).some(r => r.desc || r.rep || r.bal))) add("block", `${e.name}: the Division 7A section is ticked but the loan agreement details or repayments aren’t filled in.`);
       if (e.d7 && !e.d7.on && e.wpTabs && e.wpTabs["Div 7A"] && isBiz(e)) add("info", `${e.name}: the Div 7A tab is in use in the workpaper. Tick “Include the Division 7A loans section” in step 3 and enter the figures if the report needs it.`);
       if (e.d7 && e.d7.on && e.d7.met === false) add("block", `${e.name}: the Division 7A minimum repayment wasn’t met. That needs advice-specific wording, so untick Division 7A and write it in the custom paragraph.`);
     });
-    (files || []).filter(f => !f.entityId && !["data", "collation", "own", "workpaper", "org"].includes(f.kind) && f.kind !== "amendedMinutes").forEach(f => add("warn", `${f.name} isn’t matched to an entity yet, so it won’t go in the collation.`));
+    (files || []).filter(f => !f.entityId && !["data", "collation", "own", "workpaper", "org", "template", "skip"].includes(f.kind) && f.kind !== "amendedMinutes").forEach(f => add("warn", `${f.name} isn’t matched to an entity yet, so it won’t go in the collation.`));
+    (files || []).filter(f => f.misfiled).forEach(f => add("warn", f.misfiled));
     (files || []).filter(f => f.kind === "amendedMinutes").forEach(f => add("info", `${f.name} is amended minutes, so it’s left out of the pack (to be emailed).`));
     if (model.entities.some(e => e.type === "individual" && (e.fig || {}).final > 0 && !isOverdue(e, model) && dueDate(e, model).getUTCMonth() === 4)) add("info", `The 15 May footnote says returns lodged from ${fmtDate(model.footnoteDate)}. Check that date is right for ${model.year} returns.`);
     if (!model.assets.signature) add("info", "The signature is added when you’re signed in to Microsoft. This preview leaves a gap for it.");
@@ -936,7 +1112,7 @@ iframe{width:100%;height:72vh;border:1px solid var(--ix-line);border-radius:10px
         const total = hgt + top + legendH + (opts.caption ? 22 : 6);
         api.need(total);
         const pctMode = !!opts.percent;
-        const vals = series.flatMap(s => s.values.map(v => v || 0));
+        const vals = opts.stacked ? years.flatMap((y, gi) => [series.reduce((a, s) => a + Math.max(0, s.values[gi] || 0), 0), series.reduce((a, s) => a + Math.min(0, s.values[gi] || 0), 0)]) : series.flatMap(s => s.values.map(v => v || 0));
         let max = Math.max(0, ...vals), min = Math.min(0, ...vals);
         if (max === min) max = 1;
         const span = max - min; const step = niceStep(span / 4);
@@ -950,6 +1126,15 @@ iframe{width:100%;height:72vh;border:1px solid var(--ix-line);border-radius:10px
           S.p.drawText(lbl, { x: x0 - 5 - reg.widthOfTextAtSize(lbl, 6.6), y: yy - 2.3, size: 6.6, font: reg, color: C.ink });
         }
         const gw = (x1 - x0) / years.length; const bw = Math.min(22, (gw * 0.72) / series.length);
+        if (opts.stacked) {
+          const sw = Math.min(34, gw * 0.5);
+          years.forEach((yr, gi) => {
+            const bx = x0 + gi * gw + (gw - sw) / 2; let up = 0, down = 0;
+            series.forEach(s => { const v = s.values[gi] || 0; if (!v) return; const a0 = v > 0 ? up : down; const a1 = a0 + v; if (v > 0) up = a1; else down = a1;
+              S.p.drawRectangle({ x: bx, y: Math.min(yOf(a0), yOf(a1)), width: sw, height: Math.abs(yOf(a1) - yOf(a0)), color: s.color }); });
+            const yl = String(yr); S.p.drawText(yl, { x: x0 + gi * gw + gw / 2 - bold.widthOfTextAtSize(yl, 7.5) / 2, y: y0 - 12, size: 7.5, font: bold, color: C.ink });
+          });
+        } else
         years.forEach((yr, gi) => {
           const gx = x0 + gi * gw + (gw - bw * series.length) / 2;
           series.forEach((s, si) => {
@@ -972,7 +1157,7 @@ iframe{width:100%;height:72vh;border:1px solid var(--ix-line);border-radius:10px
   function niceStep(raw) { if (raw <= 0) return 1; const p = Math.pow(10, Math.floor(Math.log10(raw))); const n = raw / p; return (n <= 1 ? 1 : n <= 2 ? 2 : n <= 2.5 ? 2.5 : n <= 5 ? 5 : 10) * p; }
 
   function changeLine(what, cur, prev, Y, kind) {
-    if (prev === undefined || prev === null || !isFinite(prev)) return `${what} for the ${Y} year is ${money(cur)}.`;
+    if (prev === undefined || prev === null || !isFinite(prev)) return kind === "tax" ? `${what} for the ${Y} year is ${money(cur)}.` : `${what} is ${money(cur)} for the ${Y} year.`;
     const d = cur - prev; const dir = d >= 0 ? "up" : "down";
     const p = prev ? Math.abs(d / Math.abs(prev) * 100).toFixed(1) + "%" : null;
     if (kind === "tax") return `${what} for the ${Y} year is ${money(cur)}, ${d >= 0 ? "an increase" : "a decrease"} of ${absMoney(d)}.`;
@@ -996,12 +1181,12 @@ iframe{width:100%;height:72vh;border:1px solid var(--ix-line);border-radius:10px
     const b = e.br1 || {}, f = e.fig || {}, o = e.wpOthers || [];
     const n = v => (v === undefined || v === null) ? null : v;
     if (/^dep_/.test(id)) return b.accDep !== undefined && b.taxDep !== undefined ? b.accDep - b.taxDep : null;
-    if (/^gain_/.test(id)) { const g = o.filter(x => /gain on sale/i.test(x.label)); return g.length ? g.reduce((s2, x) => s2 + x.amount, 0) : null; }
-    if (id === "borrowing") { const g = o.filter(x => /borrowing/i.test(x.label)); if (g.length) return g.reduce((s2, x) => s2 + x.amount, 0); return b.amort !== undefined ? b.amort : null; }
+    if (/^gain_/.test(id)) { const g = o.filter(x => /gain on sale|disposal/i.test(x.label)); return g.length ? g.reduce((s2, x) => s2 + x.amount, 0) : null; }
+    if (id === "borrowing") { const g = o.filter(x => /borrowing/i.test(x.label)); if (g.length) return g.reduce((s2, x) => s2 + x.amount, 0); if (b.amort !== undefined) return b.amort; if (b.blackhole && e.wpTabs && e.wpTabs["Borrowing Costs"]) return -b.blackhole; return null; }
     if (/^(unpaid_super|super_exp|sgc)$/.test(id)) return b.nondedSuper !== undefined || b.dedSuperPrior !== undefined ? (b.nondedSuper || 0) - (b.dedSuperPrior || 0) : null;
     return { borrowing: n(b.amort), formation: b.blackhole ? -b.blackhole : null, entertainment: n(b.entertainment), fines: n(b.fines), unpaid_super: n(b.nondedSuper), super_exp: n(b.nondedSuper), sgc: n(b.nondedSuper),
-      losses: b.lossesDeducted ? -Math.abs(b.lossesDeducted) : null, franking: n(b.franking || f.franking), leave: b.provCur !== undefined || b.provPrior !== undefined ? (b.provCur || 0) - (b.provPrior || 0) : null,
-      prepay: b.prepayCur !== undefined || b.prepayPrior !== undefined ? (b.prepayPrior || 0) - (b.prepayCur || 0) : null, accrued: b.accruedCur !== undefined || b.accruedPrior !== undefined ? (b.accruedCur || 0) - (b.accruedPrior || 0) : null,
+      losses: b.lossesDeducted ? -Math.abs(b.lossesDeducted) : null, franking: n(b.franking || f.franking), leave: b.provNet !== undefined ? b.provNet : b.provCur !== undefined || b.provPrior !== undefined ? (b.provCur || 0) - (b.provPrior || 0) : null,
+      prepay: b.prepayNet !== undefined ? b.prepayNet : b.prepayCur !== undefined || b.prepayPrior !== undefined ? (b.prepayPrior || 0) - (b.prepayCur || 0) : null, accrued: b.accruedNet !== undefined ? b.accruedNet : b.accruedCur !== undefined || b.accruedPrior !== undefined ? (b.accruedCur || 0) - (b.accruedPrior || 0) : null,
       cgt_discount: b.taxCG !== undefined && b.accCG !== undefined ? b.taxCG - b.accCG : null }[id] ?? null;
   }
   function issuesFor(e, model, LIB) {
@@ -1188,7 +1373,7 @@ iframe{width:100%;height:72vh;border:1px solid var(--ix-line);border-radius:10px
     // 4. Tax summary
     lay.newPage();
     lay.title("SUMMARY", group ? "TAX SUMMARY FOR YOUR GROUP" : "TAX SUMMARY");
-    const hasYear = (e, yy) => { const p = (e.prior || {})[yy]; return !!p && p.taxable !== undefined && p.taxable !== null; };
+    const hasYear = (e, yy) => { if (e.firstYear) return false; const p = (e.prior || {})[yy]; return !!p && p.taxable !== undefined && p.taxable !== null; };
     const fullYear = yy => tp.length > 0 && tp.every(e => hasYear(e, yy));
     const T = totals(model, Y), P = fullYear(Y - 1) ? totals(model, Y - 1) : null;
     const prevY = P ? Y - 1 : null;
@@ -1258,6 +1443,19 @@ iframe{width:100%;height:72vh;border:1px solid var(--ix-line);border-radius:10px
         lay.h2("TAX **ASSESSED**", 190);
         lay.chart(gy, [{ name: "Tax %", values: tots.map(t => t.taxable ? Math.round(t.taxPayable / t.taxable * 10000) : 0), color: SER[1] }],
           { percent: true, caption: `This graph shows ${group ? "your group’s" : "your"} tax payable expressed as a percentage of ${group ? "group " : ""}taxable income, compared with previous years.` });
+        const incOf = (e, yy) => (yy === Y ? (e.fig || {}).income : ((e.prior || {})[yy] || {}).income) || null;
+        const ppl = model.entities.filter(e => e.type === "individual" && !e.rnn);
+        const iy = gy.filter(yy => ppl.some(e => incOf(e, yy) && Object.values(incOf(e, yy)).some(v => v)));
+        if (iy.length) {
+          const cats = [["salary/wages", "Salary"], ["rental income", "Rent"], ["investment income", "Investment"], ["business income", "Business"], ["capital gains", "Capital gains"], ["other income", "Other income"]];
+          const ded = ["capital loss", "rental deductions", "investment deductions", "business expenses", "other deductions"];
+          const sum = (yy, keys) => ppl.reduce((a, e) => a + keys.reduce((b, k) => b + ((incOf(e, yy) || {})[k] || 0), 0), 0);
+          const pal = [C.sage, C.deep, hex(PDFLib, "#7E9A90"), hex(PDFLib, "#B9CFC7"), C.tint2, hex(PDFLib, "#A6C3B9")];
+          const ser = cats.map(([k, l], i) => ({ name: l, values: iy.map(yy => sum(yy, [k])), color: pal[i] })).filter(s2 => s2.values.some(v => v));
+          ser.push({ name: "Deductions", values: iy.map(yy => -Math.abs(sum(yy, ded))), color: C.ink });
+          lay.h2("COMPARISON OF **INCOME TYPES**", 190);
+          lay.chart(iy, ser, { stacked: true, caption: `This graph shows ${group ? "your group’s" : "your"} personal taxable income and deductions broken down into their types, compared with previous years.` });
+        }
         }
       }
     }
@@ -1268,31 +1466,37 @@ iframe{width:100%;height:72vh;border:1px solid var(--ix-line);border-radius:10px
       lay.title("SUMMARY", "BUSINESS INCOME");
       biz.forEach((e, bi) => {
         if (bi > 0) lay.newPage();
-        const f = e.fig || {}, pv = (e.prior || {})[Y - 1] || {};
+        const f = e.fig || {}, pv = e.firstYear ? {} : (e.prior || {})[Y - 1] || {};
         lay.h3(e.name, 60, e.type);
         if (e.rnn) {
           drawIssues(lay, issuesFor(e, model, LIB));
           return;
         }
         const net = f.fsProfit !== undefined ? f.fsProfit : f.net;
+        if (f.revenue !== undefined && pv.revenue === undefined && net !== undefined) {
+          lay.para(`Your ${Y} year of operation has resulted in a total revenue of ${money(f.revenue)}, with ${e.type === "trust" ? (net < 0 ? "a total loss before distribution" : "a total profit before distribution") : (net < 0 ? "a net loss" : "a net profit")} of ${absMoney(net)}.`);
+        } else {
         if (f.revenue !== undefined) lay.para(changeLine("Total revenue", f.revenue, pv.revenue, Y));
         if (net !== undefined) {
           const lbl = e.type === "company" ? "Total profit" : "Total profit before distribution";
           if (net < 0) lay.para(`Total loss${e.type === "company" ? "" : " before distribution"} for the ${Y} year is ${absMoney(net)}.`);
           else lay.para(changeLine(lbl, net, pv.net, Y));
         }
+        }
         const has = p => p && Object.values(p).some(x => x !== undefined && x !== null && x !== 0);
-        const by = [Y].concat(years).filter(yy => yy === Y || has((e.prior || {})[yy]));
+        const by = [Y].concat(e.firstYear ? [] : years).filter(yy => yy === Y || has((e.prior || {})[yy]));
         const rv = by.map(yy => yy === Y ? f.revenue : e.prior[yy].revenue), gp = by.map(yy => yy === Y ? (f.revenue !== undefined ? f.revenue - (f.cogs || 0) : undefined) : e.prior[yy].gross), np = by.map(yy => yy === Y ? net : e.prior[yy].net);
         if ([...rv, ...np].some(x => x)) {
           const ser = [{ name: "Revenue", values: rv, color: SER[0] }];
           if (e.type === "company" || gp.some((x, i) => x && x !== rv[i])) ser.push({ name: "Gross profit", values: gp, color: SER[1] });
           ser.push({ name: e.type === "company" ? "Net profit" : "Net profit before distribution", values: np, color: SER[2] });
+          const ow = by.map(yy => yy === Y ? f.owners : (e.prior[yy] || {}).owners);
+          if (ow.some(x => x)) ser.push({ name: "Net profit + owner salaries & super", values: by.map((yy, i) => (np[i] || 0) + (ow[i] || 0)), color: SER[3] });
           lay.chart(by, ser);
         }
         lay.h4("Tax position", 40);
         if (e.type === "company") lay.para(`Your company pays tax at a rate of ${f.rate || (f.taxable && f.taxPayable && Math.abs(f.taxPayable / f.taxable - 0.3) < 0.005 ? "30%" : "25%")} on its profits. Shareholders of your company do not pay any tax unless they receive a dividend from the company.`, { after: 12 });
-        else lay.para(e.type === "partnership" ? "Your partnership does not pay tax on its profits. Its profits are distributed to its partners, and each partner pays tax on their share of the partnership profits." : "Your trust does not pay tax on its profits. Its profits are distributed to its beneficiaries according to the Trust Distribution Resolution made by its Trustee prior to 30 June of each year. Each beneficiary will pay tax on their distribution of trust profits.", { after: 12 });
+        else lay.para(e.type === "partnership" ? "Your partnership does not pay tax on its profits. Its profits are allocated according to the % split listed in your Partnership Agreement. Each partner will pay tax on their allocation of partnership profits." : "Your trust does not pay tax on its profits. Its profits are distributed to its beneficiaries according to the Trust Distribution Resolution made by its Trustee prior to 30 June of each year. Each beneficiary will pay tax on their distribution of trust profits.", { after: 12 });
         if (model.design !== "new" && e.type === "company" && (e.inst || []).some(x => x)) {
           lay.h4("Future tax payments", 120);
           lay.para(`Your company will have to make the following estimated tax payments over the next 12 months. These payments are a pre-payment toward your total estimated company tax for ${Y + 1}. If these pre-payments are more, or less, than your final tax assessed for ${Y + 1}, your company will then either receive a tax refund or will have to pay “top up” tax.`);
@@ -1306,6 +1510,11 @@ iframe{width:100%;height:72vh;border:1px solid var(--ix-line);border-radius:10px
           lay.para("The following franked dividends were paid to shareholders during the year:", { after: 8 });
           lay.table([{ label: "SHAREHOLDER", w: 240 }, { label: "DIVIDEND AMOUNT", w: 110, align: "right" }, { label: "FRANKING CREDIT", w: 110, align: "right" }], rows.map(d => [d.name, money(d.amount || 0), money(d.franking || 0)]), ["TOTAL", money(tA), money(tF)]);
         }
+        if (e.type === "company" && !(e.divs || []).some(d => d.name)) { lay.h4("Distribution of company profits", 40); lay.para("No dividends were paid to shareholders during the year.", { after: 12 }); }
+        if (e.type !== "company" && !(e.dist || []).some(d => d.name) && (net === undefined || net <= 0)) {
+          lay.h4(`Distribution of ${e.type === "partnership" ? "partnership" : "trust"} profits`, 40);
+          lay.para(e.type === "partnership" ? `Due to the partnership not making a profit for the year, there was no allocation of profits during the ${Y} year.` : `Due to the trust not making a profit for the year, there was no distribution to beneficiaries during the ${Y} year.`, { after: 12 });
+        }
         if (e.type !== "company" && (e.dist || []).some(d => d.name)) {
           const rows = e.dist.filter(d => d.name); const tA = rows.reduce((s, d) => s + (d.amount || 0), 0), tF = rows.reduce((s, d) => s + (d.franking || 0), 0);
           lay.h4(`Distribution of ${e.type === "partnership" ? "partnership" : "trust"} profits`, lay.tableHeight(rows, true) + 30);
@@ -1313,6 +1522,7 @@ iframe{width:100%;height:72vh;border:1px solid var(--ix-line);border-radius:10px
           lay.table([{ label: e.type === "partnership" ? "PARTNER" : "BENEFICIARY", w: 240 }, { label: "DISTRIBUTION\nAMOUNT", w: 110, align: "right" }, { label: "FRANKING\nCREDIT", w: 110, align: "right" }], rows.map(d => [d.name, money(d.amount || 0), money(d.franking || 0)]), ["TOTAL", money(tA), money(tF)]);
         }
         if (e.d7 && e.d7.on) drawDiv7a(lay, e, model);
+        if (e.bench && e.bench.on) drawBench(lay, e, model);
         drawIssues(lay, issuesFor(e, model, LIB));
       });
     }
@@ -1322,14 +1532,14 @@ iframe{width:100%;height:72vh;border:1px solid var(--ix-line);border-radius:10px
       lay.newPage();
       lay.title("SUMMARY", "PERSONAL INCOME");
       people.forEach((e, pi) => {
-        const f = e.fig || {}, pv = (e.prior || {})[Y - 1] || {};
+        const f = e.fig || {}, pv = e.firstYear ? {} : (e.prior || {})[Y - 1] || {};
         lay.h3(e.name, 120, "Individual");
         if (e.rnn) { drawIssues(lay, issuesFor(e, model, LIB)); return; }
         lay.para(changeLine("Your total taxable income", f.taxable, pv.taxable, Y).replace(/, (an increase|a decrease) of/, ". This is $1 of"));
         lay.para(changeLine("As a result, your total tax assessed", f.taxPayable, pv.taxPayable, Y, "tax").replace(/, (an increase|a decrease) of/, ". This is $1 of"));
         lay.para(`Your total tax assessed is ${pct(f.taxPayable, f.taxable)} of your total taxable income for ${Y}${pv.taxable ? `, in comparison with ${pct(pv.taxPayable, pv.taxable)} in the prior year` : ""}.`, { after: 8 });
         const hasI = p => p && p.taxable !== undefined && p.taxable !== null;
-        const by = [Y].concat(years).filter(yy => yy === Y || hasI((e.prior || {})[yy]));
+        const by = [Y].concat(e.firstYear ? [] : years).filter(yy => yy === Y || hasI((e.prior || {})[yy]));
         if (by.length) lay.chart(by, [{ name: "Taxable income", values: by.map(yy => yy === Y ? f.taxable : e.prior[yy].taxable), color: SER[0] }, { name: "Tax assessed", values: by.map(yy => yy === Y ? f.taxPayable : e.prior[yy].taxPayable), color: SER[1] }, { name: "Final tax payable/(refundable)", values: by.map(yy => yy === Y ? f.final : e.prior[yy].final), color: SER[2] }]);
         if (model.design !== "new" && (e.inst || []).some(x => x)) {
           lay.h4("Future tax payments", 120);
@@ -1363,6 +1573,10 @@ iframe{width:100%;height:72vh;border:1px solid var(--ix-line);border-radius:10px
     lay.para("You are required by the Taxation Office to keep copies of all business records for a period of 5 years from the date of lodgement of your Income Tax Returns.");
     if (model.entities.some(e => e.type === "company")) lay.para("Also, please note that ASIC requires Companies to keep all business records for a period of 7 years from the date of each transaction.");
 
+    if (model.entities.some(e => e.bench && e.bench.on && !e.rnn)) {
+      lay.newPage(); lay.title("BACKGROUND INFORMATION:", "ATO SMALL BUSINESS BENCHMARKS");
+      BENCH_BACKGROUND.forEach(([h2, t]) => { if (h2) lay.h4(h2, 40); lay.para(t, { size: 9.2, after: 10 }); });
+    }
     // 8. Taxpayer confirmation form
     if (people.filter(e => !e.rnn).length) {
       lay.newPage();
@@ -1427,6 +1641,33 @@ iframe{width:100%;height:72vh;border:1px solid var(--ix-line);border-radius:10px
     });
     S.y -= 50;
   }
+  function drawBench(lay, e, model) {
+    const b = e.bench, f = e.fig || {}, Y = model.year, pv = e.firstYear ? {} : (e.prior || {})[Y - 1] || {};
+    lay.newPage();
+    lay.h4("ATO small business benchmarks", 200);
+    lay.para("Small business benchmarks are key financial ratios drawn from information provided by businesses through activity statements and tax returns.");
+    lay.para("The ATO uses benchmarks and other risk indicators to identify businesses that may be avoiding their tax obligations by not reporting some (or all) of their income.");
+    lay.para("Information reported in your tax returns or activity statements is compared with the key performance benchmark for your industry, based on:\n- your business industry code\n- the description of the main business activity on your tax return\n- the trading name of your business.");
+    lay.para(`Here is ${e.name}’s key financial information compared with the ATO’s ${b.year || "[Benchmark year]"} Benchmark Data for your business type of ${b.industry || "[Industry]"}:`, { after: 8 });
+    const net = f.fsProfit !== undefined ? f.fsProfit : f.net;
+    const cur = { rev: f.revenue, cogs: f.cogs || 0 }; cur.gp = cur.rev - cur.cogs; cur.exp = cur.rev - (net || 0); cur.net = net;
+    const has = pv.revenue !== undefined;
+    const pr = has ? { rev: pv.revenue, cogs: pv.gross !== undefined ? pv.revenue - pv.gross : 0 } : null; if (pr) { pr.gp = pr.rev - pr.cogs; pr.net = pv.net || 0; pr.exp = pr.rev - pr.net; }
+    const pc = (v, r) => r ? (Math.round(v / r * 1000) / 10).toFixed(1) + "%" : "-";
+    const bc = b.cogsPct !== undefined && b.cogsPct !== "" ? +b.cogsPct : null, be = b.expPct !== undefined && b.expPct !== "" ? +b.expPct : null;
+    const bm = { rev: "100%", cogs: bc !== null ? bc.toFixed(1) + "%" : "-", gp: bc !== null ? (100 - bc).toFixed(1) + "%" : "-", exp: be !== null ? be.toFixed(1) + "%" : "-", net: be !== null ? (100 - be).toFixed(1) + "%" : "-" };
+    const rows = [["REVENUE", "rev"], ["LESS: COST OF SALES", "cogs"], ["GROSS PROFIT", "gp"], ["TOTAL EXPENSES*", "exp"], ["NET PROFIT", "net"]].map(([l, k]) => [l, money(cur[k]), pc(cur[k], cur.rev)].concat(has ? [money(pr[k]), pc(pr[k], pr.rev)] : []).concat([bm[k]]));
+    const cols = [{ label: "", w: 120 }, { label: String(Y), w: 80, align: "right" }, { label: `${Y} (%)\nOF REVENUE`, w: 62, align: "right" }].concat(has ? [{ label: String(Y - 1), w: 80, align: "right" }, { label: `${Y - 1} (%)\nOF REVENUE`, w: 62, align: "right" }] : []).concat([{ label: "ATO\nBENCHMARK", w: 66, align: "right" }]);
+    lay.table(cols, rows);
+    lay.para("*Including cost of sales.", { size: 8, after: 8 });
+    lay.para("Please refer to the back of this report for more information in the section **Background Information: ATO Small Business Benchmarks**.", { after: 14 });
+  }
+  const BENCH_BACKGROUND = [
+    ["", "Small business benchmarks are a guide to help you compare your business's performance against similar businesses in the same industry.\nThe ATO uses benchmarks and other risk indicators to identify businesses that may be avoiding their tax obligations by not reporting some (or all) of their income.\nInformation reported in your tax returns or activity statements is compared with the key performance benchmark for your industry, based on:\n- your business industry code\n- the description of the main business activity on your tax return\n- the trading name of your business."],
+    ["What it means to be outside the benchmark", "Your benchmark might be above or below the range for your business turnover in your industry. There could be a number of reasons why this has happened, including:\n- you are only starting up or winding down your business\n- higher costs or lower selling prices than your competitors\n- incorrect entries on your tax return, for example salary and wages to directors or associates.\nWhen the ATO sees a business significantly outside the key benchmark range for their industry, it doesn't necessarily mean you have done anything wrong. But it does indicate something is unusual and may prompt the ATO to contact you for further information."],
+    ["Reporting above a benchmark range", "If your business is reporting above the benchmarks, it means your expenses are high relative to sales. This may indicate that your:\n- wastage is higher: research best practice for your industry\n- goods taken for personal use have been counted as business stock: use the ATO's estimate guide\n- competitors may be able to source inputs at lower cost than you: it might be time to see if you can buy stock or materials at a lower rate\n- volume of sales is too low (for rent and possibly labour), for example too many staff during off peak times\n- mark-up is lower than your competitors: check average sales prices\n- sales haven't all been recorded: check till tapes or point-of-sale (POS) reports\n- internal cash controls may need to be examined: ensure cash taken for expenses is recorded as sales."],
+    ["Reporting below a benchmark range", "If your business is reporting below the benchmarks, it means your expenses are low relative to sales. This may indicate that:\n- your expenses may be recorded under the wrong label: you may have incorrectly classified cost of goods sold expenses under another expense account\n- some of your expenses may not have been recorded, for example salary, wages or cash wages\n- your mark-up is higher than your competitors\n- you are more efficient, for example you have less wastage."],
+  ];
   function drawDiv7a(lay, e, model) {
     const d = e.d7, Y = model.year, isTrust = e.type === "trust";
     lay.h4("Division 7A loans", 140);
@@ -1529,7 +1770,7 @@ iframe{width:100%;height:72vh;border:1px solid var(--ix-line);border-radius:10px
     return `Correspondence - ${model.year} - ${hasFS ? "Financial Statements and " : ""}Income Tax Return${multi ? "s" : ""}.pdf`;
   }
 
-  root.PRCore = { MONTHS, SHORTM, D, fmtDate, isoDate, fromIso, todayUTC, toCents, money, absMoney, pct, abbrev, joinList, norm, sameName, pdfText, classify, KIND_LABEL, KIND_ORDER, otherLabel, parseReturn, parseWorkpaper, parseCollationSheet, suggest, autoVals, fillText, checks, coverLetter, voiceOf, reportName, totals, yearsAvailable, dueCell, isTaxpayer, buildReport, buildPack, packName, returnsCount, grandFinal };
+  root.PRCore = { parseProgressTemplate, MONTHS, SHORTM, D, fmtDate, isoDate, fromIso, todayUTC, toCents, money, absMoney, pct, abbrev, joinList, norm, sameName, pdfText, classify, KIND_LABEL, KIND_ORDER, otherLabel, parseReturn, parseWorkpaper, parseCollationSheet, suggest, autoVals, fillText, checks, coverLetter, voiceOf, reportName, totals, yearsAvailable, dueCell, isTaxpayer, buildReport, buildPack, packName, returnsCount, grandFinal };
 })(typeof window !== "undefined" ? window : globalThis);
 
 </script>
@@ -1716,7 +1957,7 @@ function model() {
     address: $("address").value.split("\n").map(s => s.trim()).filter(Boolean), greeting: $("greeting").value.trim(),
     earlierYears: earlier, footnoteDate: C.fromIso($("footnote").value) || C.D(Y + 1, 2, 13), team, signerLines: SIGNERS[signer],
     introLines: $("introLines").checked, design: $("design").value, lookingAhead: $("lookingAhead").value,
-    instDates: { company: [C.D(Y, 10, 25), C.D(Y + 1, 1, 28), C.D(Y + 1, 4, 26), C.D(Y + 1, 7, 25)], individual: [C.D(Y, 9, 28), C.D(Y + 1, 0, 28), C.D(Y + 1, 3, 28), C.D(Y + 1, 6, 28)] },
+    instDates: { company: [C.D(Y, 10, 25), C.D(Y + 1, 1, 28), C.D(Y + 1, 4, 26), C.D(Y + 1, 7, 25)], individual: [C.D(Y, 9, 28), C.D(Y + 1, 1, 28), C.D(Y + 1, 3, 28), C.D(Y + 1, 6, 28)] },
     entities: S.entities.map(e => Object.assign({}, e, { docs: S.files.filter(f => f.entityId === e.id).map(f => ({ kind: f.kind, year: f.year })) })),
     assets: { signature: ASSETS[sigName] ? { bytes: ASSETS[sigName], width: SIGNATURES[signer][1] } : null },
   };
@@ -1801,30 +2042,43 @@ function findEntity(name) { return S.entities.find(e => C.sameName(e.name, name)
 function newEntity(name, type) { const e = { id: uid("e"), name, type: type || "company", rnn: false, rnnNoop: false, fig: {}, prior: {}, inst: [0, 0, 0, 0], dist: [], divs: [], d7: { on: false, rows: [{}], withdrawn: [], minRows: [{}], met: true }, paras: {}, custom: "", signatories: "", due: "" }; S.entities.push(e); return e; }
 
 async function addFiles(list) {
+  const fresh = [];
   for (const item of list) {
     if (!/\.(pdf|xlsx|xlsm|xls|json)$/i.test(item.name)) continue;
-    if (S.files.some(f => f.name === item.name && f.size === item.size && item.size)) continue;
+    if (S.files.some(f => f.name === item.name && (f.folder || "") === (item.folder || "") && f.size === item.size)) continue;
     $("readStatus").textContent = `Reading ${item.name}…`;
     let bytes; try { bytes = await item.get(); } catch (e) { $("readStatus").textContent = `Couldn’t open ${item.name}.`; continue; }
-    const f = { id: uid("f"), name: item.name, size: bytes.byteLength, bytes: null, kind: "other", entityId: null, year: null };
+    const f = { id: uid("f"), name: item.name, size: bytes.byteLength, bytes: null, kind: "other", entityId: null, year: null, where: item.where || "", folder: item.folder || "" };
     try {
       if (/\.pdf$/i.test(item.name)) {
         f.bytes = bytes;
-        let tx = { text: "", pageCount: 0 }; try { tx = await C.pdfText(pdfjsLib, bytes.slice()); } catch (e) { f.unreadable = true; }
-        f.text = tx.text; f.kind = C.classify(item.name, tx.text);
-        if (f.kind === "itr") useReturn(f, C.parseReturn(tx.text));
-      } else if (/\.json$/i.test(item.name)) {
-        f.kind = "data"; useData(JSON.parse(new TextDecoder().decode(bytes)));
-      } else {
-        f.kind = C.classify(item.name, "");
-        if (f.kind === "collation") useCollation(C.parseCollationSheet(XLSX, bytes));
-        else useWorkpaper(f, C.parseWorkpaper(XLSX, bytes));
+        let tx = { text: "" }; try { tx = await C.pdfText(pdfjsLib, bytes.slice()); } catch (e) { f.note = "This PDF couldn’t be read, so set what it is yourself"; }
+        f.text = tx.text; f.kind = C.classify(item.name, tx.text, f.where);
+        if (f.kind === "itr") f.parsed = C.parseReturn(tx.text);
+      } else if (/\.json$/i.test(item.name)) { f.kind = "data"; f.parsed = JSON.parse(new TextDecoder().decode(bytes)); }
+      else {
+        f.kind = C.classify(item.name, "", f.where);
+        if (f.kind === "collation") f.parsed = C.parseCollationSheet(XLSX, bytes);
+        else if (f.kind === "template") f.parsed = C.parseProgressTemplate(XLSX, bytes);
+        else if (f.kind === "workpaper") f.parsed = C.parseWorkpaper(XLSX, bytes);
       }
-    } catch (err) { f.kind = "other"; f.note = "Couldn’t read this file"; }
-    S.files.push(f);
+    } catch (err) { f.kind = "skip"; f.note = "Couldn’t read this file"; }
+    S.files.push(f); fresh.push(f);
   }
-  $("readStatus").textContent = "";
-  matchDocs(); S.entities.forEach(refreshSuggestions); fillAddress(); updateVoice(); renderAll();
+  // Apply in a fixed order so returns win over the template, and entities exist before workpapers look for them
+  const Y = +$("year").value;
+  const rank = f => f.kind === "collation" ? 0 : f.kind === "itr" ? (f.parsed && f.parsed.year === Y ? 1 : 2) : f.kind === "template" ? 3 : f.kind === "workpaper" ? 4 : f.kind === "data" ? 5 : 9;
+  fresh.slice().sort((a, b) => rank(a) - rank(b)).forEach(f => {
+    try {
+      if (f.kind === "collation") useCollation(f.parsed);
+      else if (f.kind === "itr" && f.parsed) useReturn(f, f.parsed);
+      else if (f.kind === "template") useTemplate(f, f.parsed);
+      else if (f.kind === "workpaper") useWorkpaper(f, f.parsed);
+      else if (f.kind === "data") useData(f.parsed);
+    } catch (err) { console.error(err); f.note = "Couldn’t use this file"; }
+  });
+  $("readStatus").textContent = fresh.length ? `Added ${fresh.length} file${fresh.length === 1 ? "" : "s"}.` : "";
+  matchDocs(); S.entities.forEach(refreshSuggestions); fillAddress(); updateVoice(); renderAll(); suggestFolders();
 }
 function useReturn(f, r) {
   if (!r.name || !r.kind) { f.note = "Couldn’t read the entity name"; return; }
@@ -1832,8 +2086,11 @@ function useReturn(f, r) {
   f.year = r.year;
   let e = findEntity(r.name); if (!e) e = newEntity(r.name, r.kind);
   e.type = r.kind; f.entityId = e.id;
+  // a return saved under someone else's name
+  const said = f.name.replace(/\.[a-z]+$/i, "").replace(/^\d{4}\s*/, "").replace(/income tax return/i, "").replace(/^[\s-]+|[\s-]+$/g, "");
+  if (said && !C.sameName(said, r.name) && !C.norm(said).split(" ").every(w => C.norm(r.name).includes(w))) { f.misfiled = `This is ${r.name}’s return, but the file name says ${said}. Check it’s saved in the right SuiteFiles folder.`; f.note = f.misfiled; }
   if (r.year === Y) {
-    Object.assign(e.fig, r.fig);
+    Object.assign(e.fig, r.fig); e.src = Object.assign(e.src || {}, { current: "return" });
     if (r.inst) e.inst = r.inst;
     if (r.dist.length) e.dist = r.dist;
     if (r.car) e.car = r.car; if (r.homeOffice) e.homeOffice = r.homeOffice;
@@ -1841,19 +2098,48 @@ function useReturn(f, r) {
     const ff = r.fig; e.prior[r.year] = Object.assign(e.prior[r.year] || {}, { taxable: ff.taxable, taxPayable: ff.taxPayable, final: ff.final, revenue: ff.revenue, gross: ff.revenue !== undefined ? ff.revenue - (ff.cogs || 0) : undefined, net: ff.net, taxPaid: ff.taxPaid });
   }
 }
+function fillMissing(target, src) { Object.entries(src).forEach(([k, v]) => { if (v !== undefined && v !== null && (target[k] === undefined || target[k] === null)) target[k] = v; }); }
+function useTemplate(f, t) {
+  const Y = +$("year").value;
+  const apply = (e, years, inst) => {
+    Object.entries(years).forEach(([y, v]) => {
+      y = +y;
+      if (y === Y) {
+        fillMissing(e.fig, { revenue: v.revenue, cogs: v.revenue !== undefined && v.gross !== undefined ? v.revenue - v.gross : undefined, fsProfit: v.net, taxable: v.taxable, taxPayable: v.taxPayable, final: v.final, taxPaid: v.taxPaid, owners: v.owners });
+        if (e.fig.taxPayable !== undefined && e.fig.final !== undefined && e.fig.taxPaid === undefined) e.fig.taxPaid = e.fig.taxPayable - e.fig.final;
+        if (v.income) e.fig.income = v.income;
+      } else if (y < Y) { e.prior[y] = e.prior[y] || {}; fillMissing(e.prior[y], v); }
+    });
+    if (inst && inst.some(x => x) && !(e.inst || []).some(x => x)) e.inst = inst.slice();
+    e.src = Object.assign(e.src || {}, { template: true });
+  };
+  t.entities.forEach(te => { let e = findEntity(te.name); if (!e) e = newEntity(te.name, te.type); apply(e, te.years, te.inst); });
+  t.people.forEach(tp => { const e = findEntity(tp.name); if (e) apply(e, tp.years, tp.inst); });
+  f.note = `Figures for ${[...t.entities.map(x => x.name), ...t.people.filter(p => findEntity(p.name)).map(p => p.name)].join(", ") || "no entities"}`;
+}
 function useWorkpaper(f, w) {
   let e = w.client ? findEntity(w.client) : null;
   if (!e) { const biz = S.entities.filter(x => x.type !== "individual"); if (biz.length === 1) e = biz[0]; }
-  if (!e) { f.note = w.client ? `Workpaper for ${w.client}: add that entity’s return first` : "Couldn’t tell whose workpaper this is"; f.pendingWp = w; return; }
-  f.entityId = e.id; applyWp(e, w);
+  if (!e) { f.note = w.client ? `Workpaper for ${w.client}: add that entity’s return or template first` : "Couldn’t tell whose workpaper this is. Choose the entity"; f.pendingWp = w; return; }
+  const other = S.files.find(x => x !== f && x.kind === "workpaper" && x.entityId === e.id && !x.unused);
+  if (other) {
+    const newer = /updated|final/i.test(f.name) && !/updated|final/i.test(other.name);
+    if (!newer) { f.unused = true; f.entityId = e.id; f.note = `Another workpaper for ${e.name} is already in use (${other.name})`; return; }
+    other.unused = true; other.note = `Replaced by ${f.name}`;
+  }
+  f.entityId = e.id; f.note = ""; applyWp(e, w);
 }
-function applyWp(e, w) { e.br1 = w.br1; e.wpOthers = w.others; e.wpTabs = w.tabs; if (w.br1.fsProfit !== undefined) e.fig.fsProfit = w.br1.fsProfit; }
+function applyWp(e, w) {
+  e.br1 = w.br1; e.wpOthers = w.others; e.wpTabs = w.tabs;
+  if (w.br1.fsProfit !== undefined) e.fig.fsProfit = w.br1.fsProfit;
+  fillMissing(e.fig, w.fig || {}); e.src = Object.assign(e.src || {}, { workpaper: true });
+}
 function useData(d) {
   if (!d || !Array.isArray(d.entities)) return;
   if (d.groupName && !$("groupName").value) $("groupName").value = d.groupName;
   d.entities.forEach(de => {
     let e = findEntity(de.name); if (!e) e = newEntity(de.name, de.type);
-    Object.entries(de.years || {}).forEach(([y, v]) => { if (+y < +$("year").value) e.prior[y] = Object.assign({}, v, e.prior[y] || {}); });
+    Object.entries(de.years || {}).forEach(([y, v]) => { if (+y < +$("year").value) { e.prior[y] = e.prior[y] || {}; fillMissing(e.prior[y], v); } });
     if (!e.signatories && de.signatories) e.signatories = de.signatories;
   });
 }
@@ -1861,30 +2147,46 @@ function useCollation(c) {
   if (c.group && !$("groupName").value) $("groupName").value = c.group;
   S.order = c.entities.map(x => x.name);
   S.notes = c.entities.filter(x => x.note);
-  c.entities.forEach(x => { if (!findEntity(x.name)) { /* created when its return arrives */ } });
+  S.expected = c.entities.map(x => x.name);
 }
 function matchDocs() {
-  // workpapers waiting for their entity
-  S.files.filter(f => f.pendingWp && !f.entityId).forEach(f => { const e = f.pendingWp.client && findEntity(f.pendingWp.client); if (e) { f.entityId = e.id; f.note = ""; applyWp(e, f.pendingWp); } });
+  S.files.filter(f => f.pendingWp && !f.entityId).forEach(f => {
+    let e = f.pendingWp.client && findEntity(f.pendingWp.client);
+    if (!e) { const biz = S.entities.filter(x => x.type !== "individual"); if (biz.length === 1) e = biz[0]; }
+    if (e) { f.pendingWp && useWorkpaper(f, f.pendingWp); if (f.entityId) delete f.pendingWp; }
+  });
   S.files.filter(f => !f.entityId && !f.userSet && ["fs", "minutes", "amendedMinutes", "dividend", "div7a", "slip", "other"].includes(f.kind)).forEach(f => {
     const hay = " " + C.norm(f.name + " " + (f.text || "").slice(0, 5000)) + " ";
     let best = null; S.entities.forEach(e => { const n = " " + C.norm(e.name) + " "; if (n.trim() && hay.includes(n) && (!best || n.length > C.norm(best.name).length + 2)) best = e; });
+    if (!best && f.folder) best = S.entities.find(e => C.sameName(e.name, f.folder));
     if (!best && f.kind === "slip") { const payers = S.entities.filter(e => e.type === "company" && e.fig.final > 0); if (payers.length === 1) best = payers[0]; }
     if (!best && S.entities.length === 1) best = S.entities[0];
     if (best) f.entityId = best.id;
   });
   if (S.order && S.order.length) { const pos = e => { const i = S.order.findIndex(n => C.sameName(n, e.name)); return i < 0 ? 999 : i; }; S.entities.sort((a, b) => pos(a) - pos(b)); }
 }
+function fileRow(f) {
+  const kindSel = h("select", { "aria-label": "What " + f.name + " is", onchange: ev => { f.kind = ev.target.value; f.userSet = true; matchDocs(); renderAll(); } },
+    Object.entries(C.KIND_LABEL).map(([k, l]) => h("option", { value: k, selected: f.kind === k }, l)));
+  const group = ["org", "data", "collation", "own", "template", "skip"].includes(f.kind);
+  const entSel = h("select", { "aria-label": "Entity for " + f.name, onchange: ev => { f.entityId = ev.target.value || null; f.userSet = true; if (f.pendingWp && f.entityId) { const e = S.entities.find(x => x.id === f.entityId); applyWp(e, f.pendingWp); delete f.pendingWp; f.note = ""; refreshSuggestions(e); } renderAll(); } },
+    h("option", { value: "" }, group ? "Whole group" : "Choose the entity"), S.entities.map(e => h("option", { value: e.id, selected: f.entityId === e.id }, e.name)));
+  const yr = f.kind === "itr" && f.year && f.year !== +$("year").value ? ` (${f.year}, for comparatives)` : "";
+  return h("li", {}, h("span", { class: "fname" }, f.name + yr, f.note ? h("span", { class: f.misfiled ? "note" : "status", style: "display:block;margin:2px 0 0" }, f.note) : null), kindSel, entSel,
+    h("button", { class: "linkbtn", "aria-label": "Remove " + f.name, onclick: () => { S.files.splice(S.files.indexOf(f), 1); renderAll(); } }, "Remove"));
+}
 function renderFiles() {
-  const ul = $("fileList"); ul.innerHTML = "";
-  S.files.forEach((f, i) => {
-    const kindSel = h("select", { "aria-label": "What " + f.name + " is", onchange: ev => { f.kind = ev.target.value; f.userSet = true; matchDocs(); renderAll(); } },
-      Object.entries(C.KIND_LABEL).map(([k, l]) => h("option", { value: k, selected: f.kind === k }, l)));
-    const entSel = h("select", { "aria-label": "Entity for " + f.name, onchange: ev => { f.entityId = ev.target.value || null; f.userSet = true; if (f.pendingWp && f.entityId) { const e = S.entities.find(x => x.id === f.entityId); applyWp(e, f.pendingWp); refreshSuggestions(e); } renderAll(); } },
-      h("option", { value: "" }, ["org", "data", "collation", "own"].includes(f.kind) ? "Whole group" : "Choose the entity"), S.entities.map(e => h("option", { value: e.id, selected: f.entityId === e.id }, e.name)));
-    const yr = f.kind === "itr" && f.year && f.year !== +$("year").value ? ` (${f.year}, for comparatives)` : "";
-    ul.appendChild(h("li", {}, h("span", { class: "fname" }, f.name + yr, f.note ? h("span", { class: "status", style: "display:block;margin:0" }, f.note) : null), kindSel, entSel,
-      h("button", { class: "linkbtn", "aria-label": "Remove " + f.name, onclick: () => { S.files.splice(i, 1); renderAll(); } }, "Remove")));
+  const box = $("fileList"); box.innerHTML = "";
+  if (!S.files.length) return;
+  const groups = [];
+  S.entities.forEach(e => groups.push([e.name, S.files.filter(f => f.entityId === e.id && f.kind !== "skip"), true]));
+  groups.push(["Whole group", S.files.filter(f => !f.entityId && ["org", "data", "collation", "template", "own"].includes(f.kind)), true]);
+  groups.push(["Needs an entity", S.files.filter(f => !f.entityId && !["org", "data", "collation", "template", "own", "skip"].includes(f.kind)), true]);
+  groups.push(["Not in the pack (source documents)", S.files.filter(f => f.kind === "skip"), false]);
+  groups.filter(g => g[1].length).forEach(([title, files, open]) => {
+    const d = h("details", { class: "ent", open: open && title !== "Not in the pack (source documents)" }, h("summary", {}, h("span", { class: "nm" }, title), h("span", { class: "ty" }, `${files.length} file${files.length === 1 ? "" : "s"}`)));
+    d.appendChild(h("ul", { class: "files", style: "padding:0 14px 8px" }, files.map(fileRow)));
+    box.appendChild(d);
   });
 }
 
@@ -1910,6 +2212,12 @@ function tableEditor(rows, cols, onAdd) {
   draw();
   return h("div", {}, h("div", { class: "wrapx" }, t), h("button", { class: "linkbtn", onclick: () => { rows.push({}); draw(); } }, "Add a row"));
 }
+S.openFolds = new Set();
+function fold(parent, key, title, note) {
+  const d = h("details", { class: "fold", open: S.openFolds.has(key) }, h("summary", {}, title, note ? h("span", { class: "ty" }, "  " + note) : null));
+  d.addEventListener("toggle", () => { if (d.open) S.openFolds.add(key); else S.openFolds.delete(key); });
+  const body = h("div", { class: "foldin" }); d.appendChild(body); parent.appendChild(d); return body;
+}
 function renderEntities() {
   const box = $("entities"); box.innerHTML = "";
   if (!S.entities.length) { box.appendChild(h("div", { class: "empty" }, "Add the income tax returns in step 2 and each entity appears here.")); return; }
@@ -1922,6 +2230,7 @@ function renderEntities() {
     const inner = h("div", { class: "in" });
     const typeSel = h("select", { onchange: ev => { e.type = ev.target.value; refreshSuggestions(e); renderAll(); } }, TYPES.map(([v, l]) => h("option", { value: v, selected: e.type === v }, l)));
     inner.appendChild(h("div", { class: "row" }, labelled("Name", textField(e, "name", "Entity name", { onInput: () => { head.querySelector(".nm").textContent = e.name; } })), labelled("Type", typeSel)));
+    inner.appendChild(h("label", { class: "tick", style: "margin-top:10px" }, h("input", { type: "checkbox", checked: !!e.firstYear, onchange: ev => { e.firstYear = ev.target.checked; refreshChecks(); } }), "First year we’ve prepared for this client (no comparisons with earlier years)"));
     if (e.type === "trust" || e.type === "company") inner.appendChild(h("div", { class: "actions", style: "margin-top:8px" },
       h("label", { class: "tick" }, h("input", { type: "checkbox", checked: e.rnn, onchange: ev => { e.rnn = ev.target.checked; refreshSuggestions(e); renderAll(); } }), "Return not necessary"),
       e.rnn ? h("label", { class: "tick" }, h("input", { type: "checkbox", checked: e.rnnNoop, onchange: ev => { e.rnnNoop = ev.target.checked; delete e.paras.rnn; delete e.paras.rnn_noop; refreshSuggestions(e); renderAll(); } }), "Didn’t operate this year") : null));
@@ -1942,47 +2251,63 @@ function renderEntities() {
         if (e.type !== "company") g.appendChild(labelled("Net income on the return", moneyField(f, "taxable", "Net income on the return")));
       }
       inner.appendChild(g);
-      inner.appendChild(h("p", { class: "sub" }, `Carried forward into ${Y + 1}`));
+      const srcs = []; if (e.src && e.src.current) srcs.push(`${Y} return`); if (e.src && e.src.template) srcs.push("progress report template"); if (e.src && e.src.workpaper) srcs.push("workpaper");
+      inner.appendChild(h("p", { class: "hint", style: "margin-top:6px" }, srcs.length ? "Filled from the " + srcs.join(", ") + ". Change anything that’s wrong." : "Nothing has been read for this entity yet. Type the figures or add its return or template."));
+      const cfBox = fold(inner, e.id + "cf", `Carried forward and tax planning`, [f.taxLossesCF || f.capLossesCF ? "balances entered" : "", e.plan && e.plan.est !== undefined ? "planning entered" : ""].filter(Boolean).join(", "));
+      cfBox.appendChild(h("p", { class: "sub" }, `Carried forward into ${Y + 1}`));
       const cg = h("div", { class: "row" });
       if (biz) cg.appendChild(labelled("Tax losses", moneyField(f, "taxLossesCF", "Tax losses carried forward")));
       cg.appendChild(labelled("Capital losses", moneyField(f, "capLossesCF", "Capital losses carried forward")));
       if (e.type === "individual") cg.appendChild(labelled("Unused concessional super cap", moneyField(f, "ccCF", "Unused concessional cap carried forward")));
-      inner.appendChild(cg);
+      cfBox.appendChild(cg);
       if (e.type === "individual" || e.type === "company") {
         e.plan = e.plan || {};
-        inner.appendChild(h("p", { class: "sub" }, "Tax planning (only if the client had planning)"));
+        cfBox.appendChild(h("p", { class: "sub" }, "Tax planning (only if the client had planning)"));
         const reasonSel = h("select", { onchange: ev => { e.plan.reason = ev.target.value; refreshChecks(); } }, [["", "No reason needed or typed below"], ["income_higher", "Income higher than forecast"], ["income_lower", "Income lower than forecast"], ["timing", "Expenses or purchases at a different time"], ["strategy", "Recommended strategy not put in place"], ["law", "Law or rate changed"], ["updated", "Figures updated after planning"]].map(([v, l]) => h("option", { value: v, selected: e.plan.reason === v }, l)));
-        inner.appendChild(h("div", { class: "row" }, labelled("Planning estimate (+ payable, - refund)", moneyField(e.plan, "est", "Planning estimate")), labelled("Reason for any difference", reasonSel)));
-        inner.appendChild(labelled("Extra detail for the client (optional)", textField(e.plan, "note", "Planning note", { attrs: { placeholder: "For example, the planned $27,500 super contribution wasn’t made before 30 June." } })));
+        cfBox.appendChild(h("div", { class: "row" }, labelled("Planning estimate (+ payable, - refund)", moneyField(e.plan, "est", "Planning estimate")), labelled("Reason for any difference", reasonSel)));
+        cfBox.appendChild(labelled("Extra detail for the client (optional)", textField(e.plan, "note", "Planning note", { attrs: { placeholder: "For example, the planned $27,500 super contribution wasn’t made before 30 June." } })));
       }
       if (biz && f.fsProfit === undefined && f.net !== undefined) inner.appendChild(h("p", { class: "hint" }, `Net profit isn’t filled, so ${C.money(f.net)} from the return is used. Add the workpaper or type the financial statements figure.`));
       if (e.type !== "trust" && e.type !== "partnership") {
-        inner.appendChild(h("p", { class: "sub" }, `PAYG instalments for ${Y + 1}`));
-        const ig = h("div", { class: "row" }); ["Sep quarter", "Dec quarter", "Mar quarter", "Jun quarter"].forEach((l, i) => { const o = { v: e.inst[i] || 0 }; ig.appendChild(labelled(l, moneyField(o, "v", l, () => { e.inst[i] = o.v || 0; }))); }); inner.appendChild(ig);
+        const instTotal = (e.inst || []).reduce((s2, x) => s2 + (x || 0), 0);
+        const ib = fold(inner, e.id + "inst", `PAYG instalments for ${Y + 1}`, instTotal ? C.money(instTotal) + " for the year" : "none entered");
+        const ig = h("div", { class: "row" }); ["Sep quarter", "Dec quarter", "Mar quarter", "Jun quarter"].forEach((l, i) => { const o = { v: e.inst[i] || 0 }; ig.appendChild(labelled(l, moneyField(o, "v", l, () => { e.inst[i] = o.v || 0; }))); }); ib.appendChild(ig);
       }
       // comparatives
-      inner.appendChild(h("p", { class: "sub" }, "Earlier years (for comparatives)"));
+      const filled = [Y - 1, Y - 2, Y - 3, Y - 4].filter(y => e.prior[y] && Object.values(e.prior[y]).some(v => v !== undefined && v !== null && v !== "")).length;
+      const eb = fold(inner, e.id + "prior", "Earlier years (for comparatives)", filled ? `${filled} year${filled === 1 ? "" : "s"} filled` : "none yet");
       const yrs = [Y - 1, Y - 2, Y - 3, Y - 4];
       const cols = e.type === "individual" ? [["taxable", "Taxable income"], ["taxPayable", "Tax assessed"], ["final", "Final position"]] : e.type === "company" ? [["revenue", "Revenue"], ["gross", "Gross profit"], ["net", "Net profit"], ["taxable", "Taxable income"], ["taxPayable", "Tax payable"], ["final", "Final position"]] : [["revenue", "Revenue"], ["gross", "Gross profit"], ["net", "Net profit"]];
       const pt = h("table", { class: "grid" }, h("thead", {}, h("tr", {}, h("th", {}, "Year"), cols.map(c => h("th", {}, c[1])))));
       const pb = h("tbody"); pt.appendChild(pb);
       yrs.forEach(y => { const o = e.prior[y] || (e.prior[y] = {}); pb.appendChild(h("tr", {}, h("td", {}, String(y)), cols.map(c => h("td", {}, moneyField(o, c[0], `${y} ${c[1]}`))))); });
-      inner.appendChild(h("div", { class: "wrapx" }, pt));
-      inner.appendChild(h("p", { class: "hint" }, "Filled from last year’s returns or data file when you add them. Leave a year empty to leave it out of the graphs."));
-      if (e.type === "company") { inner.appendChild(h("p", { class: "sub" }, "Dividends paid")); inner.appendChild(tableEditor(e.divs, [{ key: "name", label: "Shareholder" }, { key: "amount", label: "Dividend", money: true }, { key: "franking", label: "Franking credit", money: true }])); }
-      if (e.type === "trust" || e.type === "partnership") { inner.appendChild(h("p", { class: "sub" }, e.type === "trust" ? "Distributions to beneficiaries" : "Distributions to partners")); inner.appendChild(tableEditor(e.dist, [{ key: "name", label: "Name" }, { key: "amount", label: "Distribution", money: true }, { key: "franking", label: "Franking credit", money: true }])); }
+      eb.appendChild(h("div", { class: "wrapx" }, pt));
+      eb.appendChild(h("p", { class: "hint" }, "Filled from the progress report template, last year’s returns or the data file. Leave a year empty to leave it out of the graphs."));
+      if (e.type === "company") { const db = fold(inner, e.id + "div", "Dividends paid", (e.divs || []).filter(x => x.name).length ? `${e.divs.filter(x => x.name).length} shareholder(s)` : "none entered"); db.appendChild(tableEditor(e.divs, [{ key: "name", label: "Shareholder" }, { key: "amount", label: "Dividend", money: true }, { key: "franking", label: "Franking credit", money: true }])); }
+      if (e.type === "trust" || e.type === "partnership") { const db = fold(inner, e.id + "dist", e.type === "trust" ? "Distributions to beneficiaries" : "Distributions to partners", (e.dist || []).filter(x => x.name).length ? `${e.dist.filter(x => x.name).length} from the return` : "none entered"); db.appendChild(tableEditor(e.dist, [{ key: "name", label: "Name" }, { key: "amount", label: "Distribution", money: true }, { key: "franking", label: "Franking credit", money: true }])); }
       if (biz) {
-        inner.appendChild(h("label", { class: "tick", style: "margin-top:14px" }, h("input", { type: "checkbox", checked: e.d7.on, onchange: ev => { e.d7.on = ev.target.checked; renderAll(); } }), "Include the Division 7A loans section"));
+        e.bench = e.bench || { on: false };
+        if (!e.bench.industry && f.industryDesc) e.bench.industry = f.industryDesc;
+        const bb = fold(inner, e.id + "bench", "ATO small business benchmarks", e.bench.on ? "included" : "not included");
+        bb.appendChild(h("label", { class: "tick" }, h("input", { type: "checkbox", checked: e.bench.on, onchange: ev => { e.bench.on = ev.target.checked; S.openFolds.add(e.id + "bench"); renderAll(); } }), "Include ATO benchmarks for this entity"));
+        if (e.bench.on) {
+          bb.appendChild(h("p", { class: "hint" }, `Look up the benchmarks on the ATO website for this business type and turnover${f.industry ? ` (industry code ${f.industry} on the return)` : ""}, then enter them here.`));
+          bb.appendChild(h("div", { class: "row" }, labelled("Business type (as the ATO lists it)", textField(e.bench, "industry", "Benchmark business type")), labelled("ATO data year", textField(e.bench, "year", "Benchmark data year", { attrs: { placeholder: "For example, 2023–24" } }))));
+          bb.appendChild(h("div", { class: "row" }, labelled("Cost of sales to turnover (%)", textField(e.bench, "cogsPct", "Cost of sales benchmark percent", { attrs: { inputmode: "decimal", placeholder: "For example, 41" } })), labelled("Total expenses to turnover (%)", textField(e.bench, "expPct", "Total expenses benchmark percent", { attrs: { inputmode: "decimal", placeholder: "For example, 85" } }))));
+          bb.appendChild(h("p", { class: "hint" }, "Where the ATO gives a range, use the middle of the range for this turnover band."));
+        }
+        const d7b = fold(inner, e.id + "d7", "Division 7A loans", e.d7.on ? "included" : (e.wpTabs && e.wpTabs["Div 7A"] ? "Div 7A tab in use in the workpaper" : "not included"));
+        d7b.appendChild(h("label", { class: "tick" }, h("input", { type: "checkbox", checked: e.d7.on, onchange: ev => { e.d7.on = ev.target.checked; S.openFolds.add(e.id + "d7"); renderAll(); } }), "Include the Division 7A loans section"));
         if (e.d7.on) {
-          const d = e.d7;
-          inner.appendChild(h("div", { class: "row" }, labelled("Loan agreement with", textField(d, "borrowers", "Borrowers", { attrs: { placeholder: "For example, J & K Smith Family Trust" } })), labelled("Year of the agreement", textField(d, "agreementYear", "Agreement year"))));
-          inner.appendChild(h("p", { class: "hint" }, "Repayments made this year"));
-          inner.appendChild(tableEditor(d.rows, [{ key: "date", label: "Date" }, { key: "desc", label: "Description" }, { key: "rep", label: "Repayment", money: true }, { key: "int", label: "Interest", money: true }, { key: "bal", label: "Balance", money: true }]));
+          const d = e.d7; const inner2 = d7b;
+          inner2.appendChild(h("div", { class: "row" }, labelled("Loan agreement with", textField(d, "borrowers", "Borrowers", { attrs: { placeholder: "For example, J & K Smith Family Trust" } })), labelled("Year of the agreement", textField(d, "agreementYear", "Agreement year"))));
+          inner2.appendChild(h("p", { class: "hint" }, "Repayments made this year"));
+          inner2.appendChild(tableEditor(d.rows, [{ key: "date", label: "Date" }, { key: "desc", label: "Description" }, { key: "rep", label: "Repayment", money: true }, { key: "int", label: "Interest", money: true }, { key: "bal", label: "Balance", money: true }]));
           const wd = { v: (d.withdrawn || []).map(C.money).join(", ") };
-          inner.appendChild(labelled("New amounts withdrawn this year (separate with commas)", textField(wd, "v", "Withdrawn", { onInput: () => { d.withdrawn = (wd.v.match(/\$?[\d,]+(?:\.\d{2})?/g) || []).map(C.toCents); } })));
-          inner.appendChild(h("p", { class: "hint" }, `Minimum repayments for ${Y + 1}`));
-          inner.appendChild(tableEditor(d.minRows, [{ key: "year", label: "Year loan made" }, { key: "bal", label: "Balance", money: true }, { key: "terms", label: "Remaining terms" }, { key: "min", label: "Minimum repayment", money: true }]));
-          inner.appendChild(h("label", { class: "tick", style: "margin-top:8px" }, h("input", { type: "checkbox", checked: d.met !== false, onchange: ev => { d.met = ev.target.checked; refreshChecks(); } }), `The ${Y} minimum repayment was met`));
+          inner2.appendChild(labelled("New amounts withdrawn this year (separate with commas)", textField(wd, "v", "Withdrawn", { onInput: () => { d.withdrawn = (wd.v.match(/\$?[\d,]+(?:\.\d{2})?/g) || []).map(C.toCents); } })));
+          inner2.appendChild(h("p", { class: "hint" }, `Minimum repayments for ${Y + 1}`));
+          inner2.appendChild(tableEditor(d.minRows, [{ key: "year", label: "Year loan made" }, { key: "bal", label: "Balance", money: true }, { key: "terms", label: "Remaining terms" }, { key: "min", label: "Minimum repayment", money: true }]));
+          inner2.appendChild(h("label", { class: "tick", style: "margin-top:8px" }, h("input", { type: "checkbox", checked: d.met !== false, onchange: ev => { d.met = ev.target.checked; refreshChecks(); } }), `The ${Y} minimum repayment was met`));
         }
       }
       if (S.files.some(x => x.entityId === e.id && x.kind === "fs")) inner.appendChild(labelled("Who signs the financial statements (one per line)", textField(e, "signatories", "Signatories", { area: true, rows: 2, attrs: { placeholder: "[Director or trustee name]" } })));
@@ -2031,7 +2356,7 @@ function renderIssues() {
           editable.forEach(k => {
             let field;
             if (CHOICES[k]) { field = h("select", { onchange: ev => { p.vals[k] = ev.target.value; p.userSet = true; preview(); refreshChecks(); } }, h("option", { value: "" }, "Choose"), CHOICES[k].map(c => h("option", { value: c, selected: p.vals[k] === c }, c))); }
-            else if (k === "Vehicles and percentages") { field = h("textarea", { rows: 2, placeholder: "Toyota Hilux: 80%" }); field.value = p.vals[k] || ""; field.addEventListener("input", () => { p.vals[k] = field.value; p.userSet = true; preview(); refreshChecks(); }); }
+            else if (/percentages|amounts|one per line|dates|labels|expenditure and bonus/i.test(k)) { field = h("textarea", { rows: 2, placeholder: "Toyota Hilux: 80%" }); field.value = p.vals[k] || ""; field.addEventListener("input", () => { p.vals[k] = field.value; p.userSet = true; preview(); refreshChecks(); }); }
             else { field = h("input", { type: "text", placeholder: k }); field.value = p.vals[k] || ""; field.addEventListener("input", () => { p.vals[k] = field.value; p.userSet = true; preview(); refreshChecks(); }); }
             g.appendChild(labelled(k, field));
           });
@@ -2120,25 +2445,54 @@ async function fillClientSelect(sel, filter, best) {
   show.slice(0, 400).forEach(n => sel.appendChild(h("option", { value: n, selected: n === best }, n)));
 }
 $("sfFilter").addEventListener("input", () => fillClientSelect($("sfClient"), $("sfFilter").value));
+S.folders = [];
+function renderChosen() {
+  const box = $("sfChosen"); box.innerHTML = "";
+  S.folders.forEach((n, i) => box.appendChild(h("span", { class: "chip" }, n + "  ", h("button", { class: "linkbtn", "aria-label": "Remove folder " + n, onclick: () => { S.folders.splice(i, 1); renderChosen(); suggestFolders(); } }, "Remove"))));
+  $("sfShow").disabled = !S.folders.length;
+}
+function addFolder(n) { if (n && !S.folders.includes(n)) { S.folders.push(n); renderChosen(); suggestFolders(); } }
+$("sfAdd").onclick = () => addFolder($("sfClient").value);
+$("sfClient").addEventListener("change", () => { if (!S.folders.length) addFolder($("sfClient").value); });
+async function suggestFolders() {
+  const box = $("sfSuggest"); if (!box || !Platform.signedIn()) return; box.innerHTML = "";
+  let namesL = []; try { namesL = await Platform.listClientFolders(); } catch (e) { return; }
+  const wanted = new Set([...(S.expected || []), ...S.entities.map(e => e.name)]);
+  const seen = new Set(S.files.map(f => f.folder).filter(Boolean));
+  const sug = [...wanted].map(n => bestFolder(n, namesL)).filter(n => n && !S.folders.includes(n) && !seen.has(n));
+  [...new Set(sug)].forEach(n => box.appendChild(h("button", { class: "chip", type: "button", onclick: () => addFolder(n) }, "Add " + n)));
+  if (sug.length) box.prepend(h("span", { class: "status", style: "margin:0 6px 0 0" }, "Other entities in this group:"));
+}
+const WANT_WP = n => /\.(xlsx|xlsm)$/i.test(n) ? /progress report.*template|workpaper|\btr4|collation/i.test(n) : /payment slip|minutes|dividend statement|div ?7a|loan agreement|financial statements|organi[sz]ational chart/i.test(n);
 $("sfShow").onclick = async () => {
-  const client = $("sfClient").value; const Y = +$("year").value; const box = $("sfList"); box.innerHTML = "";
-  if (!client) { box.appendChild(h("p", { class: "status" }, "Choose the client folder first.")); return; }
-  box.appendChild(h("p", { class: "status" }, "Looking in " + client + "…"));
+  const Y = +$("year").value; const box = $("sfList"); box.innerHTML = "";
+  if (!S.folders.length) { box.appendChild(h("p", { class: "status" }, "Add at least one client folder first.")); return; }
+  box.appendChild(h("p", { class: "status" }, "Looking in " + S.folders.join(", ") + "…"));
   try {
-    const base = `${Platform.clientsPath}/${client}`;
-    const lists = await Promise.all([`${Y}/Tax Returns and Financials`, `${Y}/Workpapers`, `${Y - 1}/Tax Returns and Financials`].map(p => Platform.listFiles(`${base}/${p}`).then(l => l.map(x => Object.assign(x, { where: p })))));
-    let all = lists.flat().filter(x => /\.(pdf|xlsx|xlsm|json)$/i.test(x.name));
-    all = all.filter(x => x.where.startsWith(String(Y)) || /income tax return|progress report data/i.test(x.name));
+    const all = [], hiddenCount = {};
+    for (const folder of S.folders) {
+      const base = `${Platform.clientsPath}/${folder}`;
+      const [trf, wp, prior] = await Promise.all([`${Y}/Tax Returns and Financials`, `${Y}/Workpapers`, `${Y - 1}/Tax Returns and Financials`].map(p => Platform.listFiles(`${base}/${p}`)));
+      trf.filter(x => /\.(pdf|xlsx|xlsm|json)$/i.test(x.name)).forEach(x => all.push(Object.assign(x, { folder, where: "trf", label: `${Y} › Tax Returns and Financials` })));
+      wp.forEach(x => { if (WANT_WP(x.name)) all.push(Object.assign(x, { folder, where: "wp", label: `${Y} › Workpapers` })); else hiddenCount[folder] = (hiddenCount[folder] || 0) + 1; });
+      prior.filter(x => /income tax return|progress report data/i.test(x.name)).forEach(x => all.push(Object.assign(x, { folder, where: "prior", label: `${Y - 1} › Tax Returns and Financials` })));
+    }
     box.innerHTML = "";
-    if (!all.length) { box.appendChild(h("p", { class: "status" }, `No files found in ${Y}/Tax Returns and Financials or ${Y}/Workpapers.`)); return; }
-    const skip = n => /cover letter & progress report|^correspondence - /i.test(n);
-    const wrap = h("div", { class: "sffiles" }, all.map(x => h("label", { class: "tick" }, h("input", { type: "checkbox", "data-path": x.path, "data-name": x.name, "data-size": x.size, checked: !skip(x.name) }), `${x.where} › ${x.name}`)));
+    if (!all.length) { box.appendChild(h("p", { class: "status" }, `No files found for ${Y} in those folders.`)); return; }
+    const skip = n => /cover letter & progress report|^correspondence - |_signed/i.test(n);
+    const wrap = h("div", { class: "sffiles" });
+    S.folders.forEach(folder => {
+      const mine = all.filter(x => x.folder === folder); if (!mine.length) return;
+      wrap.appendChild(h("p", { class: "sub", style: "margin:8px 0 2px" }, folder));
+      mine.forEach(x => wrap.appendChild(h("label", { class: "tick" }, h("input", { type: "checkbox", "data-i": all.indexOf(x), checked: !skip(x.name) }), `${x.label} › ${x.name}`)));
+      if (hiddenCount[folder]) wrap.appendChild(h("p", { class: "status", style: "margin:2px 0 6px" }, `${hiddenCount[folder]} source documents in Workpapers not shown (bank statements, payroll, BAS and so on).`));
+    });
     box.appendChild(wrap);
     box.appendChild(h("div", { class: "actions" }, h("button", { class: "btn small primary", onclick: () => {
-      const picked = [...wrap.querySelectorAll("input:checked")].map(i => ({ name: i.dataset.name, size: +i.dataset.size, get: () => Platform.getBytes(i.dataset.path) }));
+      const picked = [...wrap.querySelectorAll("input:checked")].map(i => all[+i.dataset.i]).map(x => ({ name: x.name, size: x.size, where: x.where, folder: x.folder, get: () => Platform.getBytes(x.path) }));
       box.innerHTML = ""; addFiles(picked);
     } }, "Add ticked files")));
-  } catch (e) { box.innerHTML = ""; box.appendChild(h("p", { class: "status" }, e.status === 403 ? "You don’t have access to that folder." : "Couldn’t read that folder from SuiteFiles.")); }
+  } catch (e) { box.innerHTML = ""; box.appendChild(h("p", { class: "status" }, e.status === 403 ? "You don’t have access to one of those folders." : "Couldn’t read the folders from SuiteFiles.")); }
 };
 function bestFolder(name, namesL) { const n = C.norm(name); return namesL.find(x => C.norm(x) === n) || namesL.find(x => C.sameName(x, name)) || ""; }
 async function showSave(m) {
@@ -2166,6 +2520,7 @@ Platform.start({
   authChanged: async on => {
     $("sfBox").hidden = !on;
     if (on) {
+      renderChosen();
       fillClientSelect($("sfClient"), "");
       try { const rows = await Platform.readReport(); useXpm(rows, "from SuiteFiles"); } catch (e) { /* keep the saved copy */ }
     }
