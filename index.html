@@ -175,6 +175,8 @@ button.chip:hover{background:var(--ix-tint2)}
   <section class="step" aria-labelledby="s4">
     <h2 id="s4"><span class="stepno">4</span>Issues and recommendations</h2>
     <p class="hint">Suggested paragraphs are ticked, with the reason. Untick anything that doesn’t apply, add others from the library, and fill the blanks. Wording comes from the Progress Report Paragraph Library.</p>
+    <label for="avtIntro">How the Accounting vs. Taxation Income section opens</label>
+    <select id="avtIntro"><option value="">“You will notice that the profit on your Financial Statements of $X differs from…”</option><option value="recon">“The reconciliation to taxable income includes the following adjustments…”</option></select>
     <div id="issues"></div>
     <textarea id="lookingAhead" hidden></textarea>
   </section>
@@ -268,8 +270,8 @@ button.chip:hover{background:var(--ix-tint2)}
     insolvent: { group: "company", applies: ["company"], title: "Potential insolvent trading", heading: "Potential Insolvent Trading",
       text: "You will observe from the enclosed Financial Statements that this Company had a working capital deficiency at the end of the [Financial year] financial year.\nThere is an obligation under the Corporations Law for the Directors to make a statement as to whether or not \"there are reasonable grounds to believe that the company will be able to pay its debts as and when they fall due\".\nIf Directors knowingly make a false statement, they are in breach of the Corporations Law and may become personally liable for company debts. Likewise, if they make a statement that the company is unable to pay its debts but then continue to trade in that situation, they are also in breach of the Corporations Law.\nIf you consider, in view of the abovementioned deficiency, that your company is in this situation, it would appear that additional funds would need to be injected by the Directors/Shareholders in the form of subordinated loans or share capital. If by way of loans, the providers of such funds would then need to give an undertaking that they would not call up the loans unless all other creditors had been paid. The alternative is liquidation.\nWe strongly recommend that you consider the above before signing the financial statements." },
     div7a_rec: { group: "company", applies: ["company"], title: "Division 7A (loan agreement recommended)", heading: "Division 7A",
-      text: "The effect of Division 7A on the above loan accounts is to deem these amounts as unfranked dividends (i.e. dividends with no imputation credits) paid from the Company to shareholders. This could result in a bad tax outcome, with shareholders possibly paying tax at the top marginal rate of 47%.\nAttached is a Div 7A Loan Agreement to repay interest and principal amounts back to the business. As they would be considered to be unsecured, they would need to be paid back over a 7-year period. The interest rate for the [Financial year] financial year is [Benchmark interest rate]. The minimum repayments are calculated under the relevant Tax Act provisions. This interest would not be tax deductible as it is not linked to any direct income producing investment." },
-    fbt_contrib: { group: "company", applies: ["company"], title: "FBT employee contribution", heading: "FBT Employee Contribution",
+      text: "In the Financial Statements of the Company, we believe that the following amounts would be viewed by the ATO as \"debit loan accounts\". This represents cash that has been drawn out of the Company by individuals (or associated Trusts) without personal income tax being paid.\n[Loans and amounts, one per line starting with - ]\nThe effect of Division 7A on the above loan accounts is to deem these amounts as unfranked dividends (i.e. dividends with no imputation credits) paid from the Company to shareholders. This could result in a bad tax outcome, with shareholders possibly paying tax at the top marginal rate of 47%.\nAttached is a Div 7A Loan Agreement to repay interest and principal amounts back to the business. As they would be considered to be unsecured, they would need to be paid back over a 7-year period. The interest rate for the [Financial year] financial year is [Benchmark interest rate]. The minimum repayments are calculated under the relevant Tax Act provisions. This interest would not be tax deductible as it is not linked to any direct income producing investment." },
+    fbt_contrib: { notes: true, group: "company", applies: ["company"], title: "FBT employee contribution", heading: "FBT Employee Contribution",
       text: "We have calculated FBT employee contributions on the following vehicles: [Vehicle]\nThe FBT employee contribution has been calculated using the [Method] method, with a business use percentage of [Business use percentage] as advised by you.\nIn the event of an ATO audit, you will be asked to provide valid logbooks to substantiate the above claim. You are required to keep a logbook for a continuous period of 12 weeks which will then be valid for 5 years." },
     emp_contractor: { group: "company", applies: B, title: "Employee vs contractor", heading: "Employee vs Contractor",
       text: "If you hire a worker, you are responsible for classifying your worker for income tax and superannuation purposes. The Australian Taxation Office website contains information on classifying workers. Penalties may apply if your workers are classified incorrectly.\nWe recommend you review your contractors to ensure the correct classification applies." },
@@ -310,9 +312,9 @@ button.chip:hover{background:var(--ix-tint2)}
       text: "In accordance with the CGT advice dated [Advice date], we were able to apply the [Concession] to the [sale/surrender] of [Asset]. As a result, the capital gain in the amount of [Capital gain] was reduced to nil for income tax purposes." },
     amended: { group: "other", applies: ALL, title: "Amended tax return", heading: "Amended Tax Return",
       text: "The [Amended year] income tax return has been amended to [Reason].\nUpon lodgement of the amended income tax return, we estimate income tax [payable/refundable] in the amount of [Amount]." },
-    mv_stat: { group: "other", applies: B, title: "Motor vehicle (statutory FBT adjustment)", heading: "Motor Vehicle Expenses",
+    mv_stat: { notes: true, group: "other", applies: B, title: "Motor vehicle (statutory FBT adjustment)", heading: "Motor Vehicle Expenses",
       text: "We have adjusted your [Years] Income Tax Returns to include a fringe benefit adjustment for your vehicle using the statutory method. We recommend that you keep a motor vehicle log book for a 12-week period in the current year to allow for a more accurate private use adjustment." },
-    mv_pct: { group: "other", applies: ALL, title: "Motor vehicle (business use percentages)", heading: "Motor Vehicle Expenses",
+    mv_pct: { notes: true, group: "other", applies: ALL, title: "Motor vehicle (business use percentages)", heading: "Motor Vehicle Expenses",
       text: "We have adjusted your [Financial year] Income Tax Returns to allow for the business use percentages listed below.\n[Vehicles and percentages]" },
     // ---- From the Annual Summary Report template (draft: years and names turned into blanks) ----
     cash_basis: { group: "avt", applies: B, title: "Cash basis adjustment", heading: "Cash Basis Adjustment",
@@ -353,8 +355,8 @@ button.chip:hover{background:var(--ix-tint2)}
       text: "Since we have now completed your Financial Statements and Income Tax Returns, we have enclosed an Invoice for our services. The Invoice gives you a detailed description of work performed.\nThe amount that we have invoiced you this year has increased due to the following reasons:\n[Reasons, one per line starting with - ]\nFor the future, should you want our office to complete your Financial Statements and Income Tax Returns more efficiently (and hence at less cost to you), we recommend the following:\n- Ensure that all bank accounts are regularly reconciled, including cheque accounts and credit cards.\n- Ensure that all transactions entered into your [Software] system have accurate descriptions.\n- Ensure that all bank statements containing business and investment transactions are provided with detailed descriptions on them.\n- Ensure that all private expenses are removed from the business accounts and placed in the appropriate loan account.\n- Ensure that your [Software] file is up to date and contains all adjusting entries prepared by our office.\n- Ensure all balance sheet items at year-end are still in existence and are accurately recorded at cost.\n- Ensure that the correct GST codes appear on each transaction.\nPlease refer to the enclosed list of [Software] adjusting entries for further details on how to improve your record keeping." },
     gst_adj_us: { group: "other", applies: B, title: "GST adjustment (BAS prepared by us)", heading: "GST Adjustment",
       text: "As part of our overall review of your accounting records for the year, we carefully check to see that your lodged Business Activity Statements (BAS) were correct. Due to various adjustments made during the preparation of your [Financial year] Financial Statements, it will be necessary to amend your [BAS period] Business Activity Statement. This GST adjustment is due primarily to [Reasons].\nWe have prepared an Activity Statement Revision Request Form on your behalf to reflect the adjustments. Can you please sign it where indicated and return it to our office for lodgement with the Australian Taxation Office?\n**Total payable/(refundable): [Amount]**" },
-    gst_adj_client: { group: "other", applies: B, title: "GST adjustment (BAS prepared by the client)", heading: "GST Adjustment",
-      text: "As part of our overall review of your accounting records for the year, we carefully check to see that your lodged Business Activity Statements (BAS) were correct. Due to various adjustments made during the preparation of your [Financial year] Financial Statements, it will be necessary to amend your [BAS period] Business Activity Statement. This GST adjustment is due primarily to [Reasons].\nThe total GST adjustment required is [Amount]. This will [increase/decrease] your liability on your next BAS by [Amount]. You will need to adjust the following figures on your next BAS:\n[BAS labels and amounts]" },
+    gst_adj_client: { group: "other", applies: B, title: "GST adjustment (BAS prepared by the client)", heading: "GST Adjustment: Business Activity Statements Prepared by You",
+      text: "As part of our overall review of your accounting records for the year, we carefully check to see that your lodged Business Activity Statements (BAS's) were correct. Due to [Reason for the adjustment], it will be necessary to adjust your next Business Activity Statement (BAS).\nThe total GST adjustment required on your next BAS is [Amount]. This GST adjustment will [increase/decrease] your liability on your next BAS by [Amount].\nIf you are lodging your BAS's directly in Xero the adjustment may flow through to the next BAS if you have selected prior period adjustments, otherwise you will need to [add/subtract] the following figures on your next BAS:\n[BAS labels and amounts, one per line starting with - ]" },
     fte: { group: "trust", applies: ["trust"], title: "Family trust election", heading: "Family Trust Election",
       text: "Recent changes to the taxation laws have required that we make a Family Trust Election (FTE) in your Trust's tax return this year. This is required when:\n- Your Trust has made losses that need to be carried forward to future years;\n- You wish to distribute franking credits from investments held in your Trust; or\n- You wish to make a Trust distribution into another Trust to use its tax losses.\nIn making the FTE, we have had to nominate a specified individual. The specified individual that we have used is [Specified individual].\nThe drawback to making this FTE is that future Trust distributions must be made to the specified individual, or a relative or entity controlled by the specified individual, or tax at 47% may apply to the Trust distribution." },
     lodge_options: { group: "other", applies: ["company"], title: "Extended time for lodgement (payment dates)", heading: "Extended Time for Lodgement of your Tax Returns",
@@ -367,12 +369,37 @@ button.chip:hover{background:var(--ix-tint2)}
       text: "It is important to put strategies in place that protect your hard-earned key asset, your business. You should consider the following matters:\n- Protect the equity in your family home.\n- Estate planning: do you have up to date Wills and procedures in place that will ensure that upon your death, your assets will be distributed as per your wishes and kept in your family bloodline?\n- Insurances: does your business have sufficient insurance? If you were no longer able to work, do you have enough insurance?\n- Business succession plan: do you have a plan for retiring from the business? Who will run the business for you?\n- Secure loan accounts: would you like to protect the working capital that you have injected into your business, so if anything goes wrong you get your money back first?\n- Business structure: does your current business structure provide optimum asset protection for you?\nPlease contact our office if any of the above topics concern you and you would like peace of mind to properly protect your family assets and wealth." },
     adjusting_entries: { group: "other", applies: B, title: "Adjusting entries for your accounting system", heading: "Adjusting Entries for your Accounting System",
       text: "Please find enclosed a list of [Software] adjusting entries required to update your [Financial year] computerised Financial Statements. You will need to update your computer file with these entries so that our records reconcile. Once you have recorded these transactions, please send our office a copy of your Balance Sheet as at [Year end date] so that we can ensure your records and our records match.\nPlease feel free to contact our office if you require assistance with the above entries." },
+    // ---- Found in 2024 to 2026 progress reports ----
+    gic: { group: "avt", applies: B, title: "General interest charges", heading: "General Interest Charges",
+      text: "ATO general interest charges are not tax deductible and therefore have been added back to your income for tax purposes." },
+    dep_iawo: { group: "avt", applies: B, title: "Accounting vs tax depreciation (instant asset write-off and pool)", heading: "Accounting Depreciation versus Taxation Depreciation",
+      text: "The financial statements show depreciation based on the asset's effective life. However, due to instant asset write-off limits for tax purposes, certain assets have been written off in previous years. The tax depreciation is made up of assets costing less than $20,000 purchased in the current year and any small business pool deduction for assets costing more than $20,000.\nGains or losses on the disposal of assets will vary for accounting and taxation purposes." },
+    dep_effective: { group: "avt", applies: B, title: "Accounting vs tax depreciation (effective life, $300 items, rental property)", heading: "Accounting Depreciation versus Taxation Depreciation",
+      text: "The financial statements record depreciation based on the effective life of the specific asset. The tax depreciation is made up of:\n- depreciation based on the effective life of existing assets;\n- immediate deduction for assets costing less than $300 purchased in the current year; and\n- depreciation based on the effective life for assets costing more than $300 purchased in the current year.\nDepreciation and gains or losses on the disposal of assets will vary for accounting and taxation purposes." },
+    franking_inv: { group: "avt", applies: B, title: "Franking credits on investment income", heading: "Franking Credits on Investment Income",
+      text: "The [entity type] has received franked investment income during the year. As only cash received is included in accounting income, the franking credits attached to the franked income need to be added to assessable income. The franking credits then form part of the tax the [entity type] has paid to ensure the dividend income is not taxed twice." },
+    fito: { group: "avt", applies: B, title: "Foreign income tax offsets on investment income", heading: "Foreign Income Tax Offsets on Investment Income",
+      text: "The [entity type] has received foreign investment income during the year. As only cash received is included in accounting income, the foreign tax withheld needs to be added to assessable income. A foreign income tax offset is then applied for the foreign tax withheld to reduce the [entity type]'s tax payable to ensure the foreign income is not taxed twice." },
+    cash_exp: { group: "avt", applies: B, title: "Cash basis adjustment: expenses", heading: "Cash Basis Adjustment: Expenses",
+      text: "The [entity type] reports taxable income on a cash basis, meaning expenses are only deductible when they have been paid. Accordingly, an adjustment has been made for trade creditors as at [Year end date]." },
+    rental_appraisal: { group: "other", notes: true, applies: ALL, title: "Rental appraisal (related party rent)", heading: "Rental Appraisal",
+      text: "Market rent must be charged to any related party occupying a property to demonstrate that the arrangement is genuinely commercial and that the property is being used for income-producing purposes. This is essential to support the ability to claim a deduction for rental property expenses, which may otherwise be reduced or denied if the arrangement is not conducted on an arm's-length basis.\nTo ensure compliance, it is recommended that you obtain an independent rental appraisal to confirm that market rent is being charged for the use of the property located at [Property address]." },
+    fbt_stat: { group: "company", notes: true, applies: B, title: "FBT employee contribution (statutory method)", heading: "FBT Employee Contribution",
+      text: "We have calculated an employee contribution for the following vehicles using the statutory method:\n[Vehicles, one per line starting with - ]\nThis method applies a flat rate of 20% to the base value of the vehicle." },
+    fbt_returns: { group: "company", notes: true, applies: B, title: "FBT returns recommended", heading: "Fringe Benefits Tax Returns",
+      text: "We have adjusted your [Financial year] Financials to include a fringe benefit contribution for the [Vehicle] using the statutory formula method. We recommend that you keep a motor vehicle logbook for a 12-week period in the current year to confirm your kilometres travelled.\nWe also strongly recommend that you complete fringe benefit returns, which are due in June each year based on the period April to March. We will email you in [Month and year] with all the information on registering for fringe benefits tax." },
+    trust_loss: { group: "trust", notes: true, applies: ["trust"], title: "Current year tax loss (trust)", heading: "Recognition and Treatment of Current Year Tax Loss",
+      text: "The Trust incurred a tax loss of [Tax loss], as allowable deductions exceeded assessable income. Tax losses cannot be distributed to beneficiaries and accordingly, the loss has been carried forward to be applied against future taxable profits.\nTax losses carried forward total [Losses carried forward] as at [Year end date]." },
+    div7a_dividend: { group: "company", applies: ["company"], title: "Division 7A: repay the loans by declaring dividends", heading: "Division 7A Loans",
+      text: "In the Financial Statements of the Company, we believe that the following amounts would be viewed by the ATO as \"debit loan accounts\". This represents cash that has been drawn out of the Company by individuals (or associated Trusts) without personal income tax being paid.\n[Loans and amounts, one per line starting with - ]\nWe recommend that the above loans are fully repaid by declaring dividends as soon as the tax is paid and before the lodgement of the Company's Tax Return, which is due [Due date].\nThis will avoid the borrowers having these loans treated as \"unfranked dividends\" by the ATO and included in their taxable income for the year, possibly paying tax at the top marginal rate of 47%." },
+    tax_before_dist_none: { group: "individual", notes: false, applies: ["individual"], title: "Tax outcome before trust distributions (no distribution received)", heading: "Tax Outcome Before Trust Distributions",
+      text: "Your tax outcome for the year is an amount [payable/refundable] of [Amount]. As you did not receive a distribution from [Trust names], your tax outcome before trust distributions remains unchanged." },
   };
   // Picklists for some blanks
   const CHOICES = {
     "Concession": ["15-year exemption", "50% active asset reduction", "retirement exemption", "small business rollover"],
     "sale/surrender": ["sale", "surrender"], "payable/refundable": ["payable", "refundable"], "trust/company": ["trust", "company"],
-    "Method": ["statutory formula", "operating cost"], "an asset/assets": ["an asset", "assets"], "increase/decrease": ["increase", "decrease"], "Software": ["Xero", "MYOB", "QuickBooks"], "based upon the business travel indicated in your Travel Schedule/based upon your details provided to our office": ["based upon the business travel indicated in your Travel Schedule", "based upon your details provided to our office"],
+    "Method": ["statutory formula", "operating cost"], "an asset/assets": ["an asset", "assets"], "increase/decrease": ["increase", "decrease"], "add/subtract": ["add", "subtract"], "Software": ["Xero", "MYOB", "QuickBooks"], "based upon the business travel indicated in your Travel Schedule/based upon your details provided to our office": ["based upon the business travel indicated in your Travel Schedule", "based upon your details provided to our office"],
   };
   let i = 0; Object.values(LIB).forEach(p => p.order = i++);
   root.PRLib = { LIB, CHOICES };
@@ -726,6 +753,7 @@ button.chip:hover{background:var(--ix-tint2)}
       if (b.accruedCur || b.accruedPrior || b.accruedNet) add("accrued", "Accrued expenses are adjusted in the workpaper.");
       if (b.taxCG && e.type !== "company") add("cgt_discount", "Net taxable capital gains are in the workpaper.");
       if (b.cash) add("cash_basis", "Cash basis adjustments are in the workpaper.");
+      if (b.interestNonDed && /general interest|gic/i.test(JSON.stringify(e.wpOthers || []))) add("gic", "General interest charges are added back in the workpaper.");
       if (b.skillsBoost) add("skills_boost", "The skills and training boost is claimed in the workpaper.");
       if (b.energyBoost) add("energy_boost", "The energy incentive is claimed in the workpaper.");
     }
@@ -760,14 +788,20 @@ button.chip:hover{background:var(--ix-tint2)}
   }
 
   // ---------- Dates ----------
-  function dueDate(e, model) { return fromIso(e.due) || D(model.year + 1, 4, 15); }
+  function nextBusinessDay(d) { const x = new Date(d.getTime()); while (x.getUTCDay() === 0 || x.getUTCDay() === 6) x.setUTCDate(x.getUTCDate() + 1); return x; }
+  function defaultDue(e, model) {
+    const Y = model.year;
+    if (e.type === "individual" && model.reportDate >= D(Y + 1, 3, 1)) return nextBusinessDay(D(Y + 1, 5, 5));
+    return nextBusinessDay(D(Y + 1, 4, 15));
+  }
+  function dueDate(e, model) { return fromIso(e.due) || defaultDue(e, model); }
   function isOverdue(e, model) { return dueDate(e, model) < model.reportDate; }
   function dueCell(e, model) {
     const f = e.fig || {};
     if (!(f.final > 0)) return "-";
     if (isOverdue(e, model)) return "Immediately";
     const d = dueDate(e, model);
-    return fmtDate(d) + (e.type === "individual" && d.getUTCMonth() === 4 && d.getUTCDate() === 15 ? "*" : "");
+    return fmtDate(d) + (e.type === "individual" && d.getUTCMonth() === 4 && d.getUTCDate() >= 15 && d.getUTCDate() <= 17 ? "*" : "");
   }
   function dueWords(e, model) { return isOverdue(e, model) ? "immediately" : "by " + fmtDate(dueDate(e, model)); }
 
@@ -806,9 +840,10 @@ button.chip:hover{background:var(--ix-tint2)}
     const years = [...(model.earlierYears || [])].sort((a, b) => a - b).concat([Y]);
     const yl = years.length > 1 ? years.slice(0, -1).join(", ") + " & " + years[years.length - 1] : String(Y);
     const one = returnsCount(model) === 1;
-    const voice = v === "single" ? "Your" : v === "family" ? "Your family's" : "Your group's";
-    const lower = v === "single" ? "your" : voice.toLowerCase();
-    const rv = v === "single" ? "the" : lower;
+    const onlyCo = v === "single" && model.entities.filter(e => !e.rnn).length === 1 && model.entities.find(e => !e.rnn).type === "company";
+    const voice = onlyCo ? "Your Company" : v === "single" ? "Your" : v === "family" ? "Your family's" : "Your group's";
+    const lower = onlyCo ? "the" : v === "single" ? "your" : voice.toLowerCase();
+    const rv = onlyCo ? "the" : v === "single" ? "your" : lower;
     const total = grandFinal(model);
     const kinds = new Set(); const pushKind = x => { if (x > 0) kinds.add("payable"); else if (x < 0) kinds.add("refundable"); };
     model.entities.filter(isTaxpayer).forEach(e => pushKind((e.fig || {}).final)); (model.earlierYears || []).forEach(y => model.entities.filter(isTaxpayer).forEach(e => pushKind(((e.prior || {})[y] || {}).final)));
@@ -824,8 +859,7 @@ button.chip:hover{background:var(--ix-tint2)}
     L.push(`We have estimated ${lower} final tax position to be ${pos}.`); L.push("");
     L.push("**Please carefully review and sign all documents where marked, and return them to our office as soon as possible for electronic lodgement with the Taxation Office.**"); L.push("");
     L.push(`If you have any questions about your tax ${one ? "return" : "returns"}, please contact our office immediately.`); L.push("");
-    L.push(`We have also prepared a report that provides a summary of ${rv} current tax position compared with recent years, and a breakdown of tax ${bd}${tail}.`); L.push("");
-    L.push("If you have any queries in relation to this, please contact our office."); L.push("");
+    L.push(v === "single" ? `We have also prepared a report that provides a summary of ${rv} current tax position.` : `We have also prepared a report that provides a summary of ${rv} current tax position compared with recent years, and a breakdown of tax ${bd}${tail}.`); L.push("");
     L.push("Kind Regards,"); L.push("[SIGNATURE]");
     (model.signerLines || []).forEach(x => L.push("**" + x + "**"));
     return L;
@@ -871,7 +905,7 @@ button.chip:hover{background:var(--ix-tint2)}
       if (gaps.length) add("warn", `${e.name}: the workpaper has adjustments with no approved wording yet (${joinList(gaps)}). Add a sentence in the client-specific paragraph if the client needs it explained.`);
       Object.entries(e.paras || {}).forEach(([id, p]) => { if (!p.on) return; const r = fillText(id, p, e, model, LIB); if (r.missing.length) add("block", `${e.name}, ${LIB[id].title}: fill in ${[...new Set(r.missing)].join(", ")}.`); });
       if (e.plan && e.plan.est !== undefined && e.plan.est !== null && isTaxpayer(e)) { const d = ((e.fig || {}).final || 0) - e.plan.est; if (Math.abs(d) > Math.max(100000, Math.abs(e.plan.est) * 0.05) && !e.plan.reason && !String(e.plan.note || "").trim()) add("block", `${e.name}: the result is ${absMoney(d)} different from the tax planning estimate. Choose a reason or type a short note.`); }
-      if (e.bench && e.bench.on && (e.bench.cogsPct === undefined || e.bench.cogsPct === "" || e.bench.expPct === undefined || e.bench.expPct === "" || !e.bench.industry || !e.bench.year)) add("block", `${e.name}: fill in the ATO benchmark industry, data year and both percentages, or untick the benchmarks.`);
+      if (e.bench && e.bench.on && (e.bench.expPct === undefined || e.bench.expPct === "" || !e.bench.industry || !e.bench.year)) add("block", `${e.name}: fill in the ATO benchmark business type, data year and total expenses percentage, or untick the benchmarks.`);
       if (e.d7 && e.d7.on && (!String(e.d7.borrowers || "").trim() || !String(e.d7.agreementYear || "").trim() || !(e.d7.rows || []).some(r => r.desc || r.rep || r.bal))) add("block", `${e.name}: the Division 7A section is ticked but the loan agreement details or repayments aren’t filled in.`);
       if (e.d7 && !e.d7.on && e.wpTabs && e.wpTabs["Div 7A"] && isBiz(e)) add("info", `${e.name}: the Div 7A tab is in use in the workpaper. Tick “Include the Division 7A loans section” in step 3 and enter the figures if the report needs it.`);
       if (e.d7 && e.d7.on && e.d7.met === false) add("block", `${e.name}: the Division 7A minimum repayment wasn’t met. That needs advice-specific wording, so untick Division 7A and write it in the custom paragraph.`);
@@ -1202,11 +1236,13 @@ button.chip:hover{background:var(--ix-tint2)}
     } else if (avt.length) {
       steps.push({ t: "h5", text: "Accounting vs. Taxation Income" });
       const fsP = f.fsProfit !== undefined ? f.fsProfit : f.net;
-      if (fsP !== undefined && f.taxable !== undefined) steps.push({ t: "p", text: `You will notice that the profit on your Financial Statements of ${money(fsP)} differs from the profit on your Income Tax Return of ${money(f.taxable)}. This difference is made up of the following tax adjustments:`, after: 9 });
-      avt.forEach(id => { const r = fillText(id, e.paras[id], e, model, LIB); steps.push({ t: "sub", title: LIB[id].heading, text: r.text }); });
+      if (fsP !== undefined && f.taxable !== undefined) steps.push({ t: "p", text: model.avtIntro === "recon" ? "The reconciliation to taxable income includes the following adjustments required to convert accounting profit to taxable income:" : `You will notice that the ${fsP < 0 ? "loss" : "profit"} on your Financial Statements of ${absMoney(fsP)} differs from the ${f.taxable < 0 ? "loss" : "profit"} on your Income Tax Return of ${absMoney(f.taxable)}. This difference is made up of the following tax adjustments:`, after: 9 });
+      avt.forEach(id => { const r = fillText(id, e.paras[id], e, model, LIB); steps.push({ t: "sub", avt: true, title: LIB[id].heading, text: r.text }); });
       steps.push({ t: "gap", h: 10 });
     }
-    rest.forEach(id => { const r = fillText(id, e.paras[id], e, model, LIB); steps.push({ t: "h5", text: LIB[id].heading }); steps.push({ t: "p", text: r.text, after: 14 }); });
+    rest.filter(id => !LIB[id].notes).forEach(id => { const r = fillText(id, e.paras[id], e, model, LIB); steps.push({ t: "h5", text: LIB[id].heading }); steps.push({ t: "p", text: r.text, after: 14 }); });
+    const notes = rest.filter(id => LIB[id].notes);
+    if (notes.length) { steps.push({ t: "notes" }); notes.forEach(id => { const r = fillText(id, e.paras[id], e, model, LIB); steps.push({ t: "sub", title: LIB[id].heading, text: r.text }); steps.push({ t: "gap", h: 6 }); }); }
     if (String(e.custom || "").trim()) String(e.custom).trim().split(/\n\s*\n/).forEach(block => {
       const ls = block.split("\n"); if (ls.length > 1 && ls[0].length < 70 && !/[.:]$/.test(ls[0].trim())) { steps.push({ t: "h5", text: ls[0].trim() }); steps.push({ t: "p", text: ls.slice(1).join("\n"), after: 14 }); }
       else steps.push({ t: "p", text: block, after: 14 });
@@ -1218,7 +1254,7 @@ button.chip:hover{background:var(--ix-tint2)}
     if (lay._new) {
       const avt = steps.find(st => st.t === "avt");
       if (avt) drawAvtTable(lay, avt);
-      const rest = []; for (let i = 0; i < steps.length; i++) { const st = steps[i]; if (st.t === "h5" && steps[i + 1] && steps[i + 1].t === "p") { rest.push({ title: st.text, text: steps[i + 1].text }); i++; } else if (st.t === "p") rest.push({ title: "", text: st.text }); }
+      const rest = []; for (let i = 0; i < steps.length; i++) { const st = steps[i]; if (st.t === "h5" && steps[i + 1] && steps[i + 1].t === "p") { rest.push({ title: st.text, text: steps[i + 1].text }); i++; } else if (st.t === "p") rest.push({ title: "", text: st.text }); else if (st.t === "sub" && !st.avt) rest.push({ title: st.title, text: st.text }); }
       if (!rest.length) return;
       const est = 40 + rest.reduce((a, r) => a + lay.paraHeight(r.text, 9.4, 14) + 30, 0);
       if (est > lay.room() && est < TOP - BOTTOM) lay.newPage();
@@ -1237,6 +1273,7 @@ button.chip:hover{background:var(--ix-tint2)}
       else if (st.t === "sub") { lay.need(32); lay.S.p.drawText(st.title + ":", { x: L, y: lay.S.y - 9.6, size: 9.6, font: lay._bold, color: lay._ink }); lay.S.y -= 13.6; lay.para(st.text, { after: 9 }); }
       else if (st.t === "gap") lay.gap(st.h);
       else if (st.t === "avt") drawAvtTable(lay, st);
+      else if (st.t === "notes") lay.h5("Other Issues / Notes", 40);
     });
   }
   function drawAvtTable(lay, st) {
@@ -1513,9 +1550,15 @@ button.chip:hover{background:var(--ix-tint2)}
         if (e.type === "company" && !(e.divs || []).some(d => d.name)) { lay.h4("Distribution of company profits", 40); lay.para("No dividends were paid to shareholders during the year.", { after: 12 }); }
         if (e.type !== "company" && !(e.dist || []).some(d => d.name) && (net === undefined || net <= 0)) {
           lay.h4(`Distribution of ${e.type === "partnership" ? "partnership" : "trust"} profits`, 40);
-          lay.para(e.type === "partnership" ? `Due to the partnership not making a profit for the year, there was no allocation of profits during the ${Y} year.` : `Due to the trust not making a profit for the year, there was no distribution to beneficiaries during the ${Y} year.`, { after: 12 });
+          lay.para(e.type === "partnership" ? `Due to the partnership ${net < 0 ? "making a loss" : "not making a profit"} for the year, there was no allocation of profits during the ${Y} year.` : `Due to the trust ${net < 0 ? "making a loss" : "not making a profit"} for the year, there was no distribution to beneficiaries during the ${Y} year.`, { after: 12 });
         }
-        if (e.type !== "company" && (e.dist || []).some(d => d.name)) {
+        if (e.type === "partnership" && (e.dist || []).some(d => d.name)) {
+          const rows = e.dist.filter(d => d.name); const tA = rows.reduce((s, d) => s + (d.amount || 0), 0);
+          lay.h4("Distribution of partnership profits", lay.tableHeight(rows, true) + 30);
+          lay.para("The partnership profits were allocated to the partners as follows:", { after: 8 });
+          lay.table([{ label: "PARTNER", w: 240 }, { label: "PROFIT ALLOCATION", w: 110, align: "right" }, { label: "ALLOCATION %", w: 110, align: "right" }], rows.map(d => [d.name, money(d.amount || 0), tA ? Math.round((d.amount || 0) / tA * 100) + "%" : "-"]), ["TOTAL", money(tA), "100%"]);
+        }
+        if (e.type === "trust" && (e.dist || []).some(d => d.name)) {
           const rows = e.dist.filter(d => d.name); const tA = rows.reduce((s, d) => s + (d.amount || 0), 0), tF = rows.reduce((s, d) => s + (d.franking || 0), 0);
           lay.h4(`Distribution of ${e.type === "partnership" ? "partnership" : "trust"} profits`, lay.tableHeight(rows, true) + 30);
           lay.para(`The following ${e.type === "partnership" ? "partnership" : "trust"} distributions were allocated to ${e.type === "partnership" ? "partners" : "beneficiaries"} during the year:`, { after: 8 });
@@ -1655,7 +1698,7 @@ button.chip:hover{background:var(--ix-tint2)}
     const pr = has ? { rev: pv.revenue, cogs: pv.gross !== undefined ? pv.revenue - pv.gross : 0 } : null; if (pr) { pr.gp = pr.rev - pr.cogs; pr.net = pv.net || 0; pr.exp = pr.rev - pr.net; }
     const pc = (v, r) => r ? (Math.round(v / r * 1000) / 10).toFixed(1) + "%" : "-";
     const bc = b.cogsPct !== undefined && b.cogsPct !== "" ? +b.cogsPct : null, be = b.expPct !== undefined && b.expPct !== "" ? +b.expPct : null;
-    const bm = { rev: "100%", cogs: bc !== null ? bc.toFixed(1) + "%" : "-", gp: bc !== null ? (100 - bc).toFixed(1) + "%" : "-", exp: be !== null ? be.toFixed(1) + "%" : "-", net: be !== null ? (100 - be).toFixed(1) + "%" : "-" };
+    const bm = { rev: "100%", cogs: bc !== null ? bc.toFixed(1) + "%" : "N/A", gp: bc !== null ? (100 - bc).toFixed(1) + "%" : "N/A", exp: be !== null ? be.toFixed(1) + "%" : "-", net: be !== null ? (100 - be).toFixed(1) + "%" : "-" };
     const rows = [["REVENUE", "rev"], ["LESS: COST OF SALES", "cogs"], ["GROSS PROFIT", "gp"], ["TOTAL EXPENSES*", "exp"], ["NET PROFIT", "net"]].map(([l, k]) => [l, money(cur[k]), pc(cur[k], cur.rev)].concat(has ? [money(pr[k]), pc(pr[k], pr.rev)] : []).concat([bm[k]]));
     const cols = [{ label: "", w: 120 }, { label: String(Y), w: 80, align: "right" }, { label: `${Y} (%)\nOF REVENUE`, w: 62, align: "right" }].concat(has ? [{ label: String(Y - 1), w: 80, align: "right" }, { label: `${Y - 1} (%)\nOF REVENUE`, w: 62, align: "right" }] : []).concat([{ label: "ATO\nBENCHMARK", w: 66, align: "right" }]);
     lay.table(cols, rows);
@@ -1770,7 +1813,7 @@ button.chip:hover{background:var(--ix-tint2)}
     return `Correspondence - ${model.year} - ${hasFS ? "Financial Statements and " : ""}Income Tax Return${multi ? "s" : ""}.pdf`;
   }
 
-  root.PRCore = { parseProgressTemplate, MONTHS, SHORTM, D, fmtDate, isoDate, fromIso, todayUTC, toCents, money, absMoney, pct, abbrev, joinList, norm, sameName, pdfText, classify, KIND_LABEL, KIND_ORDER, otherLabel, parseReturn, parseWorkpaper, parseCollationSheet, suggest, autoVals, fillText, checks, coverLetter, voiceOf, reportName, totals, yearsAvailable, dueCell, isTaxpayer, buildReport, buildPack, packName, returnsCount, grandFinal };
+  root.PRCore = { defaultDue, parseProgressTemplate, MONTHS, SHORTM, D, fmtDate, isoDate, fromIso, todayUTC, toCents, money, absMoney, pct, abbrev, joinList, norm, sameName, pdfText, classify, KIND_LABEL, KIND_ORDER, otherLabel, parseReturn, parseWorkpaper, parseCollationSheet, suggest, autoVals, fillText, checks, coverLetter, voiceOf, reportName, totals, yearsAvailable, dueCell, isTaxpayer, buildReport, buildPack, packName, returnsCount, grandFinal };
 })(typeof window !== "undefined" ? window : globalThis);
 
 </script>
@@ -1940,7 +1983,7 @@ setFootnote();
 try { $("team").value = localStorage.getItem(TEAM_KEY) || ""; } catch (e) {}
 $("team").addEventListener("input", () => { try { localStorage.setItem(TEAM_KEY, $("team").value); } catch (e) {} });
 $("year").addEventListener("change", () => { setFootnote(); S.entities.forEach(e => refreshSuggestions(e)); renderAll(); });
-["reportDate", "signer", "groupName", "earlier", "footnote", "team", "design", "lookingAhead"].forEach(id => $(id).addEventListener("input", () => refreshChecks()));
+["reportDate", "signer", "groupName", "earlier", "footnote", "team", "design", "lookingAhead", "avtIntro"].forEach(id => $(id).addEventListener("input", () => refreshChecks()));
 $("introLines").addEventListener("change", () => { S.introTouched = true; refreshChecks(); });
 $("voice").addEventListener("change", () => { updateVoice(); refreshChecks(); });
 $("address").addEventListener("input", () => { S.addrAuto = false; refreshChecks(); });
@@ -1956,7 +1999,7 @@ function model() {
     year: Y, reportDate: C.fromIso($("reportDate").value) || today, groupName: $("groupName").value.trim(), voice: $("voice").value,
     address: $("address").value.split("\n").map(s => s.trim()).filter(Boolean), greeting: $("greeting").value.trim(),
     earlierYears: earlier, footnoteDate: C.fromIso($("footnote").value) || C.D(Y + 1, 2, 13), team, signerLines: SIGNERS[signer],
-    introLines: $("introLines").checked, design: $("design").value, lookingAhead: $("lookingAhead").value,
+    introLines: $("introLines").checked, design: $("design").value, avtIntro: $("avtIntro") ? $("avtIntro").value : "", lookingAhead: $("lookingAhead").value,
     instDates: { company: [C.D(Y, 10, 25), C.D(Y + 1, 1, 28), C.D(Y + 1, 4, 26), C.D(Y + 1, 7, 25)], individual: [C.D(Y, 9, 28), C.D(Y + 1, 1, 28), C.D(Y + 1, 3, 28), C.D(Y + 1, 6, 28)] },
     entities: S.entities.map(e => Object.assign({}, e, { docs: S.files.filter(f => f.entityId === e.id).map(f => ({ kind: f.kind, year: f.year })) })),
     assets: { signature: ASSETS[sigName] ? { bytes: ASSETS[sigName], width: SIGNATURES[signer][1] } : null },
@@ -2242,7 +2285,7 @@ function renderEntities() {
         g.appendChild(labelled("Tax payable (tax assessed)", moneyField(f, "taxPayable", "Tax payable")));
         g.appendChild(labelled("Tax already paid (PAYG and credits)", moneyField(f, "taxPaid", "Tax already paid")));
         g.appendChild(labelled("Final position (+ payable, - refund)", moneyField(f, "final", "Final position", () => { refreshSuggestions(e); renderIssues(); })));
-        if (f.final > 0) { const d = h("input", { type: "date", value: e.due || C.isoDate(C.D(Y + 1, 4, 15)) }); d.addEventListener("change", () => { e.due = d.value; refreshChecks(); }); g.appendChild(labelled("Payment due date", d)); }
+        if (f.final > 0) { const d = h("input", { type: "date", value: e.due || C.isoDate(C.defaultDue(e, { year: Y, reportDate: C.fromIso($("reportDate").value) || new Date() })) }); d.addEventListener("change", () => { e.due = d.value; refreshChecks(); }); g.appendChild(labelled("Payment due date", d)); }
       }
       if (biz) {
         g.appendChild(labelled("Revenue", moneyField(f, "revenue", "Revenue")));
