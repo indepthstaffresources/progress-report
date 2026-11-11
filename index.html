@@ -176,7 +176,7 @@ button.chip:hover{background:var(--ix-tint2)}
     <h2 id="s4"><span class="stepno">4</span>Issues and recommendations</h2>
     <p class="hint">Suggested paragraphs are ticked, with the reason. Untick anything that doesn’t apply, add others from the library, and fill the blanks. Wording comes from the Progress Report Paragraph Library.</p>
     <label for="avtIntro">How the Accounting vs. Taxation Income section opens</label>
-    <select id="avtIntro"><option value="">“You will notice that the profit on your Financial Statements of $X differs from…”</option><option value="recon">“The reconciliation to taxable income includes the following adjustments…”</option></select>
+    <select id="avtIntro"><option value="">“You will notice that the profit on your Financial Statements of $X differs from…”</option><option value="recon">“The reconciliation to assessable income and deductible expenses in the financial statements includes…”</option></select>
     <div id="issues"></div>
     <textarea id="lookingAhead" hidden></textarea>
   </section>
@@ -192,6 +192,7 @@ button.chip:hover{background:var(--ix-tint2)}
     <button class="btn small" id="dlReport">Download progress report</button>
     <button class="btn small" id="dlPack">Download collation pack</button>
     <button class="btn small" id="dlData">Download data file for next year</button>
+    <button class="btn small" id="dlPlan" hidden>Download tax planning review</button>
   </div>
   <div class="save" id="saveBox" hidden>
     <p class="sub" style="margin-top:0">Save to SuiteFiles</p>
@@ -234,14 +235,14 @@ button.chip:hover{background:var(--ix-tint2)}
       text: "The Financial Statements show gains on the sale of depreciable assets at an accounting value, however due to temporary full expensing for income tax purposes, certain assets have been written off in a previous year. The taxable gain on the sale of depreciable assets that have previously been written off is the total proceeds received for the sale of the asset." },
     gain_pool: { group: "avt", applies: B, title: "Gain on sale of assets (small business pool)", heading: "Gain On Sale Of Assets",
       text: "The financial statements reflect gains or losses from the sale of depreciable assets based on their accounting value. As a result, the profits or losses from these disposals differ for taxation purposes due to the application of small business depreciation rules." },
-    sgc: { group: "avt", applies: B, title: "Superannuation guarantee charges", heading: "Superannuation Guarantee Charges",
+    sgc: { group: "avt", applies: B, title: "Superannuation guarantee charges", heading: "Superannuation Guarantee Charge",
       text: "Superannuation guarantee charges on the late payment of employee superannuation are not tax deductible." },
     super_exp: { group: "avt", applies: B, title: "Superannuation expenses", heading: "Superannuation Expenses",
       text: "Superannuation expenses can only be claimed as a tax deduction when they are paid and only if they are paid by the statutory due date." },
     unpaid_super: { group: "avt", applies: B, title: "Unpaid employee superannuation", heading: "Unpaid Employee Superannuation",
-      text: "Superannuation can only be claimed as a tax deduction when it is physically paid, clears your bank account and is received by the superannuation fund." },
+      text: "Superannuation can only be claimed as a tax deduction when it is physically paid to the superannuation fund and clears your bank account." },
     losses: { group: "avt", applies: ["company", "trust"], title: "Prior year tax losses", heading: "Prior Year Tax Losses",
-      text: "Tax losses from previous income years have been carried forward and used to offset current year taxable income. Tax losses carried forward total [Losses carried forward] as at [Year end date]." },
+      text: "Tax losses from previous income year/s have been brought forward and used to offset current year taxable income.\nTax losses carried forward total [Losses carried forward] as at [Year end date]." },
     entertainment: { group: "avt", applies: B, title: "Entertainment expenses", heading: "Entertainment Expenses",
       text: "Certain entertainment expenses are not tax deductible and have therefore been added back for taxation purposes." },
     fines: { group: "avt", applies: B, title: "Fines", heading: "Fines",
@@ -259,7 +260,7 @@ button.chip:hover{background:var(--ix-tint2)}
     car_limit: { group: "avt", applies: B, title: "Disposal of vehicle over the car limit", heading: "Disposal of Vehicle Exceeding Car Limit",
       text: "The balancing adjustment attributable to the value exceeding the car limit is not deductible for income tax purposes." },
     franking: { group: "avt", applies: B, title: "Franking credits on dividends", heading: "Franking Credits on Dividends",
-      text: "The [entity type] has received franked dividends during the year. As only cash received for the dividend is included in accounting income, the franking credits attached to the dividend need to be added to assessable income. The franking credits then form part of the tax you have paid to ensure the dividend income is not taxed twice." },
+      text: "The [entity type] has received franked dividends during the year. As only cash received is included in accounting income, the franking credits attached to the dividend need to be added to assessable income. The franking credits then form part of the tax you have paid to ensure the dividend income is not taxed twice." },
     cgt_discount: { group: "avt", applies: ["trust", "partnership"], title: "Capital gains tax discount", heading: "Capital Gains Tax Discount",
       text: "The financial statements reflect the gross capital gain from the sale of the [Asset]. As the [Asset] was held for over 12 months, the 50% general CGT discount was applied." },
     qrida: { group: "avt", applies: ALL, title: "QRIDA business support grant", heading: "QRIDA Business Support Grant",
@@ -269,10 +270,10 @@ button.chip:hover{background:var(--ix-tint2)}
       text: "Companies are subject to full self-assessment which means that assessments (based upon the taxable income disclosed in returns) are deemed to be issued and the tax owing is due and payable upon lodgement of the Income Tax Return.\n***It is your responsibility to ensure that the amount of [Amount payable] is paid to the Australian Taxation Office [Due date].***\nAn income tax assessment notice will not be issued to the Company. Please use the enclosed payment advice and make your payment to the Australian Taxation Office [Due date]." },
     insolvent: { group: "company", applies: ["company"], title: "Potential insolvent trading", heading: "Potential Insolvent Trading",
       text: "You will observe from the enclosed Financial Statements that this Company had a working capital deficiency at the end of the [Financial year] financial year.\nThere is an obligation under the Corporations Law for the Directors to make a statement as to whether or not \"there are reasonable grounds to believe that the company will be able to pay its debts as and when they fall due\".\nIf Directors knowingly make a false statement, they are in breach of the Corporations Law and may become personally liable for company debts. Likewise, if they make a statement that the company is unable to pay its debts but then continue to trade in that situation, they are also in breach of the Corporations Law.\nIf you consider, in view of the abovementioned deficiency, that your company is in this situation, it would appear that additional funds would need to be injected by the Directors/Shareholders in the form of subordinated loans or share capital. If by way of loans, the providers of such funds would then need to give an undertaking that they would not call up the loans unless all other creditors had been paid. The alternative is liquidation.\nWe strongly recommend that you consider the above before signing the financial statements." },
-    div7a_rec: { group: "company", applies: ["company"], title: "Division 7A (loan agreement recommended)", heading: "Division 7A",
-      text: "In the Financial Statements of the Company, we believe that the following amounts would be viewed by the ATO as \"debit loan accounts\". This represents cash that has been drawn out of the Company by individuals (or associated Trusts) without personal income tax being paid.\n[Loans and amounts, one per line starting with - ]\nThe effect of Division 7A on the above loan accounts is to deem these amounts as unfranked dividends (i.e. dividends with no imputation credits) paid from the Company to shareholders. This could result in a bad tax outcome, with shareholders possibly paying tax at the top marginal rate of 47%.\nAttached is a Div 7A Loan Agreement to repay interest and principal amounts back to the business. As they would be considered to be unsecured, they would need to be paid back over a 7-year period. The interest rate for the [Financial year] financial year is [Benchmark interest rate]. The minimum repayments are calculated under the relevant Tax Act provisions. This interest would not be tax deductible as it is not linked to any direct income producing investment." },
-    fbt_contrib: { notes: true, group: "company", applies: ["company"], title: "FBT employee contribution", heading: "FBT Employee Contribution",
-      text: "We have calculated FBT employee contributions on the following vehicles: [Vehicle]\nThe FBT employee contribution has been calculated using the [Method] method, with a business use percentage of [Business use percentage] as advised by you.\nIn the event of an ATO audit, you will be asked to provide valid logbooks to substantiate the above claim. You are required to keep a logbook for a continuous period of 12 weeks which will then be valid for 5 years." },
+    div7a_rec: { group: "company", applies: ["company"], title: "Division 7A (loan agreement recommended)", heading: "Division 7A Loans",
+      text: "In the Financial Statements of the Company, we believe that the following amounts would be viewed by the ATO as \"debit loan accounts\". This represents cash that has been drawn out of the Company by individuals (or associated Trusts) without personal income tax being paid.\n[Loans and amounts, one per line starting with - ]\nThe effect of Division 7A on the above loan accounts is to deem these amounts as unfranked dividends (i.e. dividends with no imputation credits) paid from the Company to shareholders. This could result in an adverse tax outcome, with shareholders possibly paying tax at the top marginal rate of 47%.\nAttached is a Division 7A Loan Agreement, under which interest and principal repayments will be made back to the Company. The loan accounts are classified as unsecured loans and must be repaid over a maximum term of 7 years. The interest rate for the [Financial year] financial year is [Benchmark interest rate] with minimum annual repayments calculated in accordance with the relevant provisions of the Income Tax Assessment Act.\nIt should be noted that the interest on this loan is not tax deductible, as the borrowings are not connected to any income-producing purpose." },
+    fbt_contrib: { notes: true, group: "company", applies: ["company"], title: "FBT employee contribution", heading: "FBT Employee Contributions",
+      text: "We have calculated FBT employee contributions for the period 1 April [FBT year start] to 31 March [FBT year end].\nThe operating cost method has been used to calculate the FBT employee contribution for the following vehicle:\n[Vehicles, one per line starting with - ]\nThis is based on the business-use percentage of [Business-use percentage], as advised by you.\nIn the event of an ATO audit, you may be required to provide a valid logbook to substantiate the business-use percentage. To be valid, a logbook must be maintained for a continuous 12-week period and can then be relied upon for up to 5 years, provided there is no material change in the vehicle\u2019s usage." },
     emp_contractor: { group: "company", applies: B, title: "Employee vs contractor", heading: "Employee vs Contractor",
       text: "If you hire a worker, you are responsible for classifying your worker for income tax and superannuation purposes. The Australian Taxation Office website contains information on classifying workers. Penalties may apply if your workers are classified incorrectly.\nWe recommend you review your contractors to ensure the correct classification applies." },
     refunds_offset: { group: "company", applies: ALL, title: "Income tax refunds offset against ATO debts", heading: "Income Tax Refunds",
@@ -297,7 +298,7 @@ button.chip:hover{background:var(--ix-tint2)}
       text: "We have included a deduction for work-related motor vehicle expenses for the [Vehicle] based on [Kilometres] work-related kilometres, as advised by you. While the cents per kilometre method does not require written substantiation, you must be able to explain how you calculated the work-related kilometres." },
     mv_logbook: { group: "individual", applies: ["individual"], title: "Motor vehicle (logbook)", heading: "Motor Vehicle Expenses",
       text: "We have included a deduction for work-related motor vehicle expenses for the [Vehicle] based on the business-use percentage of [Business use percentage], as advised by you.\nIn the event of an ATO audit, you may be required to provide a valid logbook to substantiate the business-use percentage. To be valid, a logbook must be maintained for a continuous 12-week period and can then be relied upon for up to 5 years, provided there is no material change in the vehicle's usage." },
-    home_office: { group: "individual", applies: ["individual"], title: "Home office expenses", heading: "Home Office Expenses",
+    home_office: { group: "individual", applies: ["individual"], title: "Home office expenses", heading: "Use of Home Office",
       text: "We have included a deduction for home office expenses using the fixed rate method based on [Hours] hours, as advised by you. We recommend that you maintain a diary or similar record of hours worked from home to support your claim." },
     tax_before_dist: { group: "individual", applies: ["individual"], title: "Tax outcome before trust distributions", heading: "Tax Outcome Before Trust Distributions",
       text: "Your tax outcome for the year is an amount [payable/refundable] of [Amount]. As you did not receive a distribution from [Trust names], this amount remains unchanged." },
@@ -315,7 +316,7 @@ button.chip:hover{background:var(--ix-tint2)}
     mv_stat: { notes: true, group: "other", applies: B, title: "Motor vehicle (statutory FBT adjustment)", heading: "Motor Vehicle Expenses",
       text: "We have adjusted your [Years] Income Tax Returns to include a fringe benefit adjustment for your vehicle using the statutory method. We recommend that you keep a motor vehicle log book for a 12-week period in the current year to allow for a more accurate private use adjustment." },
     mv_pct: { notes: true, group: "other", applies: ALL, title: "Motor vehicle (business use percentages)", heading: "Motor Vehicle Expenses",
-      text: "We have adjusted your [Financial year] Income Tax Returns to allow for the business use percentages listed below.\n[Vehicles and percentages]" },
+      text: "We have included a deduction for work-related motor vehicle expenses for the [Vehicle] based on the business-use percentage of [Business-use percentage], as advised by you.\nIn the event of an ATO audit, you may be required to provide a valid logbook to substantiate the business-use percentage. To be valid, a logbook must be maintained for a continuous 12-week period and can then be relied upon for up to 5 years, provided there is no material change in the vehicle\u2019s usage." },
     // ---- From the Annual Summary Report template (draft: years and names turned into blanks) ----
     cash_basis: { group: "avt", applies: B, title: "Cash basis adjustment", heading: "Cash Basis Adjustment",
       text: "We have deducted the amounts owed by the Trade Debtors of your business as at [Year end date] from the revenue amount in the Income Tax Return of your business. This is because your Financial Statements are prepared on an accruals basis, whereas your taxable income is calculated on a cash basis. Under a cash basis, revenue is only recognised when cash is received from customers and expenses when they are paid to a supplier.\nYou will need to make adequate provision for increased tax payments in the future created by this adjustment." },
@@ -354,7 +355,7 @@ button.chip:hover{background:var(--ix-tint2)}
     fees_invoice: { group: "other", applies: ALL, title: "Invoice for our accounting services", heading: "Invoice for our Accounting Services",
       text: "Since we have now completed your Financial Statements and Income Tax Returns, we have enclosed an Invoice for our services. The Invoice gives you a detailed description of work performed.\nThe amount that we have invoiced you this year has increased due to the following reasons:\n[Reasons, one per line starting with - ]\nFor the future, should you want our office to complete your Financial Statements and Income Tax Returns more efficiently (and hence at less cost to you), we recommend the following:\n- Ensure that all bank accounts are regularly reconciled, including cheque accounts and credit cards.\n- Ensure that all transactions entered into your [Software] system have accurate descriptions.\n- Ensure that all bank statements containing business and investment transactions are provided with detailed descriptions on them.\n- Ensure that all private expenses are removed from the business accounts and placed in the appropriate loan account.\n- Ensure that your [Software] file is up to date and contains all adjusting entries prepared by our office.\n- Ensure all balance sheet items at year-end are still in existence and are accurately recorded at cost.\n- Ensure that the correct GST codes appear on each transaction.\nPlease refer to the enclosed list of [Software] adjusting entries for further details on how to improve your record keeping." },
     gst_adj_us: { group: "other", applies: B, title: "GST adjustment (BAS prepared by us)", heading: "GST Adjustment",
-      text: "As part of our overall review of your accounting records for the year, we carefully check to see that your lodged Business Activity Statements (BAS) were correct. Due to various adjustments made during the preparation of your [Financial year] Financial Statements, it will be necessary to amend your [BAS period] Business Activity Statement. This GST adjustment is due primarily to [Reasons].\nWe have prepared an Activity Statement Revision Request Form on your behalf to reflect the adjustments. Can you please sign it where indicated and return it to our office for lodgement with the Australian Taxation Office?\n**Total payable/(refundable): [Amount]**" },
+      text: "As part of our annual review of your accounting records, we verify that all Business Activity Statements (BAS) lodged have been completed correctly. During the preparation of your Financial Statements, a number of adjustments were identified which require an amendment to your [BAS period] Business Activity Statement. The GST adjustment primarily relates to [Reasons].\nTo reflect these changes, we have prepared an Activity Statement Revision Request on your behalf. Please sign the document where indicated and return it to our office for lodgement with the Australian Taxation Office.\n**Activity Statement Revision**\n- GST collected: [GST collected]\n- Less: GST paid: [GST paid]\n- Amended GST payable: [Amended GST payable]\n- Less: Original GST payable: [Original GST payable]\n**Additional GST payable: [Additional GST payable]**\nOnce the revision has been processed by the ATO, the additional GST payable of [Additional GST payable] will become due and payable." },
     gst_adj_client: { group: "other", applies: B, title: "GST adjustment (BAS prepared by the client)", heading: "GST Adjustment: Business Activity Statements Prepared by You",
       text: "As part of our overall review of your accounting records for the year, we carefully check to see that your lodged Business Activity Statements (BAS's) were correct. Due to [Reason for the adjustment], it will be necessary to adjust your next Business Activity Statement (BAS).\nThe total GST adjustment required on your next BAS is [Amount]. This GST adjustment will [increase/decrease] your liability on your next BAS by [Amount].\nIf you are lodging your BAS's directly in Xero the adjustment may flow through to the next BAS if you have selected prior period adjustments, otherwise you will need to [add/subtract] the following figures on your next BAS:\n[BAS labels and amounts, one per line starting with - ]" },
     fte: { group: "trust", applies: ["trust"], title: "Family trust election", heading: "Family Trust Election",
@@ -370,8 +371,12 @@ button.chip:hover{background:var(--ix-tint2)}
     adjusting_entries: { group: "other", applies: B, title: "Adjusting entries for your accounting system", heading: "Adjusting Entries for your Accounting System",
       text: "Please find enclosed a list of [Software] adjusting entries required to update your [Financial year] computerised Financial Statements. You will need to update your computer file with these entries so that our records reconcile. Once you have recorded these transactions, please send our office a copy of your Balance Sheet as at [Year end date] so that we can ensure your records and our records match.\nPlease feel free to contact our office if you require assistance with the above entries." },
     // ---- Found in 2024 to 2026 progress reports ----
-    gic: { group: "avt", applies: B, title: "General interest charges", heading: "General Interest Charges",
-      text: "ATO general interest charges are not tax deductible and therefore have been added back to your income for tax purposes." },
+    gic: { group: "avt", applies: B, title: "General interest charges", heading: "ATO General Interest Charges",
+      text: "ATO general interest charges from 1 July 2025 are not tax deductible and therefore have been added back to your income for tax purposes." },
+    dep_tfe_gains: { group: "avt", applies: B, title: "Accounting vs tax depreciation (full expensing, with disposals)", heading: "Accounting Depreciation versus Taxation Depreciation",
+      text: "Assets have been depreciated on a straight-line basis for accounting purposes, however due to temporary full expensing for tax purposes, certain assets have been written off in previous years. Depreciation and gains or losses on the disposal of assets will vary for accounting and taxation purposes." },
+    restructure: { group: "avt", applies: B, title: "Restructuring expenses (section 40-880)", heading: "Restructuring Expenses",
+      text: "When restructuring expenses were incurred, these expenses were required to be claimed over a period of five years." },
     dep_iawo: { group: "avt", applies: B, title: "Accounting vs tax depreciation (instant asset write-off and pool)", heading: "Accounting Depreciation versus Taxation Depreciation",
       text: "The financial statements show depreciation based on the asset's effective life. However, due to instant asset write-off limits for tax purposes, certain assets have been written off in previous years. The tax depreciation is made up of assets costing less than $20,000 purchased in the current year and any small business pool deduction for assets costing more than $20,000.\nGains or losses on the disposal of assets will vary for accounting and taxation purposes." },
     dep_effective: { group: "avt", applies: B, title: "Accounting vs tax depreciation (effective life, $300 items, rental property)", heading: "Accounting Depreciation versus Taxation Depreciation",
@@ -384,8 +389,8 @@ button.chip:hover{background:var(--ix-tint2)}
       text: "The [entity type] reports taxable income on a cash basis, meaning expenses are only deductible when they have been paid. Accordingly, an adjustment has been made for trade creditors as at [Year end date]." },
     rental_appraisal: { group: "other", notes: true, applies: ALL, title: "Rental appraisal (related party rent)", heading: "Rental Appraisal",
       text: "Market rent must be charged to any related party occupying a property to demonstrate that the arrangement is genuinely commercial and that the property is being used for income-producing purposes. This is essential to support the ability to claim a deduction for rental property expenses, which may otherwise be reduced or denied if the arrangement is not conducted on an arm's-length basis.\nTo ensure compliance, it is recommended that you obtain an independent rental appraisal to confirm that market rent is being charged for the use of the property located at [Property address]." },
-    fbt_stat: { group: "company", notes: true, applies: B, title: "FBT employee contribution (statutory method)", heading: "FBT Employee Contribution",
-      text: "We have calculated an employee contribution for the following vehicles using the statutory method:\n[Vehicles, one per line starting with - ]\nThis method applies a flat rate of 20% to the base value of the vehicle." },
+    fbt_stat: { group: "company", notes: true, applies: B, title: "FBT employee contributions (statutory method)", heading: "FBT Employee Contributions",
+      text: "We have calculated FBT employee contributions for the period 1 April [FBT year start] to 31 March [FBT year end].\nThe statutory method has been used to calculate the FBT employee contribution for the following vehicles:\n[Vehicles, one per line starting with - ]\nUnder the statutory method, a flat rate of 20% is applied to the base value of each vehicle." },
     fbt_returns: { group: "company", notes: true, applies: B, title: "FBT returns recommended", heading: "Fringe Benefits Tax Returns",
       text: "We have adjusted your [Financial year] Financials to include a fringe benefit contribution for the [Vehicle] using the statutory formula method. We recommend that you keep a motor vehicle logbook for a 12-week period in the current year to confirm your kilometres travelled.\nWe also strongly recommend that you complete fringe benefit returns, which are due in June each year based on the period April to March. We will email you in [Month and year] with all the information on registering for fringe benefits tax." },
     trust_loss: { group: "trust", notes: true, applies: ["trust"], title: "Current year tax loss (trust)", heading: "Recognition and Treatment of Current Year Tax Loss",
@@ -394,6 +399,29 @@ button.chip:hover{background:var(--ix-tint2)}
       text: "In the Financial Statements of the Company, we believe that the following amounts would be viewed by the ATO as \"debit loan accounts\". This represents cash that has been drawn out of the Company by individuals (or associated Trusts) without personal income tax being paid.\n[Loans and amounts, one per line starting with - ]\nWe recommend that the above loans are fully repaid by declaring dividends as soon as the tax is paid and before the lodgement of the Company's Tax Return, which is due [Due date].\nThis will avoid the borrowers having these loans treated as \"unfranked dividends\" by the ATO and included in their taxable income for the year, possibly paying tax at the top marginal rate of 47%." },
     tax_before_dist_none: { group: "individual", notes: false, applies: ["individual"], title: "Tax outcome before trust distributions (no distribution received)", heading: "Tax Outcome Before Trust Distributions",
       text: "Your tax outcome for the year is an amount [payable/refundable] of [Amount]. As you did not receive a distribution from [Trust names], your tax outcome before trust distributions remains unchanged." },
+    // ---- Additional wording supplied by Lili (November 2026) ----
+    company_loss: { group: "company", notes: true, applies: ["company"], title: "Current year tax loss (company)", heading: "Recognition and Treatment of Current Year Tax Loss",
+      text: "The Company incurred a tax loss of [Tax loss] as allowable deductions exceeded assessable income. As a result, no current income tax expense has been recognised for the year. The tax loss has been carried forward and added to prior year tax losses. The carried forward tax losses are available to offset against future taxable profits.\nTax losses carried forward total [Losses carried forward] as at [Year end date]." },
+    losses_used: { group: "avt", applies: B, title: "Prior year tax losses (fully used)", heading: "Prior Year Tax Losses",
+      text: "Tax losses from previous income years have been brought forward and used to offset current year taxable income.\nTax losses have been fully utilised as at [Year end date]." },
+    trust_deed: { group: "trust", notes: true, applies: ["trust"], title: "Request a copy of the trust deed", heading: "Trust Deed",
+      text: "To ensure our records are complete and accurate, we request a current copy of the trust deed. The trust deed sets out the governing rules of the trust, including beneficiary entitlements, trustee powers and distribution requirements, all of which we rely on when preparing financial statements and providing tax advice." },
+    cash_inc: { group: "avt", applies: B, title: "Cash basis adjustment: income", heading: "Cash Basis Adjustment: Income",
+      text: "The [entity type] reports taxable income on a cash basis, meaning revenue is recognised when payment is received. Accordingly, an adjustment has been made for trade debtors outstanding as at [Year end date]." },
+    dep_lvp: { group: "avt", applies: B, title: "Accounting vs tax depreciation (low value pool)", heading: "Accounting Depreciation versus Taxation Depreciation",
+      text: "The financial statements record depreciation based on the effective life of the specific asset.\nThe tax depreciation is made up of:\n- depreciation based on the effective life of existing assets;\n- low value pool deduction for existing assets costing less than $1,000;\n- immediate deduction for assets costing less than $300 purchased in the current year;\n- low value pool deduction for assets costing less than $1,000 purchased in the current year; and\n- depreciation based on the effective life of assets costing more than $1,000 purchased in the current year." },
+    capworks: { group: "avt", applies: B, title: "Capital works deduction", heading: "Capital Works Deduction",
+      text: "Capital works deductions are claimed for tax purposes based on a straight-line basis over a 40-year period (2.5% per annum)." },
+    gain_bizsale: { group: "avt", applies: B, title: "Gain on sale of depreciable assets (sale of the business)", heading: "Gain on Sale of Depreciable Asset: Business Sale",
+      text: "The gain from the sale of depreciable assets arising from the sale of the business must be brought to account at settlement date." },
+    cap_loss: { group: "avt", applies: B, title: "Capital loss carried forward", heading: "Capital Loss",
+      text: "A capital loss has been recognised in the financial statements arising from [Reason for the capital loss].\nFor income tax purposes, capital losses cannot be offset against ordinary income and must be carried forward to be applied against future capital gains.\nCapital losses carried forward total [Capital losses carried forward] as at [Year end date]." },
+    trust_dist_adj: { group: "avt", applies: B, title: "Trust distribution received (accounting vs taxable)", heading: "Trust Distributions",
+      text: "The distribution received from [Trust name] is recognised in the financial statements and reflects the accounting income distribution. For income tax purposes, an adjustment has been included in the reconciliation to assessable income to replace the accounting distribution with the taxable trust distribution as advised in the trust tax return." },
+    pay_tax_short: { group: "company", applies: ["company"], title: "Payment of company tax (no due date or payment advice)", heading: "Payment of Company Tax",
+      text: "Companies are subject to full self-assessment, meaning the assessment (based on the taxable income disclosed in the income tax return) is deemed to be issued and the tax owing is due and payable upon lodgement of the income tax return.\n***It is your responsibility to ensure that the amount of [Amount payable] is paid to the Australian Taxation Office.***" },
+    fbt_return: { group: "company", notes: true, applies: B, title: "Fringe benefits tax return summary", heading: "Fringe Benefits Tax Return",
+      text: "We have summarised below your Fringe Benefits Tax position for the period 1 April [FBT year start] to 31 March [FBT year end] based on information provided by you. FBT exists to ensure that employees are not receiving income disguised in another form, thus avoiding income tax.\nFBT is paid by employers on the grossed up taxable value (GST-inclusive cost) of benefits provided to employees (or their associates) in respect of their employment.\n**Cars using statutory formula:**\n[Statutory formula cars, one per line starting with - ]\n**Cars using operating cost method:**\n[Operating cost cars, one per line starting with - ]\n**FBT return**\n- Fringe benefits taxable amount: [Fringe benefits taxable amount]\n- Amount of tax payable (47%): [FBT payable]\n- Less: Instalment amounts reported on activity statements: [FBT instalments]\n**FBT payable: [FBT balance]**\nPlease sign the document where indicated and return it to our office for lodgement with the Australian Taxation Office. Please ensure the amount of [FBT balance] is paid to the Australian Taxation Office immediately." },
   };
   // Picklists for some blanks
   const CHOICES = {
@@ -434,6 +462,8 @@ button.chip:hover{background:var(--ix-tint2)}
     return (neg ? "-" : "") + "$" + d + "." + String(c % 100).padStart(2, "0");
   }
   const absMoney = c => money(Math.abs(c || 0));
+  const money0 = c => { if (c === null || c === undefined || isNaN(c)) return "[Amount]"; const v = Math.round(c / 100); return (v < 0 ? "-" : "") + "$" + Math.abs(v).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","); };
+  const abs0 = c => money0(Math.abs(c || 0));
   function pct(n, d) { if (!d) return "0.0%"; return (Math.round(n / d * 1000) / 10).toFixed(1) + "%"; }
   function abbrev(c) {
     const v = (c || 0) / 100, a = Math.abs(v);
@@ -465,7 +495,7 @@ button.chip:hover{background:var(--ix-tint2)}
   }
 
   // ---------- What kind of document is it ----------
-  const KIND_LABEL = { template: "Progress report template", skip: "Not in the pack", itr: "Income Tax Return", fs: "Financial Statements", minutes: "Minutes", amendedMinutes: "Amended Minutes (to be emailed)", dividend: "Dividend Statements", div7a: "Div 7A Loan Agreement", slip: "ATO Payment Slip", org: "Organisational Chart", workpaper: "Workpaper", collation: "Collation spreadsheet", data: "Last year’s report data", own: "Earlier output (not used)", other: "Other document" };
+  const KIND_LABEL = { planning: "Tax planning", template: "Progress report template", skip: "Not in the pack", itr: "Income Tax Return", fs: "Financial Statements", minutes: "Minutes", amendedMinutes: "Amended Minutes (to be emailed)", dividend: "Dividend Statements", div7a: "Div 7A Loan Agreement", slip: "ATO Payment Slip", org: "Organisational Chart", workpaper: "Workpaper", collation: "Collation spreadsheet", data: "Last year’s report data", own: "Earlier output (not used)", other: "Other document" };
   const KIND_ORDER = ["fs", "itr", "minutes", "dividend", "div7a", "slip", "other"];
   // where: "trf" (Tax Returns and Financials), "wp" (Workpapers), "prior" (last year), or "" (dropped in)
   function classify(name, text, where) {
@@ -475,10 +505,12 @@ button.chip:hover{background:var(--ix-tint2)}
     if (/\.xls[xmb]?$/.test(n)) {
       if (/collation/.test(n)) return "collation";
       if (/progress report.*template|progress reports? calcs/.test(n)) return "template";
+      if (/tax plan/.test(n) || where === "tp") return "planning";
       if (/workpaper|\btr4|\bbtr4|tax checklist/.test(n)) return "workpaper";
       return "skip";
     }
     if (/cover letter & progress report|^correspondence - /.test(n)) return "own";
+    if (/taxplan \+ forecast|tax plan report/i.test(t) || (/tax plan/.test(n) && where === "tp")) return /supersc?eded|old version/.test(n) ? "skip" : "planning";
     if (/(company|individual|trust|partnership) tax return \d{4}/i.test(t) || /tax return.*cannot be lodged as a paper/i.test(t)) return "itr";
     if (/activity statement|\b(bas|ias)\b|payroll tax|bank statement|loan statement|credit card|general ledger|trial balance|journal|depreciation schedule|disposal schedule|payroll|amorti[sz]ation|invoice|receipt/.test(n)) return "skip";
     if (/organi[sz]ational chart|org chart|structure chart|structure diagram/.test(n)) return "org";
@@ -530,6 +562,7 @@ button.chip:hover{background:var(--ix-tint2)}
       set("curLiab", grab(t, "All current liabilities", "G"));
       set("franking", grab(t, "Franking credits", "J"));
       const ic = t.match(/Industry code\s+(\d{4,5})/); if (ic) f.industry = ic[1];
+      const ps = grab(t, "Personal superannuation contributions", "D12"); if (ps !== undefined && ps !== null) f.personalSuper = Math.abs(ps);
       const da = t.match(/DESCRIPTION OF MAIN BUSINESS ACTIVITY\s+(.+?)\s+Industry code/i); if (da) f.industryDesc = da[1].trim();
       const sb = t.match(/Small business entity\s+(Yes|No)/); if (sb) f.sbe = sb[1] === "Yes";
       const q = t.match(/September quarter\s+\$([\d,]+\.\d{2}).*?December quarter\s+\$([\d,]+\.\d{2}).*?March quarter\s+\$([\d,]+\.\d{2}).*?June quarter\s+\$([\d,]+\.\d{2})/);
@@ -593,13 +626,13 @@ button.chip:hover{background:var(--ix-tint2)}
     [/^accounting depreciation$/, "accDep"], [/^taxation depreciation$/, "taxDep"],
     [/^assets ?< ?\$?20(,000|k)$/, "under20k"], [/^small business pool$/, "sbPool"],
     [/^fines (&|and) penalties$/, "fines"], [/^donations (&|and) gifts/, "donations"], [/^legal fees/, "legal"],
-    [/^entertainment/, "entertainment"], [/^interest - non-deductible$/, "interestNonDed"],
+    [/^entertainment/, "entertainment"], [/^interest - non[- ]?deductible$/, "interestNonDed"], [/^(ato )?general interest charges?/, "interestNonDed"],
     [/^non-deductible super|^current year superannuation creditor$/, "nondedSuper"],
     [/^deductible super \(prior year|^prior year superannuation creditor$/, "dedSuperPrior"],
     [/^amortisation$/, "amort"], [/^accounting capital (gains|profits)$/, "accCG"], [/^net taxable capital gains$|^capital gains - taxable$/, "taxCG"],
     [/^(less: )?tax losses deducted$/, "lossesDeducted"], [/^total tax losses carried forward$|^loss carried forward$/, "lossesCF"],
     [/^taxable income or loss$|^taxable income \/ \(tax loss before adjustments\)$/, "wpTaxable"],
-    [/^blackhole expenditure deductions$|^section 40-880 deduction/, "blackhole"],
+    [/^blackhole expenditure deductions$|^section 40-880 deduction/, "blackhole"], [/^fbt (employee )?contributions?/, "fbtContrib"],
     [/^small business skills and training boost|^skills and training boost/, "skillsBoost"], [/^small business energy incentive/, "energyBoost"],
     [/^cash basis adjustment|cash basis small business/, "cash"],
     [/^taxable or net income$/, "ctTaxable"], [/^tax payable$/, "ctTaxPayable"], [/^tax payable \/ \(refundable\)$/, "ctFinal"],
@@ -619,7 +652,7 @@ button.chip:hover{background:var(--ix-tint2)}
     const vis = wb.SheetNames.filter(n => !hidden(n));
     out.tabs = { "Div 7A": vis.some(n => /div ?7a/i.test(n)), "Borrowing Costs": vis.some(n => /borrowing/i.test(n)), "Blackhole": vis.some(n => /blackhole/i.test(n)), "Employee contribution": vis.some(n => /employee contribution|fbt contribution/i.test(n)), "Prepayments": vis.some(n => /prepayment/i.test(n)) };
     if (br.length) out.hasBR1 = true;
-    let sign = 1, inTaxDep = false;
+    let sign = 1, inTaxDep = false, inAccDep = false;
     br.forEach(r => {
       const strs = r.filter(c => typeof c === "string" && c.trim()).map(c => c.trim());
       if (strs.some(c => /^less:?$/i.test(c))) sign = -1;
@@ -629,11 +662,14 @@ button.chip:hover{background:var(--ix-tint2)}
         if (typeof r[i] !== "string" || !r[i].trim() || isCode(r[i])) continue;
         let label = r[i].trim(), j = i + 1;
         if (/^taxation depreciation:?$/i.test(label)) inTaxDep = true;
+        if (/^accounting depreciation:?$/i.test(label)) inAccDep = true;
         if (/^other:?$/i.test(label)) { const nx = r.findIndex((c, k) => k > i && typeof c === "string" && c.trim() && !isCode(c)); if (nx < 0) continue; label = "Other: " + r[nx].trim(); j = nx + 1; i = nx; }
         let val = null; for (let k = j; k < r.length; k++) { if (typeof r[k] === "string" && r[k].trim() && !isCode(r[k])) break; if (typeof r[k] === "number") { val = r[k]; break; } }
         if (val === null) continue;
         const cents = Math.round(val * 100), low = label.toLowerCase();
-        if (inTaxDep && /^general$/.test(low)) { out.br1.taxDep = (out.br1.taxDep || 0) + Math.abs(cents); inTaxDep = false; continue; }
+        if (inTaxDep && /^-?\s*general$/.test(low)) { out.br1.taxDep = (out.br1.taxDep || 0) + Math.abs(cents); inTaxDep = false; continue; }
+        if (inAccDep && /^-?\s*general$/.test(low)) { out.br1.accDep = (out.br1.accDep || 0) + Math.abs(cents); inAccDep = false; continue; }
+        if (/^accounting depreciation$/.test(low)) inAccDep = false;
         if (/prepayment/.test(low)) { out.br1.prepayNet = (out.br1.prepayNet || 0) + sign * Math.abs(cents); continue; }
         if (/provision for (annual leave|long service leave)|^provisions \(/.test(low)) { out.br1.provNet = (out.br1.provNet || 0) + sign * Math.abs(cents); continue; }
         if (/accrued expenses/.test(low)) { out.br1.accruedNet = (out.br1.accruedNet || 0) + sign * Math.abs(cents); continue; }
@@ -738,16 +774,16 @@ button.chip:hover{background:var(--ix-tint2)}
     const biz = e.type !== "individual";
     if (biz && b && Object.keys(b).length) {
       if (b.accDep) {
-        if (b.under20k || b.sbPool) add("dep_book", "The workpaper shows assets under $20,000 or a small business pool.");
-        else if (f.sbe === false) add("dep_nonsbe", "The return shows the entity is not a small business entity.");
-        else add("dep_sbe", "Accounting depreciation is added back in the workpaper.");
+        if (f.sbe === false && !(e.wpOthers || []).some(o => /gain on sale|disposal/i.test(o.label))) add("dep_nonsbe", "The return shows the entity is not a small business entity.");
+        else add("dep_tfe_gains", "Accounting depreciation is added back in the workpaper. This version also covers gains and losses on disposals, as the 2026 reports do.");
       }
-      if (b.amort || b.blackhole && e.wpTabs && e.wpTabs["Borrowing Costs"] || (e.wpTabs && e.wpTabs["Borrowing Costs"])) add("borrowing", "Borrowing costs are in the workpaper.");
-      if (e.type === "company" && (b.blackhole || (e.wpTabs && e.wpTabs["Blackhole"])) && !(e.wpTabs && e.wpTabs["Borrowing Costs"])) add("formation", "Blackhole expenses are claimed in the workpaper.");
+      if (b.amort) add("borrowing", "Borrowing costs are amortised in the workpaper.");
+      if (b.blackhole) add("restructure", "A section 40-880 (blackhole) deduction is claimed in the workpaper. Use the formation expenses paragraph instead if these were set-up costs.");
       if ((e.wpOthers || []).some(o => /borrowing/i.test(o.label)) && !b.amort) add("borrowing", "Borrowing costs are in the workpaper.");
-      if ((e.wpOthers || []).some(o => /gain on sale|disposal/i.test(o.label))) add("gain_tfe", "The workpaper has a gain on sale of assets. Switch to the small business pool version if that fits better.");
+      if ((e.wpOthers || []).some(o => /gain on sale|disposal/i.test(o.label)) && !(b.accDep && b.taxDep)) add("gain_tfe", "The workpaper has a gain on sale of assets. Switch to the small business pool version if that fits better.");
       if (b.nondedSuper) add("unpaid_super", "Non-deductible super is added back in the workpaper.");
-      if (b.lossesDeducted) add("losses", "Tax losses were deducted this year.", { "Losses carried forward": b.lossesCF ? money(b.lossesCF) : "$0.00", "Year end date": "30 June " + Y });
+      if (b.lossesDeducted && b.lossesCF) add("losses", "Tax losses were deducted this year.", { "Losses carried forward": money(b.lossesCF), "Year end date": "30 June " + Y });
+      else if (b.lossesDeducted) add("losses_used", "Tax losses were deducted this year and none are left to carry forward.", { "Year end date": "30 June " + Y });
       if (b.entertainment) add("entertainment", "Entertainment is added back in the workpaper.");
       if (b.fines) add("fines", "Fines are added back in the workpaper.");
       if (b.provCur || b.provPrior || b.provNet) add("leave", "Provisions are adjusted in the workpaper.");
@@ -755,7 +791,10 @@ button.chip:hover{background:var(--ix-tint2)}
       if (b.accruedCur || b.accruedPrior || b.accruedNet) add("accrued", "Accrued expenses are adjusted in the workpaper.");
       if (b.taxCG && e.type !== "company") add("cgt_discount", "Net taxable capital gains are in the workpaper.");
       if (b.cash) add("cash_basis", "Cash basis adjustments are in the workpaper.");
-      if (b.interestNonDed && /general interest|gic/i.test(JSON.stringify(e.wpOthers || []))) add("gic", "General interest charges are added back in the workpaper.");
+      if (f.taxable < 0 && e.type === "company") add("company_loss", "The return shows a tax loss.");
+      if (f.taxable < 0 && e.type === "trust") add("trust_loss", "The return shows a tax loss.");
+      if (f.capLossesCF) add("cap_loss", "The return shows capital losses carried forward.");
+      if (b.interestNonDed) add("gic", "Non-deductible interest (ATO general interest charges) is added back in the workpaper.");
       if (b.skillsBoost) add("skills_boost", "The skills and training boost is claimed in the workpaper.");
       if (b.energyBoost) add("energy_boost", "The energy incentive is claimed in the workpaper.");
     }
@@ -763,7 +802,7 @@ button.chip:hover{background:var(--ix-tint2)}
     if (e.type === "company") {
       if (f.final > 0) add("pay_tax", "The company has an amount payable.");
       if (f.curLiab !== undefined && f.curAssets !== undefined && f.curLiab > f.curAssets) add("insolvent", "Current liabilities are more than current assets on the return.", { "Financial year": String(Y) });
-      if (e.wpTabs && e.wpTabs["Employee contribution"]) add("fbt_contrib", "The Employee contribution tab is in use in the workpaper.");
+      if ((e.wpTabs && e.wpTabs["Employee contribution"]) || b.fbtContrib) add("fbt_stat", "The FBT contribution sheet is in use in the workpaper. Switch to the operating cost version if that method was used.", { "FBT year start": String(Y - 1), "FBT year end": String(Y) });
     }
     if (e.type === "trust" && e.wpTabs && e.wpTabs["Div 7A"]) add("upe_pre2009", "The Div 7A tab is in use in the trust workpaper.", { "Financial year": String(Y) });
     if (e.rnn) add(e.rnnNoop ? "rnn_noop" : "rnn", "Marked as return not necessary.", { "Financial year end": "30 June " + Y, "trust/company": e.type === "company" ? "company" : "trust" });
@@ -785,7 +824,10 @@ button.chip:hover{background:var(--ix-tint2)}
     if (id === "pay_tax") { v["Amount payable"] = money(f.final); v["Due date"] = dueWords(e, model); }
     if (id === "losses" && e.br1 && e.br1.lossesCF !== undefined) v["Losses carried forward"] = money(e.br1.lossesCF);
     if (id === "tfe") { v["Financial year"] = String(Y - 1); }
-    v["Business name"] = e.name; v["entity type"] = e.type;
+    v["Business name"] = e.name; v["entity type"] = e.type.charAt(0).toUpperCase() + e.type.slice(1);
+    v["Year end date"] = v["Year end date"] || `30 June ${Y}`; v["FBT year start"] = v["FBT year start"] || String(Y - 1); v["FBT year end"] = v["FBT year end"] || String(Y);
+    if ((e.fig || {}).taxable < 0) v["Tax loss"] = abs0(e.fig.taxable);
+    if ((e.fig || {}).capLossesCF) v["Capital losses carried forward"] = abs0(e.fig.capLossesCF);
     return v;
   }
 
@@ -817,7 +859,7 @@ button.chip:hover{background:var(--ix-tint2)}
     const rev = (p) => sales ? (sales[p] || 0) + ((oth && oth[p]) || 0) : ti ? ti[p] : undefined;
     out.fig.revenue = rev("cur"); out.prior.revenue = rev("prior");
     if (cos) { out.fig.cogs = cos.cur; }
-    if (gp) out.prior.gross = gp.prior; else if (out.prior.revenue !== undefined) out.prior.gross = out.prior.revenue;
+    if (gp) { out.fig.gross = gp.cur; out.prior.gross = gp.prior; } else if (out.prior.revenue !== undefined) { out.prior.gross = out.prior.revenue; out.fig.gross = out.fig.revenue; }
     if (np) { out.fig.fsProfit = np.cur; out.prior.net = np.prior; }
     const ca = grabPair(t, "Total Current Assets"), cl = grabPair(t, "Total Current Liabilities");
     if (ca) out.fig.curAssets = ca.cur; if (cl) out.fig.curLiab = cl.cur;
@@ -877,6 +919,255 @@ button.chip:hover{background:var(--ix-tint2)}
     });
     rows.forEach(r => { if (!shares.some(s => samePerson(r.name, s.name))) diffs.push(`${r.name} receives ${absMoney(r.amount)} on the return but isn’t in the minute`); });
     return diffs;
+  }
+
+  // ---------- Tax planning ----------
+  // Reads the firm's tax planning spreadsheets. Two shapes are handled:
+  // a single tax position per sheet (projected profit, adjustments, estimated taxable income, tax, PAYG, balance),
+  // and side-by-side columns per person and option ("Base", "Option 1 - $15k super", ...).
+  const PL_TAXABLE = /(estimated )?taxable income\b(?! or)/i, PL_TAX = /^(tax on taxable income|tax at|tax payable on|income tax payable|tax on taxable income at|tax assessed|gross tax payable)/i;
+  const PL_NET = /net profit/i, PL_BAL = /^(balance|estimated (tax )?(payable|refund)|net tax (payable|position)|tax (payable|refundable) ?\/|amount (payable|refundable))/i;
+  function parsePlanning(XLSX, bytes, fileName) {
+    const wb = XLSX.read(bytes, { type: "array", cellDates: false });
+    const out = { file: fileName, plans: [], notes: [] };
+    wb.SheetNames.forEach(sn => {
+      const rows = XLSX.utils.sheet_to_json(wb.Sheets[sn], { header: 1, raw: true, defval: null });
+      if (!rows.length) return;
+      const lab = r => r.filter(c => typeof c === "string" && c.trim() && !/^\s*[-–]?\s*\$?[\d,.]+\s*$/.test(c)).map(s => s.trim()).join(" ").replace(/\s+/g, " ").trim();
+      // planning notes ("ITEM | NOTES/ACTION")
+      const nh = rows.findIndex(r => r.some(c => typeof c === "string" && /^item$/i.test(c.trim())) && r.some(c => typeof c === "string" && /notes|action/i.test(c)));
+      if (nh >= 0) { const ic = rows[nh].findIndex(c => typeof c === "string" && /^item$/i.test(c.trim())); const ncol = rows[nh].findIndex(c => typeof c === "string" && /notes|action/i.test(c)); rows.slice(nh + 1).forEach(r => { const it = r[ic], no = r[ncol]; if (typeof it === "string" && it.trim() && typeof no === "string" && no.trim()) out.notes.push({ item: it.trim(), note: no.trim() }); }); }
+      let ti = rows.findIndex(r => /taxable income after tax planning/i.test(lab(r)) && r.some(c => typeof c === "number"));
+      if (ti < 0) ti = rows.findIndex(r => PL_TAXABLE.test(lab(r)) && !/^less|before/i.test(lab(r)) && r.some(c => typeof c === "number"));
+      if (ti < 0) return;
+      const numCols = rows[ti].map((c, i) => typeof c === "number" ? i : -1).filter(i => i >= 0);
+      const title = (rows.slice(0, 3).flat().find(c => typeof c === "string" && c.trim() && !/tax position|tax planning|projected/i.test(c)) || "").trim();
+      // column headings above the taxable income row: person names, and option names one row higher
+      const heads = numCols.map(c => {
+        let person = null, option = null;
+        for (let r = ti - 1; r >= Math.max(0, ti - 30); r--) { const v = rows[r][c]; if (typeof v === "string" && v.trim() && !person && rows[r].filter(x => typeof x === "string" && x.trim()).length >= 2 && !lab([rows[r][0]]) ) { person = v.trim(); for (let rr = r - 1; rr >= Math.max(0, r - 3); rr--) { for (let cc = c; cc >= 0; cc--) { const o = rows[rr][cc]; if (typeof o === "string" && o.trim()) { if (/option|base|scenario|strategy/i.test(o)) option = o.trim(); break; } } if (option) break; } break; } }
+        return { c, person, option };
+      });
+      const multi = numCols.length > 1 && heads.some(h2 => h2.person);
+      const after = (re, from, to) => { for (let r = from; r < Math.min(rows.length, to); r++) if (re.test(lab(rows[r]))) return r; return -1; };
+      let taxRow = -1; for (let r = ti + 1; r < Math.min(rows.length, ti + 16); r++) { const l = lab(rows[r]); if (PL_TAX.test(l)) taxRow = r; if (PL_BAL.test(l)) break; }
+      const seenHead = new Set();
+      heads.forEach(({ c, person, option }) => {
+        const hk = (person || "") + "|" + (option || ""); if (person && seenHead.has(hk)) return; seenHead.add(hk);
+        if (person && /^total$/i.test(person)) return;
+        const p = { sheet: sn, title, person, option, col: c, items: [], payg: [], paygFuture: [] };
+        p.taxable = Math.round(rows[ti][c] * 100);
+        if (taxRow >= 0 && typeof rows[taxRow][c] === "number") p.tax = Math.round(rows[taxRow][c] * 100);
+        // what is left to pay, from a Balance row or the first unlabelled total after the tax rows
+        let afterBal = false;
+        for (let r = (taxRow >= 0 ? taxRow : ti) + 1; r < Math.min(rows.length, ti + 30); r++) {
+          const l = lab(rows[r]), v = rows[r][c];
+          const vv = typeof v === "number" ? v : (multi ? undefined : rows[r].slice(0, c + 2).reverse().find(x => typeof x === "number"));
+          if (/taxflow|20\d\d estimated payg/i.test(l)) break;
+          if (multi && /payg tax on wages|payg withh/i.test(l)) continue;
+          if (/payg/i.test(l) && typeof vv === "number") { (afterBal ? p.paygFuture : p.payg).push({ label: l, amount: Math.round(Math.abs(vv) * 100) }); continue; }
+          if (PL_BAL.test(l) && typeof vv === "number") { p.balance = Math.round(vv * 100); afterBal = true; continue; }
+          if (!l && multi && typeof v === "number" && p.balance === undefined) { p.balance = Math.round(v * 100); break; }
+        }
+        // items between the top and the taxable income row
+        let parent = null; const sums = new Map();
+        const put = (k, v) => { sums.set(k, (sums.get(k) || 0) + v); };
+        for (let r = 0; r < ti; r++) {
+          const row = rows[r]; const l = lab(row); if (!l) continue;
+          if (PL_NET.test(l)) { const v = multi ? row[c] : (typeof row[c] === "number" ? row[c] : row.find(x => typeof x === "number")); if (typeof v === "number") p.netProfit = Math.round(v * 100); parent = null; continue; }
+          const clean = l.replace(/^(add( back)?|less)\s*:?\s*[-–]?\s*/i, "").replace(/^\d-\d{4}\s+/, "").trim();
+          let v;
+          if (multi) v = row[c];
+          else { const left = row.slice(0, c).reverse().find(x => typeof x === "number"); v = typeof left === "number" ? left : row[c]; }
+          if (/^[-–]\s*/.test(l) && parent) { if (typeof v === "number") put(parent, Math.round(v * 100)); continue; }
+          if (typeof v === "number") { put(clean, Math.round(v * 100)); parent = null; }
+          else parent = clean;
+        }
+        p.items = [...sums.entries()].filter(([, v]) => v).map(([label, amount]) => ({ label, amount }));
+        p.paygTotal = p.payg.reduce((s2, x) => s2 + x.amount, 0) + p.paygFuture.reduce((s2, x) => s2 + x.amount, 0);
+        p.plannedFinal = p.paygFuture.length && p.tax !== undefined ? p.tax - p.paygTotal : p.balance !== undefined ? p.balance : (p.tax !== undefined ? p.tax - p.paygTotal : undefined);
+        out.plans.push(p);
+      });
+    });
+    return out;
+  }
+  // ---------- The tax plan report (ChangeGPS "Taxplan + Forecast" PDF) ----------
+  // The client-facing figures: the overview (before and after tax planning), the recommended scenario
+  // (tax credits and PAYG), and the year-end actionable items. Spreadsheets only add the line-by-line detail.
+  function parseTaxPlanReport(text, fileName) {
+    const t = text.replace(/\s+/g, " ");
+    const out = { file: fileName, report: true, prepared: null, plans: [], actions: [], notes: [], saving: null };
+    const pd = t.match(/Prepared on (\d{1,2} \w+ \d{4})/i); if (pd) out.prepared = pd[1];
+    const sv = t.match(/save \$([\d,]+) of tax if you choose our recommended scenario/i); if (sv) out.saving = numTok(sv[1]);
+    const money = "\\(?\\$[\\d,]+\\)?";
+    // overview: name, before, after, tax assessed, balance
+    const ov = t.match(/OVERVIEW OF\s+ESTIMATED INCOME \+ TAX POSITION(.+?)(?:TAX PLANNING\s+RESULTS|ES ?T ?IM ?AT ?ED TOT)/i);
+    const rows = {};
+    if (ov) {
+      const re = new RegExp("([A-Z][A-Za-z&'’.,\\- ]+?)\\s+(" + money + ")\\s+(" + money + ")\\s+(" + money + ")\\s+(" + money + ")", "g"); let m;
+      const body = ov[1].replace(/^.*?\(\s*R\s*E\s*F\s*U\s*N\s*D\s*\)/i, "");
+      while ((m = re.exec(body))) { const name = m[1].trim(); rows[name] = { name, before: numTok(m[2]), taxable: numTok(m[3]), tax: numTok(m[4]), balance: numTok(m[5]) }; }
+    }
+    // recommended scenario: name, taxable, tax, rate, credits + PAYG, payable
+    const rs = t.match(/\(RECOMMENDED\)(.+?)(?:TAX SAVING RECOMMENDATIONS|TAX\s+CALCULATIONS|$)/i);
+    if (rs) {
+      const re = new RegExp("([A-Z][A-Za-z&'’.,\\- ]+?)\\s+(" + money + ")\\s+(" + money + ")\\s+[\\d.]+%\\s+(" + money + ")\\s+(" + money + ")", "g"); let m;
+      while ((m = re.exec(rs[1]))) { const name = m[1].trim().replace(/^.*\)\s*/, ""); const r = rows[name] || (rows[name] = { name, taxable: numTok(m[2]), tax: numTok(m[3]), balance: numTok(m[5]) }); r.credits = Math.abs(numTok(m[4]) || 0); }
+      const desc = rs[1].match(/T\s*O\s*T\s*A\s*L\*?\s+.+?%\s+\(?\$[\d,]+\)?\s+\(?\$[\d,]+\)?\s+(.+?)(?:SUPER\s+CONTRIBUTIONS|$)/i);
+      if (desc) out.recommended = desc[1].trim();
+    }
+    Object.values(rows).forEach(r => out.plans.push({ sheet: "Tax plan report", person: r.name, option: null, taxable: r.taxable, before: r.before, tax: r.tax, balance: r.balance, plannedFinal: r.balance, paygTotal: r.credits, payg: [], paygFuture: [], items: [], report: true }));
+    // year-end actionable items: strategy, your action, due date, notes
+    const ai = t.match(/ACTIONABLE ITEMS(.+)$/i);
+    if (ai) {
+      const names = Object.keys(rows);
+      const hdr = "T\\s*A\\s*X\\s*P\\s*L\\s*A\\s*N\\s*N\\s*I\\s*N\\s*G\\s*S\\s*T\\s*R\\s*A\\s*T\\s*E\\s*G\\s*Y.*?N\\s*O\\s*T\\s*E\\s*S";
+      const marks = [];
+      names.forEach(n => { const re = new RegExp(n.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "\\s+" + hdr, "g"); let m; while ((m = re.exec(ai[1]))) marks.push({ n, i: m.index, j: m.index + m[0].length }); });
+      marks.sort((x, y) => x.i - y.i);
+      marks.forEach((mk, k) => {
+        const body = ai[1].slice(mk.j, k + 1 < marks.length ? marks[k + 1].i : undefined);
+        const re = /([A-Z][A-Za-z&' ]+ - .+?)\s((?:Pay|Make|Declare|Purchase|Prepay|Lodge|Contribute|Review|Arrange|Write|Obtain|Transfer|Repay)\s+[a-z].+?)\s(\d{1,2} [A-Z][a-z]+ \d{4})\s(?=[A-Z])(.+?)(?=\s[A-Z][A-Za-z&' ]+ - [A-Z]|$)/g; let m;
+        while ((m = re.exec(body))) { const amt = m[2].match(/\$([\d,]+)/); out.actions.push({ who: mk.n, strategy: m[1].trim(), action: m[2].trim(), due: m[3], note: m[4].trim(), amount: amt ? numTok(amt[1]) : null }); }
+      });
+    }
+    return out;
+  }
+  // Was each recommended action done? Only where the final figures can show it.
+  function checkAction(a, e) {
+    if (!e) return { status: "Check", note: "Not in this job." };
+    const b = e.br1 || {}, f = e.fig || {};
+    if (/super/i.test(a.strategy + a.action) && /employee/i.test(a.strategy + a.action) && e.type !== "individual") {
+      if (b.nondedSuper === undefined) return { status: "Check", note: "No workpaper added." };
+      return b.nondedSuper > 0 ? { status: "Partly done", note: `${absMoney(b.nondedSuper)} of super was still unpaid at 30 June and has been added back.` } : { status: "Done", note: "No unpaid super was added back at 30 June." };
+    }
+    if (/personal concessional|concessional superannuation contribution/i.test(a.action) && e.type === "individual") {
+      if (f.personalSuper === undefined) return { status: "Check", note: "Check the personal super deduction on the return." };
+      return f.personalSuper >= (a.amount || 0) - 100 ? { status: "Done", note: `${absMoney(f.personalSuper)} personal super deduction claimed.` } : { status: "Partly done", note: `${absMoney(f.personalSuper)} personal super deduction claimed.` };
+    }
+    if (/dividend/i.test(a.action)) { const d = (e.divs || []).reduce((s2, x) => s2 + (x.amount || 0), 0); return d ? { status: "Done", note: `Dividends of ${absMoney(d)} paid.` } : { status: "Not done", note: "No dividends in the final accounts." }; }
+    return { status: "Check", note: "Confirm with the client or the workpaper." };
+  }
+
+  // Which entity a plan is for: the person column, the sheet title, the sheet name or the file name
+  function planEntity(p, entities, fileName) {
+    const tries = [p.person, p.title, p.sheet, String(fileName || "").replace(/\.[a-z]+$/i, "").replace(/^\d{4}\s*(-\s*)?tax planning( workpapers)?\s*-?\s*/i, "")].filter(Boolean);
+    for (const t of tries) {
+      const e = entities.find(x => sameName(x.name, t) || samePerson(x.name, t) || norm(x.name).startsWith(norm(t) + " ") && t.length > 2 && x.type === "individual" || norm(x.name) === norm(t));
+      if (e) return e;
+    }
+    return null;
+  }
+  const PL_CATS = [
+    ["Tax depreciation", /tax depreciation|depreciation/i, e => e.br1 && e.br1.taxDep !== undefined ? -e.br1.taxDep : undefined],
+    ["Profit on disposal of assets", /profit on disposal|gain on (sale|disposal)/i, e => { const g = (e.wpOthers || []).filter(x => /gain on sale|disposal/i.test(x.label) && /tax/i.test(x.label)); return g.length ? g.reduce((s2, x) => s2 + x.amount, 0) : undefined; }],
+    ["Entertainment", /entertainment/i, e => e.br1 && e.br1.entertainment !== undefined ? e.br1.entertainment : undefined],
+    ["ATO interest charges", /interest.*ato|ato.*interest|general interest/i, e => e.br1 && e.br1.interestNonDed !== undefined ? e.br1.interestNonDed : undefined],
+    ["Leave provisions", /annual leave|long service|leave/i, e => e.br1 && e.br1.provNet !== undefined ? e.br1.provNet : undefined],
+    ["Superannuation payable", /superannuation|super payable/i, e => e.br1 && (e.br1.nondedSuper !== undefined || e.br1.dedSuperPrior !== undefined) ? (e.br1.nondedSuper || 0) - (e.br1.dedSuperPrior || 0) : undefined],
+    ["Blackhole / restructuring", /black ?hole|40-880|restructur/i, e => e.br1 && e.br1.blackhole !== undefined ? -e.br1.blackhole : undefined],
+    ["Borrowing costs", /borrowing/i, e => e.br1 && e.br1.amort !== undefined ? -e.br1.amort : undefined],
+    ["Prepayments", /prepay/i, e => e.br1 && e.br1.prepayNet !== undefined ? e.br1.prepayNet : undefined],
+  ];
+  // Compare the planning with the final figures for each entity
+  function comparePlanning(model, files) {
+    const res = [];
+    (files || []).filter(f => f.kind === "planning" && f.parsed).forEach(f => {
+      f.parsed.plans.forEach(p => {
+        const e = planEntity(p, model.entities, f.name); if (!e) return;
+        let r = res.find(x => x.e === e); if (!r) { r = { e, plans: [], notes: [], files: new Set() }; res.push(r); }
+        r.plans.push(Object.assign({ file: f.name }, p)); r.files.add(f.name);
+      });
+      f.parsed.notes.forEach(n => { const r = res[0]; if (r) r.notes.push(n); });
+      (f.parsed.actions || []).forEach(a => { const e = planEntity({ person: a.who }, model.entities, ""); let r = e && res.find(x => x.e === e); if (e && !r) { r = { e, plans: [], notes: [], files: new Set() }; res.push(r); } if (r) { r.actions = r.actions || []; r.actions.push(Object.assign({}, a, checkAction(a, e))); } });
+      if (f.parsed.report) { model._planReport = { file: f.name, prepared: f.parsed.prepared, saving: f.parsed.saving, recommended: f.parsed.recommended, others: f.parsed.plans.map(p => p.person).filter(n => !planEntity({ person: n }, model.entities, "")) }; }
+    });
+    res.forEach(r => {
+      const f = r.e.fig || {};
+      // several options: use the one closest to the final taxable income, and say so
+      r.plans.sort((a, b) => Math.abs((a.taxable || 0) - (f.taxable || 0)) - Math.abs((b.taxable || 0) - (f.taxable || 0)));
+      const summary = r.plans.find(x => x.report) || r.plans.find(x => x.person && !x.option && x.balance !== undefined);
+      const detail = r.plans.find(x => !x.person && x.items && x.items.length) || r.plans.find(x => x.items && x.items.length);
+      r.plan = Object.assign({}, summary || r.plans[0]);
+      if (summary && detail) { r.plan.items = detail.items; r.plan.netProfit = detail.netProfit; r.plan.detailFile = detail.file; }
+      const p = r.plan;
+      r.options = r.plans.filter(x => x.option).map(x => x.option);
+      r.actual = { taxable: f.taxable, tax: f.taxPayable, final: f.final, payg: f.taxPaid, net: f.fsProfit !== undefined ? f.fsProfit : f.net };
+      const tol = v => Math.max(100000, Math.abs(v || 0) * 0.05);
+      r.taxDiff = p.tax !== undefined && f.taxPayable !== undefined ? f.taxPayable - p.tax : null;
+      r.taxableDiff = p.taxable !== undefined && f.taxable !== undefined ? f.taxable - p.taxable : null;
+      r.inLine = r.taxDiff !== null ? Math.abs(r.taxDiff) <= tol(p.tax) : (r.taxableDiff !== null && Math.abs(r.taxableDiff) <= tol(p.taxable));
+      // line items against the final workpaper
+      const used = new Set(); r.lines = [];
+      const items = p.items.slice();
+      if (p.report && p.before !== undefined && p.taxable !== undefined && p.before !== p.taxable && items.length) {
+        const superOnly = (r.actions || []).length && r.actions.every(x => /super/i.test(x.strategy + x.action));
+        items.push({ label: superOnly ? "Superannuation payable (strategy: pay before 30 June)" : "Tax planning strategies (from the report)", amount: p.taxable - p.before });
+      }
+      items.forEach(it => {
+        const cat = PL_CATS.find(([, re]) => re.test(it.label));
+        if (/income tax expense/i.test(it.label)) { r.lines.push({ label: it.label, planned: it.amount, actual: undefined, note: "Added back in the planning. The final accounts start from profit before tax." }); return; }
+        if (!cat) { r.lines.push({ label: it.label, planned: it.amount, actual: undefined }); return; }
+        const a = cat[2](r.e); const prev = r.lines.find(x => x.cat === cat[0]);
+        if (prev) { prev.planned += it.amount; return; }
+        used.add(cat[0]); r.lines.push({ cat: cat[0], label: cat[0], planned: it.amount, actual: a });
+      });
+      PL_CATS.forEach(([name, , fn]) => { if (used.has(name)) return; const a = fn(r.e); if (a) r.lines.push({ cat: name, label: name, planned: undefined, actual: a, note: "In the final workpaper but not in the planning." }); });
+      r.lines.forEach(l => { l.diff = l.planned !== undefined && l.actual !== undefined ? l.actual - l.planned : null; });
+    });
+    return res;
+  }
+  async function buildPlanningReport(PDFLib, fontkit, assets, model, files) {
+    const res = comparePlanning(model, files);
+    const k = await kit(PDFLib, fontkit, assets); const { doc, C, bold } = k;
+    const lay = Layout(k, Object.assign({}, model, { design: "current", headerLabel: "TAX PLANNING REVIEW" })); lay._bold = bold; lay._ink = C.ink;
+    const Y = model.year, name = reportName(model);
+    lay.newPage();
+    lay.title(`${Y} TAX PLANNING`, "REVIEW");
+    lay.para(`${name}. Prepared ${fmtDate(model.reportDate)} for internal review. This compares the tax planning saved in SuiteFiles with the final ${Y} figures.`, { after: 12 });
+    const PR = model._planReport;
+    if (PR) lay.para(`Tax plan report: ${PR.file}${PR.prepared ? `, prepared ${PR.prepared}` : ""}. The figures compared are the recommended scenario${PR.recommended ? ` (${PR.recommended.replace(/\s+SUPER CONTRIBUTIONS.*$/i, "")})` : ""}.${PR.saving ? ` The report estimated a tax saving of ${absMoney(PR.saving)} across the group.` : ""}${PR.others && PR.others.length ? ` It also covers ${joinList(PR.others)}, who aren’t in this job.` : ""}`, { size: 9, after: 10 });
+    if (!res.length) { lay.para("No tax planning could be matched to the entities in this job.", { after: 10 }); }
+    else {
+      const sd = d => d === null || d === undefined ? "-" : (d === 0 ? "Nil" : (d > 0 ? "+ " : "- ") + absMoney(d));
+      lay.h2("SUMMARY", lay.tableHeight(res, false) + 40);
+      lay.table([{ label: "ENTITY", w: 150 }, { label: "PLANNED\nTAX", w: 74, align: "right" }, { label: "FINAL\nTAX", w: 74, align: "right" }, { label: "DIFFERENCE", w: 80, align: "right" }, { label: "RESULT", w: 92, align: "right" }],
+        res.map(r => [r.e.name, r.plan.tax !== undefined ? money(r.plan.tax) : "-", r.actual.tax !== undefined ? money(r.actual.tax) : "-", sd(r.taxDiff), r.inLine ? "In line" : (r.taxDiff > 0 ? "Higher than planned" : "Lower than planned")]));
+      lay.para(`“In line” means within $1,000 or 5% of the planned tax, whichever is more.`, { size: 8, after: 12 });
+      res.forEach(r => {
+        const p = r.plan, a = r.actual;
+        lay.h3(r.e.name, 120);
+        lay.para(`From ${p.file}${p.report ? " (recommended scenario)" : p.sheet ? `, sheet “${p.sheet}”` : ""}${p.option ? `, ${p.option}` : ""}${p.detailFile ? `, with the adjustments from ${p.detailFile}` : ""}.` + (r.options.length > 1 ? ` The planning had ${r.options.length} options (${[...new Set(r.options)].join("; ")}). The final result is closest to ${p.option}.` : ""), { size: 9, after: 8 });
+        lay.para(r.inLine ? `**The final result is in line with the tax planning.**` : `**The final result is ${r.taxDiff > 0 ? "higher" : "lower"} than the tax planning by ${absMoney(r.taxDiff || 0)} of tax.** The differences are set out below.`, { after: 8 });
+        const rows = [["Net profit", p.netProfit, a.net]].concat(p.before !== undefined && p.before !== p.taxable ? [["Taxable income before tax planning", p.before, undefined]] : []).concat([["Taxable income" + (p.report ? " (after tax planning)" : ""), p.taxable, a.taxable], ["Tax", p.tax, a.tax], ["PAYG instalments", p.paygTotal || undefined, a.payg], ["Payable / (refundable) at lodgement", p.plannedFinal, a.final]])
+          .filter(x => x[1] !== undefined || x[2] !== undefined).map(([l, pl, ac]) => [l, pl !== undefined ? money(pl) : "-", ac !== undefined ? money(ac) : "-", pl !== undefined && ac !== undefined ? sd(ac - pl) : "-"]);
+        lay.table([{ label: "", w: 190 }, { label: "PLANNING", w: 90, align: "right" }, { label: "FINAL", w: 90, align: "right" }, { label: "DIFFERENCE", w: 100, align: "right" }], rows);
+        if (p.netProfit !== undefined && a.net !== undefined) lay.para("The planning profit is usually before accounting depreciation and income tax, so compare taxable income and tax first.", { size: 8, after: 8 });
+        if (r.actions && r.actions.length) {
+          lay.h4("Recommended actions", 60);
+          lay.para(r.actions.map(x => `- **${x.status}:** ${x.action.replace(/\.$/, "")} (due ${x.due}). ${x.note}`).join("\n"), { after: 10 });
+        }
+        const lines = r.lines.filter(l => l.planned || l.actual);
+        if (lines.length && r.e.type === "individual") {
+          lay.h4("What the planning assumed", 60);
+          lay.table([{ label: "ITEM", w: 300 }, { label: "PLANNING", w: 170, align: "right" }], lines.filter(l => l.planned !== undefined).map(l => [l.label, money(l.planned)]));
+          lay.para("Compare these with the return, for example whether a planned super contribution was made and claimed.", { size: 8, after: 10 });
+        } else if (lines.length) {
+          lay.h4("Adjustments: planning compared with the final workpaper", 80);
+          lay.table([{ label: "ITEM", w: 190 }, { label: "PLANNING", w: 90, align: "right" }, { label: "FINAL", w: 90, align: "right" }, { label: "DIFFERENCE", w: 100, align: "right" }],
+            lines.map(l => [l.label, l.planned !== undefined ? money(l.planned) : "Not in planning", l.actual !== undefined ? money(l.actual) : (l.cat ? (r.e.br1 ? "Not in workpaper" : "No workpaper added") : "-"), l.diff !== null ? sd(l.diff) : "-"]));
+          const big = lines.filter(l => l.diff !== null && Math.abs(l.diff) > 500000).sort((x, y) => Math.abs(y.diff) - Math.abs(x.diff));
+          const notes = [];
+          big.forEach(l => notes.push(`${l.label}: ${absMoney(l.actual)} in the final workpaper, compared with ${absMoney(l.planned)} in the planning (a difference of ${absMoney(l.diff)} to taxable income).`));
+          lines.filter(l => l.note).forEach(l => notes.push(`${l.label}: ${l.note}`));
+          if (notes.length) { lay.h4("Things to note", 40); lay.para(notes.map(n => "- " + n).join("\n"), { after: 10 }); }
+        }
+      });
+      const notes = res.flatMap(r => r.notes);
+      if (notes.length) { lay.h2("PLANNING **NOTES AND ACTIONS**", 60); lay.para("From the planning workpapers. Check each was done before the returns are lodged.", { after: 8 }); lay.table([{ label: "ITEM", w: 160 }, { label: "NOTE / ACTION", w: 310 }], notes.map(n => [n.item, n.note])); }
+    }
+    lay.finish && lay.finish();
+    const bytes = await doc.save(); return { bytes, results: res, pageCount: doc.getPageCount() };
   }
 
   // ---------- Dates ----------
@@ -951,7 +1242,7 @@ button.chip:hover{background:var(--ix-tint2)}
     L.push(`We have estimated ${lower} final tax position to be ${pos}.`); L.push("");
     L.push("**Please carefully review and sign all documents where marked, and return them to our office as soon as possible for electronic lodgement with the Taxation Office.**"); L.push("");
     L.push(`If you have any questions about your tax ${one ? "return" : "returns"}, please contact our office immediately.`); L.push("");
-    L.push(v === "single" ? `We have also prepared a report that provides a summary of ${rv} current tax position.` : `We have also prepared a report that provides a summary of ${rv} current tax position compared with recent years, and a breakdown of tax ${bd}${tail}.`); L.push("");
+    L.push(v === "single" ? `We have also prepared a report that provides a summary of ${rv} current tax position.` : v === "group" ? `We have also prepared a report that provides a summary of ${rv} current tax position compared with recent years.` : `We have also prepared a report that provides a summary of ${rv} current tax position compared with recent years, and a breakdown of tax ${bd}${tail}.`); L.push("");
     L.push("Kind Regards,"); L.push("[SIGNATURE]");
     (model.signerLines || []).forEach(x => L.push("**" + x + "**"));
     return L;
@@ -992,7 +1283,7 @@ button.chip:hover{background:var(--ix-tint2)}
       if ((e.docs || []).some(d => d.kind === "fs") && !String(e.signatories || "").trim()) add("warn", `${e.name}: type who signs the financial statements, so the declaration has the right signature lines.`);
       if (isTaxpayer(e) && !(e.docs || []).some(d => d.kind === "itr" && d.year === model.year)) add("warn", `${e.name}: no ${model.year} income tax return has been added for the collation.`);
       const b = e.br1 || {};
-      const gaps = [["donations", "donations and gifts"], ["legal", "legal fees"], ["interestNonDed", "non-deductible interest"]].filter(([k]) => b[k]).map(x => x[1]);
+      const gaps = [["donations", "donations and gifts"], ["legal", "legal fees"]].filter(([k]) => b[k]).map(x => x[1]);
       (e.wpOthers || []).filter(o => /wip|work in progress|retention/i.test(o.label)).forEach(o => gaps.push(o.label));
       if (gaps.length) add("warn", `${e.name}: the workpaper has adjustments with no approved wording yet (${joinList(gaps)}). Add a sentence in the client-specific paragraph if the client needs it explained.`);
       Object.entries(e.paras || {}).forEach(([id, p]) => { if (!p.on) return; const r = fillText(id, p, e, model, LIB); if (r.missing.length) add("block", `${e.name}, ${LIB[id].title}: fill in ${[...new Set(r.missing)].join(", ")}.`); });
@@ -1000,6 +1291,7 @@ button.chip:hover{background:var(--ix-tint2)}
       if (e.minuteDiffs && e.minuteDiffs.length) add("warn", `${e.name}: the distributions on the trust return don’t match the trust distribution minute. ${e.minuteDiffs.join("; ")}. Check the minute and update it before it goes in the pack.`);
       if (e.divDiffs && e.divDiffs.length) add("warn", `${e.name}: the dividends don’t agree between documents. ${e.divDiffs.join("; ")}.`);
       if (e.fsCheck && e.br1 && e.br1.fsProfit !== undefined && Math.abs(e.fsCheck - e.br1.fsProfit) > 100) add("warn", `${e.name}: net profit in the financial statements (${money(e.fsCheck)}) is different from the workpaper (${money(e.br1.fsProfit)}). Check you have the final versions of both.`);
+      if (isTaxpayer(e) && e.type === "company" && (e.fig || {}).final > 0 && !e.due) add("warn", `${e.name}: the payment due date is set to ${fmtDate(dueDate(e, model))}. Check the lodgement program and change it in step 3 if the return is due earlier.`);
       if (e.bench && e.bench.on && (e.bench.expPct === undefined || e.bench.expPct === "" || !e.bench.industry || !e.bench.year)) add("block", `${e.name}: fill in the ATO benchmark business type, data year and total expenses percentage, or untick the benchmarks.`);
       if (e.d7 && e.d7.on && (!String(e.d7.borrowers || "").trim() || !String(e.d7.agreementYear || "").trim() || !(e.d7.rows || []).some(r => r.desc || r.rep || r.bal))) add("block", `${e.name}: the Division 7A section is ticked but the loan agreement details or repayments aren’t filled in.`);
       if (e.d7 && !e.d7.on && e.wpTabs && e.wpTabs["Div 7A"] && isBiz(e)) add("info", `${e.name}: the Div 7A tab is in use in the workpaper. Tick “Include the Division 7A loans section” in step 3 and enter the figures if the report needs it.`);
@@ -1007,6 +1299,7 @@ button.chip:hover{background:var(--ix-tint2)}
     });
     (files || []).filter(f => !f.entityId && !["data", "collation", "own", "workpaper", "org", "template", "skip"].includes(f.kind) && f.kind !== "amendedMinutes").forEach(f => add("warn", `${f.name} isn’t matched to an entity yet, so it won’t go in the collation.`));
     (files || []).filter(f => f.misfiled).forEach(f => add("warn", f.misfiled));
+    (files || []).filter(f => f.kind === "workpaper" && f.entityId && f.wpClient && !f.unused).forEach(f => { const e = model.entities.find(x => x.id === f.entityId); if (e && !sameName(e.name, f.wpClient)) add("warn", `${f.name} is the workpaper for ${f.wpClient}, but it’s set against ${e.name}. Add ${e.name}’s own workpaper from its client folder.`); });
     (files || []).filter(f => f.kind === "amendedMinutes").forEach(f => add("info", `${f.name} is amended minutes, so it’s left out of the pack (to be emailed).`));
     if (model.entities.some(e => e.type === "individual" && (e.fig || {}).final > 0 && !isOverdue(e, model) && dueDate(e, model).getUTCMonth() === 4)) add("info", `The 15 May footnote says returns lodged from ${fmtDate(model.footnoteDate)}. Check that date is right for ${model.year} returns.`);
     if (!model.assets.signature) add("info", "The signature is added when you’re signed in to Microsoft. This preview leaves a gap for it.");
@@ -1100,7 +1393,7 @@ button.chip:hover{background:var(--ix-tint2)}
     const width = (t, b, s) => (b ? bold : reg).widthOfTextAtSize(t, s);
     function header(p) {
       p.drawImage(k.logo, { x: L, y: H - 62, width: 74, height: 74 * k.logo.height / k.logo.width });
-      const left = `${Y} ANNUAL TAX SUMMARY  |  `, size = 7.2, cs = 0.9;
+      const left = `${Y} ${model.headerLabel || "ANNUAL TAX SUMMARY"}  |  `, size = 7.2, cs = 0.9;
       const wl = trackedW(left, reg, size, cs), wn = trackedW(name, bold, size, cs);
       let x = R - wl - wn; if (x < L + 90) x = L + 90;
       tracked(p, left, x, H - 50, reg, size, C.ink, cs); tracked(p, name, x + wl, H - 50, bold, size, C.ink, cs);
@@ -1286,18 +1579,18 @@ button.chip:hover{background:var(--ix-tint2)}
   function niceStep(raw) { if (raw <= 0) return 1; const p = Math.pow(10, Math.floor(Math.log10(raw))); const n = raw / p; return (n <= 1 ? 1 : n <= 2 ? 2 : n <= 2.5 ? 2.5 : n <= 5 ? 5 : 10) * p; }
 
   function changeLine(what, cur, prev, Y, kind) {
-    if (prev === undefined || prev === null || !isFinite(prev)) return kind === "tax" ? `${what} for the ${Y} year is ${money(cur)}.` : `${what} is ${money(cur)} for the ${Y} year.`;
+    if (prev === undefined || prev === null || !isFinite(prev)) return kind === "tax" ? `${what} for the ${Y} year is ${money(cur)}.` : `${what} is ${money0(cur)} for the ${Y} year.`;
     const d = cur - prev; const dir = d >= 0 ? "up" : "down";
     const p = prev ? Math.abs(d / Math.abs(prev) * 100).toFixed(1) + "%" : null;
     if (kind === "tax") return `${what} for the ${Y} year is ${money(cur)}, ${d >= 0 ? "an increase" : "a decrease"} of ${absMoney(d)}.`;
-    return `${what} is ${dir} by ${absMoney(d)} to ${money(cur)} for the ${Y} year${p ? `, ${d >= 0 ? "an increase" : "a decrease"} of ${p}` : ""}.`;
+    return `${what} is ${dir} by ${abs0(d)} to ${money0(cur)} for the ${Y} year${p ? `, ${d >= 0 ? "an increase" : "a decrease"} of ${p}` : ""}.`;
   }
 
   // Issues & Recommendations block for one entity, as an array of drawing steps
   const SHORT = {
     dep_sbe: "Depreciation is worked out differently for tax than in your accounts.", dep_book: "Assets written off for tax in earlier years, so tax depreciation is lower.",
     dep_nonsbe: "Depreciation is worked out differently for tax than in your accounts.", dep_dv: "Depreciation is worked out differently for tax than in your accounts.",
-    borrowing: "Borrowing costs are claimed over five years or the loan term.", formation: "Set-up costs are claimed over five years.",
+    borrowing: "Borrowing costs are claimed over five years or the loan term.", restructure: "Restructuring costs are claimed over five years.", dep_tfe_gains: "Assets written off for tax in earlier years, so depreciation and disposal gains differ.", gic: "ATO interest charges aren’t deductible.", formation: "Set-up costs are claimed over five years.",
     gain_tfe: "The taxable gain differs because these assets were written off for tax.", gain_pool: "The taxable gain differs under the small business depreciation rules.",
     sgc: "Late super charges aren’t deductible.", super_exp: "Super is only deductible once it’s paid on time.", unpaid_super: "Super is only deductible once the fund receives it.",
     losses: "Losses from earlier years reduce this year’s taxable income.", entertainment: "Most entertainment isn’t deductible.", fines: "Fines aren’t deductible.",
@@ -1309,6 +1602,9 @@ button.chip:hover{background:var(--ix-tint2)}
   function avtAmount(id, e) {
     const b = e.br1 || {}, f = e.fig || {}, o = e.wpOthers || [];
     const n = v => (v === undefined || v === null) ? null : v;
+    if (id === "dep_tfe_gains") { const g = (e.wpOthers || []).filter(x => /gain on sale|disposal/i.test(x.label)).reduce((s2, x) => s2 + x.amount, 0); return b.accDep !== undefined && b.taxDep !== undefined ? b.accDep - b.taxDep + g : null; }
+    if (id === "formation" || id === "restructure") return b.blackhole ? -b.blackhole : null;
+    if (id === "gic") return b.interestNonDed !== undefined ? Math.abs(b.interestNonDed) : null;
     if (/^dep_/.test(id)) return b.accDep !== undefined && b.taxDep !== undefined ? b.accDep - b.taxDep : null;
     if (/^gain_/.test(id)) { const g = o.filter(x => /gain on sale|disposal/i.test(x.label)); return g.length ? g.reduce((s2, x) => s2 + x.amount, 0) : null; }
     if (id === "borrowing") { const g = o.filter(x => /borrowing/i.test(x.label)); if (g.length) return g.reduce((s2, x) => s2 + x.amount, 0); if (b.amort !== undefined) return b.amort; if (b.blackhole && e.wpTabs && e.wpTabs["Borrowing Costs"]) return -b.blackhole; return null; }
@@ -1320,7 +1616,10 @@ button.chip:hover{background:var(--ix-tint2)}
   }
   function issuesFor(e, model, LIB) {
     const on = Object.entries(e.paras || {}).filter(([, p]) => p.on).map(([id]) => id);
-    const avt = on.filter(id => LIB[id].group === "avt").sort((a, b) => LIB[a].order - LIB[b].order);
+    // the order the firm's reports use: depreciation first, then add-backs, then timing items
+    const AVT_ORDER = ["dep_", "capworks", "gain_", "entertainment", "gic", "fines", "leave", "unpaid_super", "super_exp", "sgc", "restructure", "formation", "borrowing", "prepay", "franking", "fito", "cash", "trust_dist_adj", "cap_loss", "losses"];
+    const rank = id => { const i = AVT_ORDER.findIndex(p => id === p || id.startsWith(p)); return i < 0 ? 50 + (LIB[id].order || 0) : i; };
+    const avt = on.filter(id => LIB[id].group === "avt").sort((a, b) => rank(a) - rank(b));
     const rest = on.filter(id => LIB[id].group !== "avt").sort((a, b) => LIB[a].order - LIB[b].order);
     const steps = [];
     const f = e.fig || {};
@@ -1329,15 +1628,18 @@ button.chip:hover{background:var(--ix-tint2)}
       const rows = avt.map(id => ({ title: LIB[id].heading, amount: avtAmount(id, e), reason: SHORT[id] || "" }));
       steps.push({ t: "avt", rows, fsP, taxable: f.taxable });
     } else if (avt.length) {
-      steps.push({ t: "h5", text: "Accounting vs. Taxation Income" });
+      steps.push({ t: "h5", text: "Accounting versus Taxation Income" });
       const fsP = f.fsProfit !== undefined ? f.fsProfit : f.net;
-      if (fsP !== undefined && f.taxable !== undefined) steps.push({ t: "p", text: model.avtIntro === "recon" ? "The reconciliation to taxable income includes the following adjustments required to convert accounting profit to taxable income:" : `You will notice that the ${fsP < 0 ? "loss" : "profit"} on your Financial Statements of ${absMoney(fsP)} differs from the ${f.taxable < 0 ? "loss" : "profit"} on your Income Tax Return of ${absMoney(f.taxable)}. This difference is made up of the following tax adjustments:`, after: 9 });
+      if (fsP !== undefined && f.taxable !== undefined) steps.push({ t: "p", text: model.avtIntro === "recon" ? "The reconciliation to assessable income and deductible expenses in the financial statements includes the following adjustments required to convert accounting profit to taxable income:" : `You will notice that the ${fsP < 0 ? "loss" : "profit"} on your Financial Statements of ${abs0(fsP)} differs from the ${f.taxable < 0 ? "loss" : "profit"} on your Income Tax Return of ${abs0(f.taxable)}. This difference is made up of the following tax adjustments:`, after: 9 });
       avt.forEach(id => { const r = fillText(id, e.paras[id], e, model, LIB); steps.push({ t: "sub", avt: true, title: LIB[id].heading, text: r.text }); });
       steps.push({ t: "gap", h: 10 });
     }
-    rest.filter(id => !LIB[id].notes).forEach(id => { const r = fillText(id, e.paras[id], e, model, LIB); steps.push({ t: "h5", text: LIB[id].heading }); steps.push({ t: "p", text: r.text, after: 14 }); });
+    const isPay = id => /^pay_tax/.test(id);
+    const para = id => { const r = fillText(id, e.paras[id], e, model, LIB); steps.push({ t: "h5", text: LIB[id].heading }); steps.push({ t: "p", text: r.text, after: 14 }); };
+    rest.filter(id => !LIB[id].notes && !isPay(id)).forEach(para);
     const notes = rest.filter(id => LIB[id].notes);
     if (notes.length) { steps.push({ t: "notes" }); notes.forEach(id => { const r = fillText(id, e.paras[id], e, model, LIB); steps.push({ t: "sub", title: LIB[id].heading, text: r.text }); steps.push({ t: "gap", h: 6 }); }); }
+    rest.filter(id => !LIB[id].notes && isPay(id)).forEach(para);
     if (String(e.custom || "").trim()) String(e.custom).trim().split(/\n\s*\n/).forEach(block => {
       const ls = block.split("\n"); if (ls.length > 1 && ls[0].length < 70 && !/[.:]$/.test(ls[0].trim())) { steps.push({ t: "h5", text: ls[0].trim() }); steps.push({ t: "p", text: ls.slice(1).join("\n"), after: 14 }); }
       else steps.push({ t: "p", text: block, after: 14 });
@@ -1519,8 +1821,8 @@ button.chip:hover{background:var(--ix-tint2)}
         lay.h2(`${Y} **TAX POSITIONS**`, lay.tableHeight(tp, true) + 40);
         lay.para(`Each taxpayer’s taxable income, tax, what has already been paid and the final amount payable or refundable for the year ending ${Y}.`, { after: 8 });
         lay.table([{ label: "TAXPAYER", w: 124 }, { label: "TAXABLE\nINCOME", w: 64, align: "right" }, { label: "TAX\nPAYABLE", w: 60, align: "right" }, { label: "TAX\nRATE", w: 34, align: "right" }, { label: "ALREADY\nPAID", w: 60, align: "right" }, { label: "FINAL\nPOSITION", w: 88, align: "right" }, { label: "DUE", w: 66, align: "right" }],
-          tp.map(e => { const f = e.fig; const paid = f.taxPaid !== undefined ? f.taxPaid : f.taxPayable - f.final; return [e.name, money(f.taxable), money(f.taxPayable), pct(f.taxPayable, f.taxable), money(paid), signedWords(f.final), dueCell(e, model)]; }),
-          ["TOTAL", money(T.taxable), money(T.taxPayable), pct(T.taxPayable, T.taxable), money(T.taxPaid), signedWords(T.final), ""]);
+          tp.map(e => { const f = e.fig; const paid = f.taxPaid !== undefined ? f.taxPaid : f.taxPayable - f.final; return [e.name, money0(f.taxable), money(f.taxPayable), pct(f.taxPayable, f.taxable), money(paid), signedWords(f.final), dueCell(e, model)]; }),
+          ["TOTAL", money0(T.taxable), money(T.taxPayable), pct(T.taxPayable, T.taxable), money(T.taxPaid), signedWords(T.final), ""]);
         return;
       }
       const rowsE = tp.map(e => ({ e, v: yy === Y ? e.fig : (e.prior || {})[yy] || {} }));
@@ -1550,16 +1852,16 @@ button.chip:hover{background:var(--ix-tint2)}
       lay.para(`We have estimated below your PAYG Tax Payments. The ATO requires this for any individuals or businesses that generate business profits or receive untaxed investment income. The estimated amounts below will be treated as pre-payments toward your ${Y + 1} tax payable.${model.design === "new" ? " If income next year is likely to be lower, we can apply to the ATO to reduce them." : ""}`, { after: 8 });
       const sums = [0, 0, 0, 0];
       lay.table([{ label: "TAXPAYER", w: 170 }].concat(cols.map(c => ({ label: c.toUpperCase(), w: 62, align: "right" }))).concat([{ label: "TOTAL", w: 72, align: "right" }]),
-        instRows.map(e => { const ins = [0, 1, 2, 3].map(i => e.inst[i] || 0); ins.forEach((x, i) => sums[i] += x); return [e.name].concat(ins.map(money)).concat([money(ins.reduce((a, b) => a + b, 0))]); }),
-        ["TOTAL"].concat(sums.map(money)).concat([money(sums.reduce((a, b) => a + b, 0))]));
+        instRows.map(e => { const ins = [0, 1, 2, 3].map(i => e.inst[i] || 0); ins.forEach((x, i) => sums[i] += x); return [e.name].concat(ins.map(money0)).concat([money0(ins.reduce((a, b) => a + b, 0))]); }),
+        ["TOTAL"].concat(sums.map(money0)).concat([money0(sums.reduce((a, b) => a + b, 0))]));
     }
     // Detailed tax summary (already combined into the tax positions table in the new design)
     if (model.design !== "new") {
     lay.h2("DETAILED **TAX SUMMARY**", lay.tableHeight(tp, true) + 40);
     lay.para(`Here is a detailed summary of your taxable income, tax payable by amount and percentage, tax already paid, and **final tax** payable / refundable${group ? " by each entity in your group" : ""}, for the year ending ${Y}.`, { after: 8 });
     lay.table([{ label: "TAXPAYER", w: 150 }, { label: "TAXABLE\nINCOME", w: 72, align: "right" }, { label: "($) TAX\nPAYABLE", w: 70, align: "right" }, { label: "(%) TAX\nPAYABLE", w: 50, align: "right" }, { label: "TAX PAID\n(PAYG $)", w: 70, align: "right" }, { label: "FINAL NET\nPOSITION", w: 72, align: "right" }],
-      tp.map(e => { const f = e.fig; const paid = f.taxPaid !== undefined ? f.taxPaid : f.taxPayable - f.final; return [e.name, money(f.taxable), money(f.taxPayable), pct(f.taxPayable, f.taxable), money(paid), money(f.final)]; }),
-      ["TOTAL", money(T.taxable), money(T.taxPayable), pct(T.taxPayable, T.taxable), money(T.taxPaid), money(T.final)]);
+      tp.map(e => { const f = e.fig; const paid = f.taxPaid !== undefined ? f.taxPaid : f.taxPayable - f.final; return [e.name, money0(f.taxable), money(f.taxPayable), pct(f.taxPayable, f.taxable), money(paid), money(f.final)]; }),
+      ["TOTAL", money0(T.taxable), money(T.taxPayable), pct(T.taxPayable, T.taxable), money(T.taxPaid), money(T.final)]);
     }
     if (model.design !== "new") { const cf = carried(model); if (cf.length) { lay.h2("BALANCES **CARRIED FORWARD**", lay.tableHeight(cf, false) + 30); lay.para(`These balances carry into the ${Y + 1} year and can reduce future tax.`, { after: 8 }); lay.table([{ label: "ENTITY", w: 220 }, { label: "BALANCE", w: 150 }, { label: "AMOUNT", w: 100, align: "right" }], cf); } }
     // Graphs
@@ -1606,7 +1908,7 @@ button.chip:hover{background:var(--ix-tint2)}
         }
         const net = f.fsProfit !== undefined ? f.fsProfit : f.net;
         if (f.revenue !== undefined && pv.revenue === undefined && net !== undefined) {
-          lay.para(`Your ${Y} year of operation has resulted in a total revenue of ${money(f.revenue)}, with ${e.type === "trust" ? (net < 0 ? "a total loss before distribution" : "a total profit before distribution") : (net < 0 ? "a net loss" : "a net profit")} of ${absMoney(net)}.`);
+          lay.para(`Your ${Y} year of operation has resulted in a total revenue of ${money0(f.revenue)}, with ${e.type === "trust" ? (net < 0 ? "a total loss before distribution" : "a total profit before distribution") : (net < 0 ? "a net loss" : "a net profit")} of ${abs0(net)}.`);
         } else {
         if (f.revenue !== undefined) lay.para(changeLine("Total revenue", f.revenue, pv.revenue, Y));
         if (net !== undefined) {
@@ -1617,7 +1919,7 @@ button.chip:hover{background:var(--ix-tint2)}
         }
         const has = p => p && Object.values(p).some(x => x !== undefined && x !== null && x !== 0);
         const by = [Y].concat(e.firstYear ? [] : years).filter(yy => yy === Y || has((e.prior || {})[yy]));
-        const rv = by.map(yy => yy === Y ? f.revenue : e.prior[yy].revenue), gp = by.map(yy => yy === Y ? (f.revenue !== undefined ? f.revenue - (f.cogs || 0) : undefined) : e.prior[yy].gross), np = by.map(yy => yy === Y ? net : e.prior[yy].net);
+        const rv = by.map(yy => yy === Y ? f.revenue : e.prior[yy].revenue), gp = by.map(yy => yy === Y ? (f.gross !== undefined ? f.gross : f.revenue !== undefined ? f.revenue - (f.cogs || 0) : undefined) : e.prior[yy].gross), np = by.map(yy => yy === Y ? net : e.prior[yy].net);
         if ([...rv, ...np].some(x => x)) {
           const ser = [{ name: "Revenue", values: rv, color: SER[0] }];
           if (e.type === "company" || gp.some((x, i) => x && x !== rv[i])) ser.push({ name: "Gross profit", values: gp, color: SER[1] });
@@ -1634,7 +1936,7 @@ button.chip:hover{background:var(--ix-tint2)}
           lay.para(`Your company will have to make the following estimated tax payments over the next 12 months. These payments are a pre-payment toward your total estimated company tax for ${Y + 1}. If these pre-payments are more, or less, than your final tax assessed for ${Y + 1}, your company will then either receive a tax refund or will have to pay “top up” tax.`);
           lay.para("You will need to plan for this in your cashflow. If your expected income next year is lower than this year’s income, we can apply to the Australian Taxation Office to reduce these estimated payments to lower amounts or even to NIL.", { after: 8 });
           const ds = model.instDates.company;
-          lay.table([{ label: "DATE PAYMENT DUE", w: 150 }].concat(ds.map(d => ({ label: fmtDate(d).toUpperCase(), w: 80, align: "right" }))), [["ESTIMATED TAX PAYMENTS"].concat(e.inst.map(x => money(x || 0)))]);
+          lay.table([{ label: "DATE PAYMENT DUE", w: 150 }].concat(ds.map(d => ({ label: fmtDate(d).toUpperCase(), w: 80, align: "right" }))), [["ESTIMATED TAX PAYMENTS"].concat(e.inst.map(x => money0(x || 0)))]);
         }
         if (e.type === "company" && (e.divs || []).some(d => d.name)) {
           const rows = e.divs.filter(d => d.name); const tA = rows.reduce((s, d) => s + (d.amount || 0), 0), tF = rows.reduce((s, d) => s + (d.franking || 0), 0);
@@ -1651,13 +1953,13 @@ button.chip:hover{background:var(--ix-tint2)}
           const rows = e.dist.filter(d => d.name); const tA = rows.reduce((s, d) => s + (d.amount || 0), 0);
           lay.h4("Distribution of partnership profits", lay.tableHeight(rows, true) + 30);
           lay.para("The partnership profits were allocated to the partners as follows:", { after: 8 });
-          lay.table([{ label: "PARTNER", w: 240 }, { label: "PROFIT ALLOCATION", w: 110, align: "right" }, { label: "ALLOCATION %", w: 110, align: "right" }], rows.map(d => [d.name, money(d.amount || 0), tA ? Math.round((d.amount || 0) / tA * 100) + "%" : "-"]), ["TOTAL", money(tA), "100%"]);
+          lay.table([{ label: "PARTNER", w: 240 }, { label: "PROFIT ALLOCATION", w: 110, align: "right" }, { label: "ALLOCATION %", w: 110, align: "right" }], rows.map(d => [d.name, money0(d.amount || 0), tA ? Math.round((d.amount || 0) / tA * 100) + "%" : "-"]), ["TOTAL", money0(tA), "100%"]);
         }
         if (e.type === "trust" && (e.dist || []).some(d => d.name)) {
           const rows = e.dist.filter(d => d.name); const tA = rows.reduce((s, d) => s + (d.amount || 0), 0), tF = rows.reduce((s, d) => s + (d.franking || 0), 0);
           lay.h4(`Distribution of ${e.type === "partnership" ? "partnership" : "trust"} profits`, lay.tableHeight(rows, true) + 30);
           lay.para(`The following ${e.type === "partnership" ? "partnership" : "trust"} distributions were allocated to ${e.type === "partnership" ? "partners" : "beneficiaries"} during the year:`, { after: 8 });
-          lay.table([{ label: e.type === "partnership" ? "PARTNER" : "BENEFICIARY", w: 240 }, { label: "DISTRIBUTION\nAMOUNT", w: 110, align: "right" }, { label: "FRANKING\nCREDIT", w: 110, align: "right" }], rows.map(d => [d.name, money(d.amount || 0), money(d.franking || 0)]), ["TOTAL", money(tA), money(tF)]);
+          lay.table([{ label: e.type === "partnership" ? "PARTNER" : "BENEFICIARY", w: 240 }, { label: "DISTRIBUTION\nAMOUNT", w: 110, align: "right" }, { label: "FRANKING\nCREDIT", w: 110, align: "right" }], rows.map(d => [d.name, money0(d.amount || 0), money0(d.franking || 0)]), ["TOTAL", money0(tA), money0(tF)]);
         }
         if (e.d7 && e.d7.on) drawDiv7a(lay, e, model);
         if (e.bench && e.bench.on) drawBench(lay, e, model);
@@ -1683,7 +1985,7 @@ button.chip:hover{background:var(--ix-tint2)}
           lay.h4("Future tax payments", 120);
           lay.para(`You will have to make the following estimated tax payments over the next 12 months. These payments are a pre-payment toward your total estimated tax for ${Y + 1}. If these pre-payments are more, or less, than your final tax assessed for ${Y + 1}, you will then either receive a tax refund or will have to pay “top up” tax.`);
           lay.para("You will need to plan for this in your cashflow. If your expected income next year is lower than this year’s income, we can apply to the Australian Taxation Office to reduce these estimated payments to lower amounts or even to NIL.", { after: 8 });
-          lay.table([{ label: "DATE PAYMENT DUE", w: 150 }].concat(model.instDates.individual.map(d => ({ label: fmtDate(d).toUpperCase(), w: 80, align: "right" }))), [["ESTIMATED TAX PAYMENTS"].concat(e.inst.map(x => money(x || 0)))]);
+          lay.table([{ label: "DATE PAYMENT DUE", w: 150 }].concat(model.instDates.individual.map(d => ({ label: fmtDate(d).toUpperCase(), w: 80, align: "right" }))), [["ESTIMATED TAX PAYMENTS"].concat(e.inst.map(x => money0(x || 0)))]);
         }
         drawIssues(lay, issuesFor(e, model, LIB));
         lay.gap(10);
@@ -1908,7 +2210,7 @@ button.chip:hover{background:var(--ix-tint2)}
     return `Correspondence - ${model.year} - ${hasFS ? "Financial Statements and " : ""}Income Tax Return${multi ? "s" : ""}.pdf`;
   }
 
-  root.PRCore = { parseFS, parseMinutes, parseDividendStatement, compareMinute, samePerson, defaultDue, parseProgressTemplate, MONTHS, SHORTM, D, fmtDate, isoDate, fromIso, todayUTC, toCents, money, absMoney, pct, abbrev, joinList, norm, sameName, pdfText, classify, KIND_LABEL, KIND_ORDER, otherLabel, parseReturn, parseWorkpaper, parseCollationSheet, suggest, autoVals, fillText, checks, coverLetter, voiceOf, reportName, totals, yearsAvailable, dueCell, isTaxpayer, buildReport, buildPack, packName, returnsCount, grandFinal };
+  root.PRCore = { parseTaxPlanReport, checkAction, parsePlanning, comparePlanning, buildPlanningReport, parseFS, parseMinutes, parseDividendStatement, compareMinute, samePerson, defaultDue, parseProgressTemplate, MONTHS, SHORTM, D, fmtDate, isoDate, fromIso, todayUTC, toCents, money, absMoney, pct, abbrev, joinList, norm, sameName, pdfText, classify, KIND_LABEL, KIND_ORDER, otherLabel, parseReturn, parseWorkpaper, parseCollationSheet, suggest, autoVals, fillText, checks, coverLetter, voiceOf, reportName, totals, yearsAvailable, dueCell, isTaxpayer, buildReport, buildPack, packName, returnsCount, grandFinal };
 })(typeof window !== "undefined" ? window : globalThis);
 
 </script>
@@ -2095,7 +2397,7 @@ function model() {
     address: $("address").value.split("\n").map(s => s.trim()).filter(Boolean), greeting: $("greeting").value.trim(),
     earlierYears: earlier, footnoteDate: C.fromIso($("footnote").value) || C.D(Y + 1, 2, 13), team, signerLines: SIGNERS[signer],
     introLines: $("introLines").checked, design: $("design").value, avtIntro: $("avtIntro") ? $("avtIntro").value : "", lookingAhead: $("lookingAhead").value,
-    instDates: { company: [C.D(Y, 10, 25), C.D(Y + 1, 1, 28), C.D(Y + 1, 4, 26), C.D(Y + 1, 7, 25)], individual: [C.D(Y, 9, 28), C.D(Y + 1, 1, 28), C.D(Y + 1, 3, 28), C.D(Y + 1, 6, 28)] },
+    instDates: { company: [C.D(Y, 9, 28), C.D(Y + 1, 1, 28), C.D(Y + 1, 3, 28), C.D(Y + 1, 6, 28)], individual: [C.D(Y, 9, 28), C.D(Y + 1, 1, 28), C.D(Y + 1, 3, 28), C.D(Y + 1, 6, 28)] },
     entities: S.entities.map(e => Object.assign({}, e, { docs: S.files.filter(f => f.entityId === e.id).map(f => ({ kind: f.kind, year: f.year })) })),
     assets: { signature: ASSETS[sigName] ? { bytes: ASSETS[sigName], width: SIGNATURES[signer][1] } : null },
   };
@@ -2196,12 +2498,15 @@ async function addFiles(list) {
         else if (f.kind === "fs") f.parsed = C.parseFS(tx.text);
         else if (f.kind === "minutes") f.parsed = C.parseMinutes(tx.text);
         else if (f.kind === "dividend") f.parsed = C.parseDividendStatement(tx.text);
+        else if (f.kind === "planning") { f.parsed = C.parseTaxPlanReport(tx.text, item.name); f.note = f.parsed.plans.length ? `Tax plan report${f.parsed.prepared ? ` (${f.parsed.prepared})` : ""}: recommended scenario for ${f.parsed.plans.length} taxpayers, ${f.parsed.actions.length} actions` : "Couldn’t read the tax plan figures from this PDF"; }
+        if (f.kind === "skip" && /supersc?eded/i.test(item.name)) f.note = "Superseded tax plan, not used";
       } else if (/\.json$/i.test(item.name)) { f.kind = "data"; f.parsed = JSON.parse(new TextDecoder().decode(bytes)); }
       else {
         f.kind = C.classify(item.name, "", f.where);
         if (f.kind === "collation") f.parsed = C.parseCollationSheet(XLSX, bytes);
         else if (f.kind === "template") f.parsed = C.parseProgressTemplate(XLSX, bytes);
         else if (f.kind === "workpaper") f.parsed = C.parseWorkpaper(XLSX, bytes);
+        else if (f.kind === "planning") { f.parsed = C.parsePlanning(XLSX, bytes, item.name); f.note = f.parsed.plans.length ? `Tax planning for ${[...new Set(f.parsed.plans.map(p => p.person || p.title || p.sheet))].join(", ")}` : "No tax position found in this planning file"; }
       }
     } catch (err) { f.kind = "skip"; f.note = "Couldn’t read this file"; }
     S.files.push(f); fresh.push(f);
@@ -2246,7 +2551,7 @@ function useTemplate(f, t) {
     Object.entries(years).forEach(([y, v]) => {
       y = +y;
       if (y === Y) {
-        fillMissing(e.fig, { revenue: v.revenue, cogs: v.revenue !== undefined && v.gross !== undefined ? v.revenue - v.gross : undefined, fsProfit: v.net, taxable: v.taxable, taxPayable: v.taxPayable, final: v.final, taxPaid: v.taxPaid, owners: v.owners });
+        fillMissing(e.fig, { gross: v.gross, revenue: v.revenue, cogs: v.revenue !== undefined && v.gross !== undefined ? v.revenue - v.gross : undefined, fsProfit: v.net, taxable: v.taxable, taxPayable: v.taxPayable, final: v.final, taxPaid: v.taxPaid, owners: v.owners });
         if (e.fig.taxPayable !== undefined && e.fig.final !== undefined && e.fig.taxPaid === undefined) e.fig.taxPaid = e.fig.taxPayable - e.fig.final;
         if (v.income) e.fig.income = v.income;
       } else if (y < Y) { e.prior[y] = e.prior[y] || {}; fillMissing(e.prior[y], v); }
@@ -2259,6 +2564,7 @@ function useTemplate(f, t) {
   f.note = `Figures for ${[...t.entities.map(x => x.name), ...t.people.filter(p => findEntity(p.name)).map(p => p.name)].join(", ") || "no entities"}`;
 }
 function useWorkpaper(f, w) {
+  f.wpClient = w.client || null;
   let e = w.client ? findEntity(w.client) : null;
   if (!e) { const biz = S.entities.filter(x => x.type !== "individual"); if (biz.length === 1) e = biz[0]; }
   if (!e) { f.note = w.client ? `Workpaper for ${w.client}: add that entity’s return or template first` : "Couldn’t tell whose workpaper this is. Choose the entity"; f.pendingWp = w; return; }
@@ -2319,7 +2625,7 @@ function applyDocFacts() {
     const e = S.entities.find(x => x.id === f.entityId); if (!e) return; const p = f.parsed;
     if (p.year && p.year !== Y) return;
     f.factsApplied = true;
-    ["revenue", "cogs", "fsProfit"].forEach(k => { if (p.fig[k] !== undefined && !(e.typed || {})[k]) e.fig[k] = p.fig[k]; });
+    ["revenue", "cogs", "gross", "fsProfit"].forEach(k => { if (p.fig[k] !== undefined && !(e.typed || {})[k]) e.fig[k] = p.fig[k]; });
     ["curAssets", "curLiab"].forEach(k => { if (p.fig[k] !== undefined && e.fig[k] === undefined) e.fig[k] = p.fig[k]; });
     if (p.fig.fsProfit !== undefined) e.fsCheck = p.fig.fsProfit;
     f.note = [p.signers.length ? `Signed by ${p.signers.join(", ")}` : "", p.fig.fsProfit !== undefined ? `${p.fig.fsProfit < 0 ? "loss" : "profit"} ${C.absMoney(p.fig.fsProfit)}` : "", p.divs.length ? `dividends to ${p.divs.map(d => d.name).join(", ")}` : "", p.dist.length ? `distributions to ${p.dist.map(d => d.name).join(", ")}` : ""].filter(Boolean).join("; ");
@@ -2349,7 +2655,7 @@ function applyDocFacts() {
 function fileRow(f) {
   const kindSel = h("select", { "aria-label": "What " + f.name + " is", onchange: ev => { f.kind = ev.target.value; f.userSet = true; matchDocs(); renderAll(); } },
     Object.entries(C.KIND_LABEL).map(([k, l]) => h("option", { value: k, selected: f.kind === k }, l)));
-  const group = ["org", "data", "collation", "own", "template", "skip"].includes(f.kind);
+  const group = ["org", "data", "collation", "own", "template", "skip", "planning"].includes(f.kind);
   const entSel = h("select", { "aria-label": "Entity for " + f.name, onchange: ev => { f.entityId = ev.target.value || null; f.userSet = true; if (f.pendingWp && f.entityId) { const e = S.entities.find(x => x.id === f.entityId); applyWp(e, f.pendingWp); delete f.pendingWp; f.note = ""; refreshSuggestions(e); } renderAll(); } },
     h("option", { value: "" }, group ? "Whole group" : "Choose the entity"), S.entities.map(e => h("option", { value: e.id, selected: f.entityId === e.id }, e.name)));
   const yr = f.kind === "itr" && f.year && f.year !== +$("year").value ? ` (${f.year}, for comparatives)` : "";
@@ -2361,8 +2667,8 @@ function renderFiles() {
   if (!S.files.length) return;
   const groups = [];
   S.entities.forEach(e => groups.push([e.name, S.files.filter(f => f.entityId === e.id && f.kind !== "skip"), true]));
-  groups.push(["Whole group", S.files.filter(f => !f.entityId && ["org", "data", "collation", "template", "own"].includes(f.kind)), true]);
-  groups.push(["Needs an entity", S.files.filter(f => !f.entityId && !["org", "data", "collation", "template", "own", "skip"].includes(f.kind)), true]);
+  groups.push(["Whole group", S.files.filter(f => !f.entityId && ["org", "data", "collation", "template", "own", "planning"].includes(f.kind)), true]);
+  groups.push(["Needs an entity", S.files.filter(f => !f.entityId && !["org", "data", "collation", "template", "own", "skip", "planning"].includes(f.kind)), true]);
   groups.push(["Not in the pack (source documents)", S.files.filter(f => f.kind === "skip"), false]);
   groups.filter(g => g[1].length).forEach(([title, files, open]) => {
     const d = h("details", { class: "ent", open: open && title !== "Not in the pack (source documents)" }, h("summary", {}, h("span", { class: "nm" }, title), h("span", { class: "ty" }, `${files.length} file${files.length === 1 ? "" : "s"}`)));
@@ -2495,6 +2801,8 @@ function renderEntities() {
         inner.appendChild(labelled("Who signs the financial statements (one per line)", textField(e, "signatories", "Signatories", { area: true, rows: 2, attrs: { placeholder: "[Director or trustee name]" } })));
         if (e.signSrc) inner.appendChild(h("p", { class: "hint" }, `Read from ${e.signSrc}. Change it if someone else signs.`));
       }
+      const pr = C.comparePlanning(model(), S.files).find(r => r.e.id === e.id);
+      if (pr) inner.appendChild(h("p", { class: pr.inLine ? "hint" : "note" }, pr.inLine ? `Tax planning: in line (planned tax ${C.money(pr.plan.tax)}, final ${C.money(pr.actual.tax)}). Details in the tax planning review.` : `Tax planning: final tax is ${pr.taxDiff > 0 ? "higher" : "lower"} than planned by ${C.absMoney(pr.taxDiff || 0)}. The tax planning review lists the differences.`));
       if (e.minute) inner.appendChild(h("p", { class: e.minuteDiffs && e.minuteDiffs.length ? "note" : "hint" }, e.minuteDiffs && e.minuteDiffs.length ? `The trust distribution minute doesn’t match the return: ${e.minuteDiffs.join("; ")}. Check the minute.` : `The trust distribution minute matches the distributions on the return (${e.minute.shares.map(s => s.name + " " + (s.pct !== null ? s.pct + "%" : C.absMoney(s.amount))).join(", ")}).`));
     }
     inner.appendChild(h("div", { class: "actions" }, h("button", { class: "linkbtn", onclick: () => { if (confirm(`Remove ${e.name} from this report?`)) { S.entities.splice(idx, 1); S.files.forEach(x => { if (x.entityId === e.id) x.entityId = null; }); renderAll(); } } }, "Remove this entity")));
@@ -2609,7 +2917,10 @@ $("build").onclick = async () => {
     const pack = await C.buildPack(PDFLib, fontkit, assets, m, rep.bytes, files);
     if (S.built) { URL.revokeObjectURL(S.built.reportUrl); URL.revokeObjectURL(S.built.packUrl); }
     const nm = names(m);
-    S.built = { m, nm, report: rep.bytes, pack: pack.bytes, data: new TextEncoder().encode(dataFile(m)),
+    let plan = null;
+    if (S.files.some(f => f.kind === "planning" && f.parsed && f.parsed.plans.length)) { try { plan = await C.buildPlanningReport(PDFLib, fontkit, assets, m, S.files); } catch (e2) { console.error(e2); } }
+    $("dlPlan").hidden = !plan;
+    S.built = { m, nm, plan: plan && plan.bytes, report: rep.bytes, pack: pack.bytes, data: new TextEncoder().encode(dataFile(m)),
       reportUrl: URL.createObjectURL(new Blob([rep.bytes], { type: "application/pdf" })), packUrl: URL.createObjectURL(new Blob([pack.bytes], { type: "application/pdf" })) };
     $("buildStatus").textContent = `Report ${rep.pageCount} pages, pack ${pack.pageCount} pages.` + (pack.unread.length ? ` Couldn’t add ${pack.unread.join(", ")} (the PDF wouldn’t open).` : "");
     $("dlRow").hidden = false; showTab(currentTab);
@@ -2621,6 +2932,7 @@ function download(name, bytes, type) { const a = h("a", { href: URL.createObject
 $("dlReport").onclick = () => download(S.built.nm.report, S.built.report, "application/pdf");
 $("dlPack").onclick = () => download(S.built.nm.pack, S.built.pack, "application/pdf");
 $("dlData").onclick = () => download(S.built.nm.data, S.built.data, "application/json");
+$("dlPlan").onclick = () => download(`${S.built.m.year} Tax Planning Review - ${C.reportName(S.built.m)}.pdf`, S.built.plan, "application/pdf");
 
 // ---------- SuiteFiles ----------
 async function fillClientSelect(sel, filter, best) {
@@ -2657,7 +2969,8 @@ $("sfShow").onclick = async () => {
     const all = [], hiddenCount = {};
     for (const folder of S.folders) {
       const base = `${Platform.clientsPath}/${folder}`;
-      const [trf, wp, prior] = await Promise.all([`${Y}/Tax Returns and Financials`, `${Y}/Workpapers`, `${Y - 1}/Tax Returns and Financials`].map(p => Platform.listFiles(`${base}/${p}`)));
+      const [trf, wp, prior, tp] = await Promise.all([`${Y}/Tax Returns and Financials`, `${Y}/Workpapers`, `${Y - 1}/Tax Returns and Financials`, `${Y}/Tax Planning`].map(p => Platform.listFiles(`${base}/${p}`).catch(() => [])));
+      tp.filter(x => /\.(xlsx|xlsm)$/i.test(x.name) || (/\.pdf$/i.test(x.name) && /tax plan/i.test(x.name) && !/supersc?eded/i.test(x.name))).forEach(x => all.push(Object.assign(x, { folder, where: "tp", label: `${Y} › Tax Planning` })));
       trf.filter(x => /\.(pdf|xlsx|xlsm|json)$/i.test(x.name)).forEach(x => all.push(Object.assign(x, { folder, where: "trf", label: `${Y} › Tax Returns and Financials` })));
       wp.forEach(x => { if (WANT_WP(x.name)) all.push(Object.assign(x, { folder, where: "wp", label: `${Y} › Workpapers` })); else hiddenCount[folder] = (hiddenCount[folder] || 0) + 1; });
       prior.filter(x => /income tax return|progress report data/i.test(x.name)).forEach(x => all.push(Object.assign(x, { folder, where: "prior", label: `${Y - 1} › Tax Returns and Financials` })));
