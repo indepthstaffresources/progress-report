@@ -22,8 +22,6 @@ body{margin:0;background:var(--ix-bg);color:var(--ix-ink);font:400 14.5px/1.55 v
 .home{margin-left:auto;display:inline-flex;align-items:center;gap:8px;font:600 13px var(--ix-font);color:var(--ix-deep);background:var(--ix-card);border:1px solid var(--ix-line);border-radius:10px;padding:9px 16px;text-decoration:none}
 .home:hover{border-color:var(--ix-sage)}
 .home:focus-visible{outline:none;box-shadow:0 0 0 4px var(--ix-ring)}
-main{max-width:1500px;padding:14px 40px 48px;display:grid;grid-template-columns:minmax(0,1fr) minmax(380px,560px);gap:24px;align-items:start}
-@media (max-width:1100px){main{grid-template-columns:1fr;padding:10px 16px 40px}.top{padding:18px 16px 4px}}
 .col{display:flex;flex-direction:column;gap:18px;min-width:0}
 .step{background:var(--ix-card);border:1px solid var(--ix-line);border-radius:18px;box-shadow:var(--ix-shadow);padding:22px 24px 24px}
 .step h2{font-size:16px;font-weight:600;margin:0 0 4px;display:flex;align-items:center}
@@ -36,7 +34,8 @@ input[type=text],input[type=date],input[type=number],select,textarea{width:100%;
 textarea{min-height:70px;resize:vertical;line-height:1.5}
 input:focus-visible,select:focus-visible,textarea:focus-visible{outline:none;border-color:var(--ix-sage);box-shadow:0 0 0 4px var(--ix-ring)}
 button:focus-visible,.drop:focus-visible,summary:focus-visible{outline:2px solid var(--ix-deep);outline-offset:2px}
-.row{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.row{display:flex;flex-wrap:wrap;gap:10px}
+.row>*{flex:1 1 150px;min-width:0}
 .row label{margin-top:8px}
 .drop{border:2px dashed var(--ix-sage);border-radius:14px;padding:24px;text-align:center;background:var(--ix-bg);cursor:pointer}
 .drop:hover,.drop.over{background:var(--ix-tint);border-color:var(--ix-deep)}
@@ -71,14 +70,14 @@ button:focus-visible,.drop:focus-visible,summary:focus-visible{outline:2px solid
 .para>label.tick input{margin-top:4px}
 .why{font-size:12.5px;color:var(--ix-muted);margin:0 0 0 26px}
 .para .body{padding:4px 0 4px 26px}
-.para .body .row{grid-template-columns:repeat(auto-fit,minmax(180px,1fr))}
+.para .body .row>*{flex-basis:180px}
 .para .wording{font-size:13px;background:var(--ix-bg);border-radius:10px;padding:10px 12px;margin-top:8px;white-space:pre-wrap}
 .miss{background:var(--warnbg);color:var(--warn);font-weight:600;padding:0 3px;border-radius:3px}
 .note{background:var(--warnbg);color:var(--warn);border-radius:10px;padding:10px 12px;font-size:13px;margin:8px 0}
 aside{position:sticky;top:16px;background:var(--ix-card);border:1px solid var(--ix-line);border-radius:18px;box-shadow:var(--ix-shadow);padding:22px}
 @media (max-width:1100px){aside{position:static}}
 aside h2{font-size:16px;margin:0 0 10px}
-.checks{margin:0 0 12px;padding:0;list-style:none;max-height:260px;overflow:auto}
+.checks{margin:0 0 12px;padding:0;list-style:none}
 .checks li{padding:8px 11px;border-radius:10px;margin-bottom:6px;font-size:13px;border-left:4px solid var(--ix-sage);background:var(--ix-tint)}
 .checks li.block{border-left-color:var(--warn);background:var(--warnbg);color:var(--warn);font-weight:600}
 .checks li.warn{border-left-color:var(--warn);background:var(--warnbg);color:var(--warn)}
@@ -99,24 +98,88 @@ button.chip:hover{background:var(--ix-tint2)}
 .fold>summary{cursor:pointer;padding:9px 0;font-size:13px;font-weight:600;color:var(--ix-deep)}
 .fold>summary .ty{font-weight:400;color:var(--ix-muted)}
 .foldin{padding:0 0 10px}
+
+/* ---- step-by-step layout ---- */
+.bar{background:var(--ix-deep);color:#fff}
+.bar .in{max-width:1400px;margin:0 auto;padding:14px 32px;display:flex;align-items:center;gap:18px}
+.bar img{height:30px;width:auto;filter:brightness(0) invert(1)}
+.bar h1{margin:0;font:600 17px/1.2 var(--ix-font);letter-spacing:.01em;padding-left:18px;border-left:1px solid rgba(255,255,255,.35)}
+.bar .home{margin-left:auto;background:transparent;color:#fff;border-color:rgba(255,255,255,.45)}
+.bar .home:hover{border-color:#fff}
+.stepper{background:var(--ix-card);border-bottom:1px solid var(--ix-line);position:sticky;top:0;z-index:5}
+.stepper ol{max-width:1400px;margin:0 auto;padding:0 32px;list-style:none;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px}
+.stepper button{width:100%;text-align:left;font:inherit;background:none;border:0;border-bottom:3px solid transparent;padding:12px 6px 10px;cursor:pointer;color:var(--ix-muted);display:flex;gap:10px;align-items:center}
+.stepper button .n{flex:none;width:26px;height:26px;border-radius:50%;border:1.5px solid var(--ix-sage);display:grid;place-items:center;font-size:12.5px;font-weight:600;color:var(--ix-deep)}
+.stepper button .t{display:flex;flex-direction:column;min-width:0}
+.stepper button .t b{font-weight:600;font-size:13.5px;color:var(--ix-ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.stepper button .t span{font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.stepper button[aria-current=step]{border-bottom-color:var(--ix-deep)}
+.stepper button[aria-current=step] .n{background:var(--ix-deep);border-color:var(--ix-deep);color:#fff}
+.stepper button.done .n{background:var(--ix-tint2);border-color:var(--ix-tint2)}
+.stepper li button[aria-current=step] .n{background:var(--ix-deep);border-color:var(--ix-deep);color:#fff}
+[hidden]{display:none!important}
+.row>*,.files li>*,.para .body .row>*{min-width:0}
+input,select,textarea,button{box-sizing:border-box}
+input,select,textarea{min-width:0;max-width:100%}
+.files li{grid-template-columns:minmax(0,1fr) 170px 200px 64px}
+.stepper button.attn .t span{color:var(--warn);font-weight:600}
+.stepper button:hover .t b{color:var(--ix-deep)}
+main{max-width:1400px;margin:0 auto;padding:22px 32px 110px;display:block}
+.step[hidden]{display:none}
+.step{border-radius:16px}
+.stephead{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin-bottom:6px}
+.stephead h2{margin:0;font-size:19px;font-weight:600}
+.stephead p{margin:0;color:var(--ix-muted);font-size:13.5px;max-width:90ch}
+.cols{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:28px;align-items:start}
+.cols.wide-right{grid-template-columns:minmax(300px,420px) minmax(0,1fr)}
+.cols.build{grid-template-columns:minmax(320px,400px) minmax(0,1fr)}
+.panel h3{font-size:14px;font-weight:600;color:var(--ix-deep);margin:18px 0 2px}
+.panel h3:first-child{margin-top:4px}
+.md{display:grid;grid-template-columns:260px minmax(0,1fr);gap:22px;align-items:start;margin-top:12px}
+.mdlist{display:flex;flex-direction:column;gap:6px;position:sticky;top:78px}
+.mdlist button{font:inherit;text-align:left;background:var(--ix-bg);border:1px solid var(--ix-line);border-radius:12px;padding:10px 12px;cursor:pointer;color:var(--ix-ink)}
+.mdlist button b{display:block;font-size:13.5px;font-weight:600;overflow-wrap:anywhere}
+.mdlist button span{display:block;font-size:12px;color:var(--ix-muted);margin-top:2px}
+.mdlist button[aria-current=true]{background:var(--ix-tint);border-color:var(--ix-deep);box-shadow:inset 3px 0 0 var(--ix-deep)}
+.mdlist button.attn span{color:var(--warn);font-weight:600}
+.mdlist .addone{margin-top:6px}
+.md .ent{margin-top:0}
+.md .ent>summary{cursor:default}
+.navbar{position:fixed;left:0;right:0;bottom:0;background:var(--ix-card);border-top:1px solid var(--ix-line);box-shadow:0 -6px 20px rgba(65,64,66,.06);z-index:6;padding-bottom:env(safe-area-inset-bottom,0px)}
+.navbar .in{max-width:1400px;margin:0 auto;padding:12px 32px;display:flex;align-items:center;gap:12px}
+.navbar .msg{font-size:13px;color:var(--ix-muted)}
+.navbar .msg.attn{color:var(--warn);font-weight:600}
+.navbar .msg button{font:inherit;color:inherit;background:none;border:0;text-decoration:underline;cursor:pointer;padding:0}
+.navbar .sp{margin-left:auto}
+.checks{max-height:none}
+#preview iframe{height:calc(100vh - 230px);min-height:520px}
+@media (max-width:1000px){.cols,.cols.wide-right,.cols.build,.md{grid-template-columns:1fr}.mdlist{position:static;flex-direction:row;overflow-x:auto}.mdlist button{min-width:200px}
+  .stepper ol{grid-template-columns:repeat(5,auto);overflow-x:auto;padding:0 12px}.stepper button .t span{display:none}main{padding:16px 14px 110px}.bar .in,.navbar .in{padding:12px 14px}}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .stepper button[aria-current=step] .n{color:#2B2A2C}}
+
 @media (prefers-reduced-motion:no-preference){.btn{transition:background-color .15s}}
 </style>
 </head>
 <body>
-<header class="top">
-  <div><h1>Progress Report & Collation</h1><p>Reads the returns and workpapers, suggests the issues and recommendations, and builds the cover letter, progress report and collation pack. Nothing is saved until you choose to.</p></div>
-  <a class="home" href="/"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 11.5 12 5l8 6.5V19a1 1 0 0 1-1 1h-4.5v-5h-5v5H5a1 1 0 0 1-1-1z"/></svg><span>Staff tools</span></a>
-</header>
+<header class="bar"><div class="in"><img id="barLogo" alt="Indepth Accounting"><h1>Progress Report &amp; Collation</h1><a class="home" href="/"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 11.5 12 5l8 6.5V19a1 1 0 0 1-1 1h-4.5v-5h-5v5H5a1 1 0 0 1-1-1z"/></svg><span>Staff tools</span></a></div></header>
+<nav class="stepper" aria-label="Steps"><ol>
+  <li><button type="button" data-go="1"><span class="n">1</span><span class="t"><b>Report details</b><span id="st1">Client and letter</span></span></button></li>
+  <li><button type="button" data-go="2"><span class="n">2</span><span class="t"><b>Documents</b><span id="st2">Nothing added yet</span></span></button></li>
+  <li><button type="button" data-go="3"><span class="n">3</span><span class="t"><b>Entities and figures</b><span id="st3">None yet</span></span></button></li>
+  <li><button type="button" data-go="4"><span class="n">4</span><span class="t"><b>Issues and recommendations</b><span id="st4">None yet</span></span></button></li>
+  <li><button type="button" data-go="5"><span class="n">5</span><span class="t"><b>Check and build</b><span id="st5">Not built yet</span></span></button></li>
+</ol></nav>
 <main>
-<div class="col">
-  <section class="step" aria-labelledby="s1">
-    <h2 id="s1"><span class="stepno">1</span>Report details</h2>
+  <section class="step" data-step="1" aria-labelledby="s1">
+    <div class="stephead"><h2 id="s1">Report details</h2><p>Who the report is for and who signs it. Most of this fills in once the returns are added.</p></div>
+    <div class="cols"><div class="panel"><h3>Client and letter</h3>
     <div id="platformAuth"></div>
     <div class="row">
       <div><label for="year">Financial year of the returns</label><input type="number" id="year" min="2015" max="2100"></div>
       <div><label for="reportDate">Report date</label><input type="date" id="reportDate"></div>
       <div><label for="signer">Signs the cover letter</label><select id="signer"><option value="Renee">Renee Cooper</option><option value="Claudine">Claudine Fitzpatrick</option><option value="Hazel">Hazel Hade</option></select></div>
     </div>
+    <div id="groupPickWrap" hidden><label for="groupPick">Client group (from XPM)</label><input type="text" id="groupPick" list="groupList" placeholder="Start typing, for example Horn Graders Group"><datalist id="groupList"></datalist><p class="hint" id="groupHint">Choosing a group fills in the group name and adds every entity’s client folder in step 2.</p></div>
     <div class="row">
       <div><label for="groupName">Group name</label><input type="text" id="groupName" placeholder="For example, Smith Family Group"></div>
       <div><label for="voice">Report is for</label><select id="voice"><option value="auto">Work it out from the entities</option><option value="single">One entity</option><option value="family">A family</option><option value="group">A business group</option></select></div>
@@ -130,6 +193,7 @@ button.chip:hover{background:var(--ix-tint2)}
       <div><label for="earlier">Also lodging earlier years</label><input type="text" id="earlier" placeholder="For example, 2023, 2024"></div>
       <div><label for="footnote">15 May footnote: lodged from</label><input type="date" id="footnote"></div>
     </div>
+    </div><div class="panel"><h3>Report and team</h3>
     <input type="hidden" id="design" value="current">
     <label class="tick" style="margin-top:12px"><input type="checkbox" id="introLines"> Include the two closing lines in the introduction</label>
     <label for="team">Your Indepth Accounting Team (one person per line: name | title | email)</label>
@@ -141,11 +205,13 @@ button.chip:hover{background:var(--ix-tint2)}
     <button class="linkbtn" id="fontPick">Use Segoe UI from this computer</button>
     <p id="fontHelp" class="hint" hidden>Choose segoeui.ttf and segoeuib.ttf together. In the file window, type <strong>C:\Windows\Fonts</strong> in the address bar, then select both files (hold Ctrl).</p>
     <input type="file" id="fontFiles" accept=".ttf,.otf" multiple hidden>
+    </div></div>
   </section>
 
-  <section class="step" aria-labelledby="s2">
-    <h2 id="s2"><span class="stepno">2</span>Documents</h2>
-    <p class="hint">Add everything for the job: this year’s returns, last year’s returns (for comparatives), financial statements, workpapers, minutes, dividend statements, Div 7A agreements, payment slips, the organisational chart and the collation spreadsheet. Each one is sorted and matched to its entity. Change anything that’s wrong.</p>
+  <section class="step" data-step="2" aria-labelledby="s2" hidden>
+    <div class="stephead"><h2 id="s2">Documents</h2><p>Add everything for the job. Each file is sorted and matched to its entity; change anything that’s wrong.</p></div>
+    <div class="cols wide-right"><div class="panel"><h3>Add files</h3>
+    
     <div class="drop" id="drop" tabindex="0" role="button" aria-label="Add documents"><strong>Drop documents here</strong><br><span class="status">PDF, Excel or last year’s data file, or click to choose</span></div>
     <input type="file" id="files" accept=".pdf,.xlsx,.xlsm,.xls,.json" multiple hidden>
     <div id="sfBox" hidden>
@@ -161,33 +227,33 @@ button.chip:hover{background:var(--ix-tint2)}
       <div class="actions"><button class="btn small primary" id="sfShow">Show this year’s files</button></div>
       <div id="sfList"></div>
     </div>
+    </div><div class="panel"><h3>Files in this job</h3>
     <p class="status" id="readStatus"></p>
     <div id="fileList"></div>
+    </div></div>
   </section>
 
-  <section class="step" aria-labelledby="s3">
-    <h2 id="s3"><span class="stepno">3</span>Entities and figures</h2>
-    <p class="hint">In collation order. Figures come from the returns and workpapers; change any of them. Amounts payable are positive and refunds negative.</p>
-    <div id="entities"></div>
-    <div class="actions"><button class="btn small" id="addEntity">Add an entity by hand</button></div>
+  <section class="step" data-step="3" aria-labelledby="s3" hidden>
+    <div class="stephead"><h2 id="s3">Entities and figures</h2><p>In collation order. Figures come from the documents; change any of them. Amounts payable are positive and refunds negative.</p></div>
+    
+    <div class="md"><nav class="mdlist" id="entList" aria-label="Entities"></nav><div id="entities"></div></div>
+    <div class="actions" hidden><button class="btn small" id="addEntity">Add an entity by hand</button></div>
   </section>
 
-  <section class="step" aria-labelledby="s4">
-    <h2 id="s4"><span class="stepno">4</span>Issues and recommendations</h2>
-    <p class="hint">Suggested paragraphs are ticked, with the reason. Untick anything that doesn’t apply, add others from the library, and fill the blanks. Wording comes from the Progress Report Paragraph Library.</p>
-    <label for="avtIntro">How the Accounting vs. Taxation Income section opens</label>
-    <select id="avtIntro"><option value="">“You will notice that the profit on your Financial Statements of $X differs from…”</option><option value="recon">“The reconciliation to assessable income and deductible expenses in the financial statements includes…”</option></select>
-    <div id="issues"></div>
-    <textarea id="lookingAhead" hidden></textarea>
+  <section class="step" data-step="4" aria-labelledby="s4" hidden>
+    <div class="stephead"><h2 id="s4">Issues and recommendations</h2><p>Suggested paragraphs are ticked, with the reason. Untick anything that doesn’t apply, add others from the library and fill the blanks.</p></div>
+    
+    <div class="row" style="max-width:900px"><div><label for="avtIntro">How the Accounting vs. Taxation Income section opens</label>
+    <select id="avtIntro"><option value="">“You will notice that the profit on your Financial Statements of $X differs from…”</option><option value="recon">“The reconciliation to assessable income and deductible expenses in the financial statements includes…”</option></select></div>
+    <div><textarea id="lookingAhead" hidden></textarea></div></div>
+    <div class="md"><nav class="mdlist" id="issueList" aria-label="Entities"></nav><div id="issues"></div></div>
   </section>
-</div>
 
-<aside aria-labelledby="pv">
-  <h2 id="pv">Check and build</h2>
+  <section class="step" data-step="5" aria-labelledby="pv" hidden>
+    <div class="stephead"><h2 id="pv">Check and build</h2><p>Fix anything marked, then build. Nothing is saved until you choose to.</p></div>
+    <div class="cols build"><div class="panel"><h3>Checks</h3>
   <ul class="checks" id="checks"></ul>
   <div class="actions" style="margin-top:0"><button class="btn primary" id="build">Build report and collation</button><span class="status" id="buildStatus" role="status"></span></div>
-  <div class="tabs" role="tablist" aria-label="Preview"><button role="tab" id="tabReport" aria-selected="true">Progress report</button><button role="tab" id="tabPack" aria-selected="false">Collation pack</button></div>
-  <div id="preview"><div class="empty">Build to see the cover letter, progress report and collation pack here.</div></div>
   <div class="actions" id="dlRow" hidden>
     <button class="btn small" id="dlReport">Download progress report</button>
     <button class="btn small" id="dlPack">Download collation pack</button>
@@ -204,8 +270,17 @@ button.chip:hover{background:var(--ix-tint2)}
     <div class="actions"><button class="btn primary" id="saveBtn">Save to SuiteFiles</button></div>
     <p class="status" id="saveStatus" role="status"></p>
   </div>
-</aside>
+    </div><div class="panel">
+  <div class="tabs" role="tablist" aria-label="Preview"><button role="tab" id="tabReport" aria-selected="true">Progress report</button><button role="tab" id="tabPack" aria-selected="false">Collation pack</button></div>
+  <div id="preview"><div class="empty">Build to see the cover letter, progress report and collation pack here.</div></div>
+    </div></div>
+  </section>
 </main>
+<footer class="navbar"><div class="in">
+  <button class="btn" id="navBack" type="button">Back</button>
+  <span class="msg" id="navMsg" role="status"></span>
+  <button class="btn primary sp" id="navNext" type="button">Next</button>
+</div></footer>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@pdf-lib/fontkit@1.1.1/dist/fontkit.umd.min.js"></script>
@@ -495,7 +570,7 @@ button.chip:hover{background:var(--ix-tint2)}
   }
 
   // ---------- What kind of document is it ----------
-  const KIND_LABEL = { planning: "Tax planning", template: "Progress report template", skip: "Not in the pack", itr: "Income Tax Return", fs: "Financial Statements", minutes: "Minutes", amendedMinutes: "Amended Minutes (to be emailed)", dividend: "Dividend Statements", div7a: "Div 7A Loan Agreement", slip: "ATO Payment Slip", org: "Organisational Chart", workpaper: "Workpaper", collation: "Collation spreadsheet", data: "Last year’s report data", own: "Earlier output (not used)", other: "Other document" };
+  const KIND_LABEL = { planning: "Tax planning", template: "Progress report template", skip: "Not in the pack", itr: "Income Tax Return", fs: "Financial Statements", minutes: "Minutes", amendedMinutes: "Amended Minutes (to be emailed)", dividend: "Dividend Statements", div7a: "Loan Agreements", slip: "ATO Payment Slip", org: "Organisational Chart", workpaper: "Workpaper", collation: "Collation spreadsheet", data: "Last year’s report data", own: "Earlier output (not used)", other: "Other document" };
   const KIND_ORDER = ["fs", "itr", "minutes", "dividend", "div7a", "slip", "other"];
   // where: "trf" (Tax Returns and Financials), "wp" (Workpapers), "prior" (last year), or "" (dropped in)
   function classify(name, text, where) {
@@ -1332,7 +1407,7 @@ button.chip:hover{background:var(--ix-tint2)}
       if (e.d7 && !e.d7.on && e.wpTabs && e.wpTabs["Div 7A"] && isBiz(e)) add("info", `${e.name}: the Div 7A tab is in use in the workpaper. Tick “Include the Division 7A loans section” in step 3 and enter the figures if the report needs it.`);
       if (e.d7 && e.d7.on && e.d7.met === false) add("block", `${e.name}: the Division 7A minimum repayment wasn’t met. That needs advice-specific wording, so untick Division 7A and write it in the custom paragraph.`);
     });
-    (files || []).filter(f => !f.entityId && !["data", "collation", "own", "workpaper", "org", "template", "skip"].includes(f.kind) && f.kind !== "amendedMinutes").forEach(f => add("warn", `${f.name} isn’t matched to an entity yet, so it won’t go in the collation.`));
+    (files || []).filter(f => !f.entityId && !["data", "collation", "own", "workpaper", "org", "template", "skip", "planning"].includes(f.kind) && f.kind !== "amendedMinutes").forEach(f => add("warn", `${f.name} isn’t matched to an entity yet, so it won’t go in the collation.`));
     (files || []).filter(f => f.misfiled).forEach(f => add("warn", f.misfiled));
     (files || []).filter(f => f.kind === "workpaper" && f.entityId && f.wpClient && !f.unused).forEach(f => { const e = model.entities.find(x => x.id === f.entityId); if (e && !sameName(e.name, f.wpClient)) add("warn", `${f.name} is the workpaper for ${f.wpClient}, but it’s set against ${e.name}. Add ${e.name}’s own workpaper from its client folder.`); });
     (files || []).filter(f => f.kind === "amendedMinutes").forEach(f => add("info", `${f.name} is amended minutes, so it’s left out of the pack (to be emailed).`));
@@ -1829,7 +1904,28 @@ button.chip:hover{background:var(--ix-tint2)}
     lay.gap(10);
     if (model.introLines) { lay.para("Please carefully read each section and highlight on your report any areas that you would like to discuss with us."); lay.para("We look forward to continuing to help you to make great financial decisions so you can live your best life."); }
     lay.para("Your Indepth Accounting Team", { after: 12 });
-    (model.team || []).filter(t => t.name).forEach(t => {
+    const teamP = (model.team || []).filter(t => t.name);
+    if (teamP.some(t => t.photo)) {
+      // photos in a row, name, title and email underneath (as in the firm's reports)
+      const colW = Math.min(170, (R - L) / Math.max(3, teamP.length)), ph = 74;
+      lay.need(ph + 60); const top = lay.S.y;
+      for (let i = 0; i < teamP.length; i++) {
+        const t = teamP[i], x = L + i * colW;
+        if (t.photo) {
+          try {
+            const isPng = t.photo[0] === 0x89; const img = isPng ? await k.doc.embedPng(t.photo) : await k.doc.embedJpg(t.photo);
+            const s = Math.max(ph / img.width, ph / img.height), w = img.width * s, hh = img.height * s;
+            lay.S.p.drawImage(img, { x: x + (ph - w) / 2, y: top - ph + (ph - hh) / 2, width: w, height: hh });
+            lay.S.p.drawRectangle({ x, y: top - ph, width: ph, height: ph, borderColor: C.sage, borderWidth: 1 });
+          } catch (e) { /* unreadable picture: leave the space */ }
+        }
+        lay.S.p.drawText(t.name, { x, y: top - ph - 16, size: 9.6, font: bold, color: C.ink });
+        if (t.title) lay.S.p.drawText(t.title, { x, y: top - ph - 28, size: 8.4, font: reg, color: C.deep });
+        if (t.email) lay.S.p.drawText(t.email, { x, y: top - ph - 40, size: 8, font: reg, color: C.ink });
+      }
+      lay.S.y = top - ph - 54;
+    } else
+    teamP.forEach(t => {
       lay.need(46);
       lay.S.p.drawRectangle({ x: L, y: lay.S.y - 34, width: 3, height: 34, color: C.sage });
       lay.S.p.drawText(t.name, { x: L + 12, y: lay.S.y - 10, size: 10, font: bold, color: C.ink });
@@ -2258,9 +2354,13 @@ button.chip:hover{background:var(--ix-tint2)}
   "use strict";
   const SETUP = { tenantId: "e0690e4c-36c8-47bf-b896-bc1ecf320a7c", clientId: "191dcf6b-f13e-491c-9556-280d809b602a" };
   const DRIVE = "b!c82T-jhzL0eu4-AHjF9EKCLCKVMsd55FtWuNLmIYMZohHmghm0pKSbXCQuWfihYQ";
-  const REPORT_PATH = "Shared Space/Client Database/BAS & IAS/Client & Contact Report.xlsx";
+  const PR_FOLDER = "Shared Space/Client Database/Progress Report";
+  const REPORT_PATH = PR_FOLDER + "/Cover Letter Agent Client & Contact Report.csv";
+  const OLD_REPORT_PATH = "Shared Space/Client Database/BAS & IAS/Client & Contact Report.xlsx";
+  const REL_PATH = PR_FOLDER + "/Client Relationships Report.csv";
   const CLIENTS_PATH = "Clients";
-  const ASSET_FOLDER = "Shared Space/Client Database/BAS & IAS/Tool files";
+  const ASSET_FOLDER = PR_FOLDER + "/Tool Files";
+  const OLD_ASSET_FOLDER = "Shared Space/Client Database/BAS & IAS/Tool files";
   const PRIVATE = ["Signature_Renee.png", "Signature_Claudine.png", "Signature_Hazel.png", "Gotham-Bold.ttf", "Gotham-Medium.ttf", "Gotham-Book.ttf"];
   const SCOPES = ["User.Read", "Files.ReadWrite.All"];
   const GRAPH = "https://graph.microsoft.com/v1.0";
@@ -2314,7 +2414,15 @@ button.chip:hover{background:var(--ix-tint2)}
   async function loadAssets() {
     assetState = "loading"; app.refresh();
     let got = 0;
-    for (const name of PRIVATE) { try { app.setAsset(name, await getBytes(ASSET_FOLDER + "/" + name)); got++; } catch (e) { /* missing file: tool falls back */ } }
+    for (const name of PRIVATE) {
+      try { app.setAsset(name, await getBytes(ASSET_FOLDER + "/" + name)); got++; }
+      catch (e) { try { app.setAsset(name, await getBytes(OLD_ASSET_FOLDER + "/" + name)); got++; } catch (e2) { /* missing file: tool falls back */ } }
+    }
+    // staff photos: any picture in Tool Files, named with the person's name (for example "Renee Cooper.jpg")
+    try {
+      const pics = (await listFiles(ASSET_FOLDER)).filter(x => /\.(jpe?g|png)$/i.test(x.name) && !/^signature_/i.test(x.name));
+      for (const x of pics) { try { app.setAsset("photo:" + x.name.replace(/\.(jpe?g|png)$/i, ""), await getBytes(x.path)); } catch (e) {} }
+    } catch (e) { /* no photos yet */ }
     assetState = got ? "ready" : "failed"; app.refresh();
   }
   function renderAuth() {
@@ -2342,8 +2450,14 @@ button.chip:hover{background:var(--ix-tint2)}
     clientsPath: CLIENTS_PATH,
     listClientFolders, listFiles, getBytes,
     async readReport() {
-      const buf = await getBytes(REPORT_PATH);
-      const wb = XLSX.read(buf); return XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { defval: "" });
+      let wb;
+      try { wb = XLSX.read(new TextDecoder().decode(await getBytes(REPORT_PATH)).replace(/^\ufeff/, ""), { type: "string" }); }
+      catch (e) { wb = XLSX.read(await getBytes(OLD_REPORT_PATH)); }
+      return XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { defval: "" });
+    },
+    async readRelationships() {
+      const wb = XLSX.read(new TextDecoder().decode(await getBytes(REL_PATH)).replace(/^\ufeff/, ""), { type: "string", raw: true });
+      return XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { defval: "", raw: false });
     },
     async save(folder, name, bytes) {
       await ensureFolder(folder);
@@ -2424,7 +2538,7 @@ $("greeting").addEventListener("input", () => { S.greetAuto = false; refreshChec
 function model() {
   const Y = +$("year").value || defaultYear;
   const earlier = ($("earlier").value.match(/\d{4}/g) || []).map(Number).filter(y => y < Y);
-  const team = $("team").value.split("\n").map(l => l.split("|").map(s => s.trim())).filter(p => p[0]).map(([name, title, email]) => ({ name, title, email }));
+  const team = $("team").value.split("\n").map(l => l.split("|").map(s => s.trim())).filter(p => p[0] && !/^\[/.test(p[0])).map(([name, title, email]) => ({ name, title, email, photo: staffPhoto(name) }));
   const signer = $("signer").value;
   const sigName = SIGNATURES[signer][0];
   const m = {
@@ -2457,6 +2571,46 @@ $("xpmFile").onchange = async e => {
     useXpm(rows, f.name);
   } catch (err) { $("xpmStatus").textContent = err.message; }
 };
+// staff photos come from Tool Files in SuiteFiles (never stored in the tool), named with the person's name
+function staffPhoto(name) {
+  const k = Object.keys(ASSETS).find(x => x.startsWith("photo:") && (C.sameName(x.slice(6).replace(/^staff\s*[-_ ]\s*/i, "").replace(/[_]+/g, " "), name) || C.samePerson(x.slice(6).replace(/^staff\s*[-_ ]\s*/i, "").replace(/[_]+/g, " "), name)));
+  return k ? ASSETS[k] : null;
+}
+// ---------- client groups and relationships (Client Relationships Report.csv) ----------
+S.rel = null;
+function useRelationships(rows) {
+  const clients = new Map(), groups = new Map();
+  rows.forEach(r => {
+    const name = String(r["[Client] Client"] || "").trim(); if (!name) return;
+    const c = clients.get(name) || { name, structure: r["[Client] Business Structure"], groups: new Set(), rel: [] }; clients.set(name, c);
+    String(r["[Client] Group(s)"] || "").split(/,\s+/).map(g => g.trim()).filter(Boolean).forEach(g => { c.groups.add(g); if (!groups.has(g)) groups.set(g, new Set()); groups.get(g).add(name); });
+    const other = String(r["[Client Relationship] Related Client"] || "").trim();
+    if (other) c.rel.push({ other, type: String(r["[Client Relationship] Relationship Type"] || "").trim(), shares: r["[Client Relationship] Shares"] });
+  });
+  S.rel = { clients, groups };
+  const dl = $("groupList"); if (dl) { dl.innerHTML = ""; [...groups.keys()].sort().forEach(g => dl.appendChild(h("option", { value: g }))); }
+  $("groupPickWrap").hidden = false;
+}
+// who signs for an entity, from the relationships report (directors, or the trustee's directors)
+function relSigners(entityName) {
+  if (!S.rel) return [];
+  const find = n => S.rel.clients.get(n) || [...S.rel.clients.values()].find(c => C.sameName(c.name, n));
+  const c = find(entityName); if (!c) return [];
+  const directors = x => [...new Set(x.rel.filter(r => /^director$/i.test(r.type)).map(r => r.other))];
+  if (/company/i.test(c.structure || "")) return directors(c);
+  const trustees = c.rel.filter(r => /trustee/i.test(r.type)).map(r => r.other);
+  return [...new Set(trustees.flatMap(t => { const tc = find(t); return tc && /company/i.test(tc.structure || "") ? directors(tc) : [t]; }))];
+}
+async function chooseGroup(g) {
+  if (!S.rel || !S.rel.groups.has(g)) return;
+  const members = [...S.rel.groups.get(g)];
+  S.expected = members; S.groupMembers = members;
+  if (!$("groupName").value.trim() || S.groupAuto) { $("groupName").value = g; S.groupAuto = true; }
+  let added = 0;
+  if (Platform.signedIn()) { try { const namesL = await Platform.listClientFolders(); members.map(m => bestFolder(m, namesL)).filter(Boolean).forEach(f => { if (!S.folders.includes(f)) { S.folders.push(f); added++; } }); renderChosen(); suggestFolders(); } catch (e) {} }
+  $("groupHint").textContent = `${members.length} clients in ${g}: ${members.join(", ")}.` + (added ? ` Their ${added} client folder${added === 1 ? " is" : "s are"} ready in step 2.` : "");
+  updateVoice(); refreshChecks(); updateStepper();
+}
 function useXpm(rows, label) {
   S.xpm = rows.filter(r => r["[Client] Client"]).map(r => Object.fromEntries(KEEP.map(k => [k, r[k]]))); S.xpmInfo = label;
   try { localStorage.setItem(XPM_KEY, JSON.stringify({ rows: S.xpm, info: { name: label === "from SuiteFiles" ? "SuiteFiles" : label, loaded: C.fmtDate(today) } })); } catch (e) {}
@@ -2670,6 +2824,7 @@ function applyDocFacts() {
     if (p.dist.length && !(e.dist || []).some(d => d.name)) e.dist = p.dist.map(d => Object.assign({}, d));
     e.src = Object.assign(e.src || {}, { fs: true });
   });
+  S.entities.forEach(e => { if (!String(e.signatories || "").trim() && e.type !== "individual") { const s = relSigners(e.name); if (s.length) { e.signatories = s.join("\n"); e.signSrc = "the client relationships report (directors)"; } } });
   S.files.filter(f => f.entityId && f.parsed && f.kind === "minutes").forEach(f => {
     const e = S.entities.find(x => x.id === f.entityId); if (!e) return; const p = f.parsed;
     if (p.kind === "trust" && p.shares.length && (!p.year || p.year === Y)) { e.minute = p; e.minuteDiffs = C.compareMinute(e.dist, p.shares); }
@@ -2841,10 +2996,10 @@ function renderEntities() {
       if (e.minute) inner.appendChild(h("p", { class: e.minuteDiffs && e.minuteDiffs.length ? "note" : "hint" }, e.minuteDiffs && e.minuteDiffs.length ? `The trust distribution minute doesn’t match the return: ${e.minuteDiffs.join("; ")}. Check the minute.` : `The trust distribution minute matches the distributions on the return (${e.minute.shares.map(s => s.name + " " + (s.pct !== null ? s.pct + "%" : C.absMoney(s.amount))).join(", ")}).`));
     }
     inner.appendChild(h("div", { class: "actions" }, h("button", { class: "linkbtn", onclick: () => { if (confirm(`Remove ${e.name} from this report?`)) { S.entities.splice(idx, 1); S.files.forEach(x => { if (x.entityId === e.id) x.entityId = null; }); renderAll(); } } }, "Remove this entity")));
-    box.appendChild(h("details", { class: "ent", open: idx < 1 || S.openAll }, head, inner));
+    box.appendChild(h("details", { class: "ent", open: true, "data-id": e.id }, head, inner));
   });
 }
-$("addEntity").onclick = () => { const e = newEntity("[Entity name]", "company"); S.openAll = true; renderAll(); S.openAll = false; };
+$("addEntity").onclick = () => { const e = newEntity("[Entity name]", "company"); S.sel = e.id; renderAll(); };
 
 // ---------- step 4: issues ----------
 function refreshSuggestions(e) {
@@ -2864,7 +3019,7 @@ function renderIssues() {
   const m = model();
   S.entities.forEach(e => {
     const me = m.entities.find(x => x.id === e.id);
-    const sec = h("details", { class: "ent", open: true }, h("summary", {}, h("span", { class: "nm" }, e.name), h("span", { class: "ty" }, `${Object.values(e.paras).filter(p => p.on).length} paragraphs ticked`)));
+    const sec = h("details", { class: "ent", open: true, "data-id": e.id }, h("summary", {}, h("span", { class: "nm" }, e.name), h("span", { class: "ty" }, (n => `${n} paragraph${n === 1 ? "" : "s"} ticked`)(Object.values(e.paras).filter(p => p.on).length))));
     const inner = h("div", { class: "in" }); sec.appendChild(inner);
     S.notes.filter(n => n.note && (C.sameName(n.name, e.name))).forEach(n => inner.appendChild(h("div", { class: "note" }, "From the collation spreadsheet: " + n.note)));
     const ids = Object.keys(e.paras).sort((a, b) => LIB[a].order - LIB[b].order);
@@ -2920,9 +3075,57 @@ function refreshChecks() {
   if (!list.length) ul.appendChild(h("li", { class: "ok" }, "Everything needed is filled in. Build to preview."));
   list.sort((a, b) => ["block", "warn", "info"].indexOf(a.level) - ["block", "warn", "info"].indexOf(b.level)).forEach(c => ul.appendChild(h("li", { class: c.level }, c.text)));
   $("build").disabled = list.some(c => c.level === "block");
+  if (typeof updateStepper === "function") setTimeout(updateStepper, 0);
   S.built = null; $("dlRow").hidden = true; $("saveBox").hidden = true;
 }
-function renderAll() { renderFiles(); renderEntities(); renderIssues(); updateVoice(); refreshChecks(); }
+function renderAll() { renderFiles(); renderEntities(); renderIssues(); updateVoice(); refreshChecks(); sideLists(); }
+// ---------- steps ----------
+S.step = 1;
+function goStep(n) {
+  S.step = Math.max(1, Math.min(5, n));
+  document.querySelectorAll(".step").forEach(s => { s.hidden = +s.dataset.step !== S.step; });
+  document.querySelectorAll(".stepper button").forEach(b => b.setAttribute("aria-current", +b.dataset.go === S.step ? "step" : "false"));
+  $("navBack").disabled = S.step === 1;
+  $("navNext").hidden = S.step === 5;
+  const nextName = ["", "Documents", "Entities and figures", "Issues and recommendations", "Check and build"][S.step];
+  $("navNext").textContent = nextName ? "Next: " + nextName : "Next";
+  window.scrollTo({ top: 0 });
+  updateStepper();
+}
+document.querySelectorAll(".stepper button").forEach(b => b.addEventListener("click", () => goStep(+b.dataset.go)));
+$("navBack").onclick = () => goStep(S.step - 1);
+$("navNext").onclick = () => goStep(S.step + 1);
+function updateStepper() {
+  const set = (n, text, cls) => { const s = $("st" + n); if (s) s.textContent = text; const b = document.querySelector(`.stepper button[data-go="${n}"]`); if (b) { b.classList.toggle("done", cls === "done"); b.classList.toggle("attn", cls === "attn"); } };
+  set(1, $("groupName").value.trim() || ($("address").value.trim() ? $("address").value.split("\n")[0] : "Client and letter"), $("groupName").value.trim() || $("address").value.trim() ? "done" : "");
+  const nf = S.files.length, nu = S.files.filter(f => !f.entityId && !["org", "data", "collation", "template", "own", "skip", "planning"].includes(f.kind)).length;
+  set(2, nf ? `${nf} file${nf === 1 ? "" : "s"}${nu ? `, ${nu} need an entity` : ""}` : "Nothing added yet", nf ? (nu ? "attn" : "done") : "");
+  set(3, S.entities.length ? `${S.entities.length} entit${S.entities.length === 1 ? "y" : "ies"}` : "None yet", S.entities.length ? "done" : "");
+  const ticked = S.entities.reduce((s2, e) => s2 + Object.values(e.paras).filter(p => p.on).length, 0);
+  set(4, S.entities.length ? `${ticked} paragraph${ticked === 1 ? "" : "s"} ticked` : "None yet", S.entities.length ? "done" : "");
+  const list = S.entities.length ? C.checks(model(), LIB, S.files) : []; const blocks = list.filter(c => c.level === "block").length, warns = list.filter(c => c.level === "warn").length;
+  set(5, S.built ? "Built" : blocks ? `${blocks} to fix before building` : warns ? `${warns} to check` : S.entities.length ? "Ready to build" : "Not built yet", S.built ? "done" : blocks ? "attn" : "");
+  const msg = $("navMsg"); msg.innerHTML = ""; msg.className = "msg";
+  if (S.step < 5 && S.entities.length && (blocks || warns)) { msg.className = "msg attn"; msg.append(`${blocks ? blocks + " to fix" : ""}${blocks && warns ? ", " : ""}${warns ? warns + " to check" : ""}. `, h("button", { type: "button", onclick: () => goStep(5) }, "See the checks")); }
+}
+// entities and issues: a list on the left, the chosen one on the right
+function sideLists() {
+  if (!S.entities.some(e => e.id === S.sel)) S.sel = S.entities[0] && S.entities[0].id;
+  [["entList", "entities"], ["issueList", "issues"]].forEach(([listId, boxId]) => {
+    const nav = $(listId), box = $(boxId); if (!nav || !box) return; nav.innerHTML = "";
+    box.querySelectorAll("details.ent[data-id]").forEach(d => { d.hidden = d.dataset.id !== S.sel; d.open = true; });
+    S.entities.forEach(e => {
+      const f = e.fig || {};
+      const sub = boxId === "entities"
+        ? (TYPES.find(t => t[0] === e.type) || ["", ""])[1] + (f.final !== undefined && !e.rnn && e.type !== "trust" ? `, ${f.final > 0 ? C.money(f.final) + " payable" : f.final < 0 ? C.absMoney(f.final) + " refundable" : "nil"}` : "")
+        : (n => `${n} paragraph${n === 1 ? "" : "s"} ticked`)(Object.values(e.paras).filter(p => p.on).length);
+      const attn = boxId === "entities" ? (f.taxable === undefined && !e.rnn) : Object.entries(e.paras).some(([id, p]) => p.on && blanksOf(id).some(k => !String((p.vals || {})[k] || "").trim() && !(k in C.autoVals(id, e, model()))));
+      nav.appendChild(h("button", { type: "button", "aria-current": e.id === S.sel ? "true" : "false", class: attn ? "attn" : "", onclick: () => { S.sel = e.id; sideLists(); } }, h("b", {}, e.name), h("span", {}, attn ? (boxId === "entities" ? "Figures missing" : "Blanks to fill") : sub)));
+    });
+    if (boxId === "entities") nav.appendChild(h("button", { type: "button", class: "addone", onclick: () => $("addEntity").click() }, h("b", {}, "Add an entity by hand"), h("span", {}, "If a return isn’t in the documents")));
+  });
+  updateStepper();
+}
 
 // ---------- build ----------
 let currentTab = "report";
@@ -2958,7 +3161,7 @@ $("build").onclick = async () => {
     S.built = { m, nm, plan: plan && plan.bytes, report: rep.bytes, pack: pack.bytes, data: new TextEncoder().encode(dataFile(m)),
       reportUrl: URL.createObjectURL(new Blob([rep.bytes], { type: "application/pdf" })), packUrl: URL.createObjectURL(new Blob([pack.bytes], { type: "application/pdf" })) };
     $("buildStatus").textContent = `Report ${rep.pageCount} pages, pack ${pack.pageCount} pages.` + (pack.unread.length ? ` Couldn’t add ${pack.unread.join(", ")} (the PDF wouldn’t open).` : "");
-    $("dlRow").hidden = false; showTab(currentTab);
+    $("dlRow").hidden = false; setTimeout(updateStepper, 0); showTab(currentTab);
     if (Platform.signedIn()) showSave(m);
   } catch (err) { console.error(err); $("buildStatus").textContent = "Couldn’t build: " + (err && err.message || err); }
   $("build").disabled = false;
@@ -3056,12 +3259,19 @@ Platform.start({
       renderChosen();
       fillClientSelect($("sfClient"), "");
       try { const rows = await Platform.readReport(); useXpm(rows, "from SuiteFiles"); } catch (e) { /* keep the saved copy */ }
+      try { useRelationships(await Platform.readRelationships()); } catch (e) { /* no relationships report */ }
     }
   },
 });
 renderAll();
-window.__pr = { S, model, renderAll };
+try { $("barLogo").src = "data:image/png;base64," + ASSETS_B64["Logo.png"]; } catch (e) {}
+goStep(1);
+["groupName", "address"].forEach(id => $(id).addEventListener("input", updateStepper));
+$("groupPick").addEventListener("change", () => chooseGroup($("groupPick").value.trim()));
+$("groupName").addEventListener("input", () => { S.groupAuto = false; });
+window.__pr = { S, model, renderAll, goStep, useRelationships, chooseGroup, staffPhoto, ASSETS };
 })();
+
 
 </script>
 
