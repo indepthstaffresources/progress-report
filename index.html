@@ -163,57 +163,23 @@ main{max-width:1400px;margin:0 auto;padding:22px 32px 110px;display:block}
 <body>
 <header class="bar"><div class="in"><img id="barLogo" alt="Indepth Accounting"><h1>Progress Report &amp; Collation</h1><a class="home" href="/"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 11.5 12 5l8 6.5V19a1 1 0 0 1-1 1h-4.5v-5h-5v5H5a1 1 0 0 1-1-1z"/></svg><span>Staff tools</span></a></div></header>
 <nav class="stepper" aria-label="Steps"><ol>
-  <li><button type="button" data-go="1"><span class="n">1</span><span class="t"><b>Report details</b><span id="st1">Client and letter</span></span></button></li>
-  <li><button type="button" data-go="2"><span class="n">2</span><span class="t"><b>Documents</b><span id="st2">Nothing added yet</span></span></button></li>
+  <li><button type="button" data-go="1"><span class="n">1</span><span class="t"><b>Documents</b><span id="st1">Nothing added yet</span></span></button></li>
+  <li><button type="button" data-go="2"><span class="n">2</span><span class="t"><b>Letter and report details</b><span id="st2">Fills in from the documents</span></span></button></li>
   <li><button type="button" data-go="3"><span class="n">3</span><span class="t"><b>Entities and figures</b><span id="st3">None yet</span></span></button></li>
   <li><button type="button" data-go="4"><span class="n">4</span><span class="t"><b>Issues and recommendations</b><span id="st4">None yet</span></span></button></li>
   <li><button type="button" data-go="5"><span class="n">5</span><span class="t"><b>Check and build</b><span id="st5">Not built yet</span></span></button></li>
 </ol></nav>
 <main>
-  <section class="step" data-step="1" aria-labelledby="s1">
-    <div class="stephead"><h2 id="s1">Report details</h2><p>Who the report is for and who signs it. Most of this fills in once the returns are added.</p></div>
-    <div class="cols"><div class="panel"><h3>Client and letter</h3>
-    <div id="platformAuth"></div>
-    <div class="row">
-      <div><label for="year">Financial year of the returns</label><input type="number" id="year" min="2015" max="2100"></div>
-      <div><label for="reportDate">Report date</label><input type="date" id="reportDate"></div>
-      <div><label for="signer">Signs the cover letter</label><select id="signer"><option value="Renee">Renee Cooper</option><option value="Claudine">Claudine Fitzpatrick</option><option value="Hazel">Hazel Hade</option></select></div>
-    </div>
-    <div id="groupPickWrap" hidden><label for="groupPick">Client group (from XPM)</label><input type="text" id="groupPick" list="groupList" placeholder="Start typing, for example Horn Graders Group"><datalist id="groupList"></datalist><p class="hint" id="groupHint">Choosing a group fills in the group name and adds every entity’s client folder in step 2.</p></div>
-    <div class="row">
-      <div><label for="groupName">Group name</label><input type="text" id="groupName" placeholder="For example, Smith Family Group"></div>
-      <div><label for="voice">Report is for</label><select id="voice"><option value="auto">Work it out from the entities</option><option value="single">One entity</option><option value="family">A family</option><option value="group">A business group</option></select></div>
-    </div>
-    <p class="hint" id="voiceHint"></p>
-    <label for="address">Addressed to (name, then postal address)</label>
-    <textarea id="address" rows="3" placeholder="Filled from the client report when the returns are added"></textarea>
-    <label for="greeting">Greeting (Dear …)</label>
-    <input type="text" id="greeting" placeholder="For example, Peter, Todd and Mel">
-    <div class="row">
-      <div><label for="earlier">Also lodging earlier years</label><input type="text" id="earlier" placeholder="For example, 2023, 2024"></div>
-      <div><label for="footnote">15 May footnote: lodged from</label><input type="date" id="footnote"></div>
-    </div>
-    </div><div class="panel"><h3>Report and team</h3>
-    <input type="hidden" id="design" value="current">
-    <label class="tick" style="margin-top:12px"><input type="checkbox" id="introLines"> Include the two closing lines in the introduction</label>
-    <label for="team">Your Indepth Accounting Team (one person per line: name | title | email)</label>
-    <textarea id="team" rows="3" placeholder="[First name Last name] | [Title] | [email]"></textarea>
-    <p class="hint">Remembered on this computer. Staff details are never stored in the tool itself.</p>
-    <p class="status" id="xpmStatus"></p>
-    <button class="linkbtn" id="xpmPick">Load client report (.xlsx)</button> <input type="file" id="xpmFile" accept=".xlsx,.xls" hidden>
-    <p class="status" id="fontStatus"></p>
-    <button class="linkbtn" id="fontPick">Use Segoe UI from this computer</button>
-    <p id="fontHelp" class="hint" hidden>Choose segoeui.ttf and segoeuib.ttf together. In the file window, type <strong>C:\Windows\Fonts</strong> in the address bar, then select both files (hold Ctrl).</p>
-    <input type="file" id="fontFiles" accept=".ttf,.otf" multiple hidden>
-    </div></div>
-  </section>
-
-  <section class="step" data-step="2" aria-labelledby="s2" hidden>
+  <section class="step" data-step="1" aria-labelledby="s2">
     <div class="stephead"><h2 id="s2">Documents</h2><p>Add everything for the job. Each file is sorted and matched to its entity; change anything that’s wrong.</p></div>
-    <div class="cols wide-right"><div class="panel"><h3>Add files</h3>
+    <div class="cols wide-right"><div class="panel"><h3>Client and year</h3>
+    <div id="platformAuth"></div>
+    <div class="row"><div><label for="year">Financial year of the returns</label><input type="number" id="year" min="2015" max="2100"></div></div>
+    <div id="groupPickWrap" hidden><label for="groupPick">Client group (from XPM)</label><input type="text" id="groupPick" list="groupList" placeholder="Start typing, for example Horn Graders Group"><datalist id="groupList"></datalist><p class="hint" id="groupHint">Choosing a group fills in the group name and adds every entity’s client folder below.</p></div>
+    <h3>Add files</h3>
     
     <div class="drop" id="drop" tabindex="0" role="button" aria-label="Add documents"><strong>Drop documents here</strong><br><span class="status">PDF, Excel or last year’s data file, or click to choose</span></div>
-    <input type="file" id="files" accept=".pdf,.xlsx,.xlsm,.xls,.json" multiple hidden>
+    <input type="file" id="files" accept=".pdf,.xlsx,.xlsm,.xls,.json,.csv" multiple hidden>
     <div id="sfBox" hidden>
       <p class="sub">Add from SuiteFiles</p>
       <p class="hint" style="margin-top:0">Add the folder for every entity in the group, then show the files. Bank statements, payroll and other source documents in Workpapers are left out.</p>
@@ -230,6 +196,44 @@ main{max-width:1400px;margin:0 auto;padding:22px 32px 110px;display:block}
     </div><div class="panel"><h3>Files in this job</h3>
     <p class="status" id="readStatus"></p>
     <div id="fileList"></div>
+    </div></div>
+  </section>
+
+  <section class="step" data-step="2" aria-labelledby="s1" hidden>
+    <div class="stephead"><h2 id="s1">Letter and report details</h2><p>Filled in from the documents and the client report. Check it and change anything that’s wrong.</p></div>
+    <div class="cols"><div class="panel"><h3>Client and letter</h3>
+    <div class="row">
+      <div><label for="reportDate">Report date</label><input type="date" id="reportDate"></div>
+      <div><label for="signer">Signs the cover letter</label><select id="signer"><option value="Renee">Renee Cooper</option><option value="Claudine">Claudine Fitzpatrick</option><option value="Hazel">Hazel Hade</option></select></div>
+    </div>
+    <div class="row">
+      <div><label for="groupName">Group name</label><input type="text" id="groupName" placeholder="For example, Smith Family Group"></div>
+      <div><label for="voice">Report is for</label><select id="voice"><option value="auto">Work it out from the entities</option><option value="single">One entity</option><option value="family">A family</option><option value="group">A business group</option></select></div>
+    </div>
+    <p class="hint" id="voiceHint"></p>
+    <label for="address">Addressed to (name, then postal address)</label>
+    <textarea id="address" rows="3" placeholder="Filled from the client report when the returns are added"></textarea>
+    <label for="greeting">Greeting (Dear …)</label>
+    <input type="text" id="greeting" placeholder="For example, Peter, Todd and Mel">
+    <div class="chips" id="greetChips"></div>
+    <label class="tick" style="margin-top:14px"><input type="checkbox" id="earlierOn"> Also lodging earlier years</label>
+    <div class="chips" id="earlierYears" hidden></div>
+    <input type="hidden" id="earlier">
+    <label class="tick" style="margin-top:12px"><input type="checkbox" id="footnoteOn" checked> Add the 15 May footnote for individuals</label>
+    <div id="footnoteWrap" style="max-width:260px"><label for="footnote">Returns lodged from</label><input type="date" id="footnote"></div>
+    </div><div class="panel"><h3>Report and team</h3>
+    <input type="hidden" id="design" value="current">
+    <label class="tick" style="margin-top:12px"><input type="checkbox" id="amendedOn"> These are amended returns</label>
+    <label class="tick"><input type="checkbox" id="slipAmount" checked> Show the amount payable on each ATO payment slip in the pack</label>
+    <label for="team">Your Indepth Accounting Team (one person per line: name | title | email)</label>
+    <textarea id="team" rows="3" placeholder="[First name Last name] | [Title] | [email]"></textarea>
+    <p class="hint">Remembered on this computer. Staff details are never stored in the tool itself.</p>
+    <p class="status" id="xpmStatus"></p>
+    <button class="linkbtn" id="xpmPick">Load client report (.xlsx)</button> <input type="file" id="xpmFile" accept=".xlsx,.xls" hidden>
+    <p class="status" id="fontStatus"></p>
+    <button class="linkbtn" id="fontPick">Use Segoe UI from this computer</button>
+    <p id="fontHelp" class="hint" hidden>Choose segoeui.ttf and segoeuib.ttf together. In the file window, type <strong>C:\Windows\Fonts</strong> in the address bar, then select both files (hold Ctrl).</p>
+    <input type="file" id="fontFiles" accept=".ttf,.otf" multiple hidden>
     </div></div>
   </section>
 
@@ -342,7 +346,7 @@ main{max-width:1400px;margin:0 auto;padding:22px 32px 110px;display:block}
       text: "The QRIDA Business Support Grant is non-assessable non-exempt income for income tax purposes." },
     // ---- Company ----
     pay_tax: { group: "company", applies: ["company"], title: "Payment of company tax", heading: "Payment of Company Tax",
-      text: "Companies are subject to full self-assessment which means that assessments (based upon the taxable income disclosed in returns) are deemed to be issued and the tax owing is due and payable upon lodgement of the Income Tax Return.\n***It is your responsibility to ensure that the amount of [Amount payable] is paid to the Australian Taxation Office [Due date].***\nAn income tax assessment notice will not be issued to the Company. Please use the enclosed payment advice and make your payment to the Australian Taxation Office [Due date]." },
+      text: "Companies are subject to full self-assessment which means that assessments (based upon the taxable income disclosed in returns) are deemed to be issued and the tax owing is due and payable upon lodgement of the Income Tax Return.\n****It is your responsibility to ensure that the amount of [Amount payable] is paid to the Australian Taxation Office [Due date].****\nAn income tax assessment notice will not be issued to the Company. Please use the enclosed payment advice and make your payment to the Australian Taxation Office [Due date]." },
     insolvent: { group: "company", applies: ["company"], title: "Potential insolvent trading", heading: "Potential Insolvent Trading",
       text: "You will observe from the enclosed Financial Statements that this Company had a working capital deficiency at the end of the [Financial year] financial year.\nThere is an obligation under the Corporations Law for the Directors to make a statement as to whether or not \"there are reasonable grounds to believe that the company will be able to pay its debts as and when they fall due\".\nIf Directors knowingly make a false statement, they are in breach of the Corporations Law and may become personally liable for company debts. Likewise, if they make a statement that the company is unable to pay its debts but then continue to trade in that situation, they are also in breach of the Corporations Law.\nIf you consider, in view of the abovementioned deficiency, that your company is in this situation, it would appear that additional funds would need to be injected by the Directors/Shareholders in the form of subordinated loans or share capital. If by way of loans, the providers of such funds would then need to give an undertaking that they would not call up the loans unless all other creditors had been paid. The alternative is liquidation.\nWe strongly recommend that you consider the above before signing the financial statements." },
     div7a_rec: { group: "company", applies: ["company"], title: "Division 7A (loan agreement recommended)", heading: "Division 7A Loans",
@@ -465,7 +469,7 @@ main{max-width:1400px;margin:0 auto;padding:22px 32px 110px;display:block}
     rental_appraisal: { group: "other", notes: true, applies: ALL, title: "Rental appraisal (related party rent)", heading: "Rental Appraisal",
       text: "Market rent must be charged to any related party occupying a property to demonstrate that the arrangement is genuinely commercial and that the property is being used for income-producing purposes. This is essential to support the ability to claim a deduction for rental property expenses, which may otherwise be reduced or denied if the arrangement is not conducted on an arm's-length basis.\nTo ensure compliance, it is recommended that you obtain an independent rental appraisal to confirm that market rent is being charged for the use of the property located at [Property address]." },
     fbt_stat: { group: "company", notes: true, applies: B, title: "FBT employee contributions (statutory method)", heading: "FBT Employee Contributions",
-      text: "We have calculated FBT employee contributions for the period 1 April [FBT year start] to 31 March [FBT year end].\nThe statutory method has been used to calculate the FBT employee contribution for the following vehicles:\n[Vehicles, one per line starting with - ]\nUnder the statutory method, a flat rate of 20% is applied to the base value of each vehicle." },
+      text: "We have calculated FBT employee contributions for the period 1 April [FBT year start] to 31 March [FBT year end].\nThe statutory formula method has been used for the following vehicles:\n[Vehicles, one per line starting with - ]\nUnder the statutory formula method, the taxable value of a car is 20% of its base value (generally the car\u2019s cost including GST), reduced for any days in the FBT year it was not available for private use. The employee contribution reduces the taxable value, and therefore the FBT payable, by the same amount." },
     fbt_returns: { group: "company", notes: true, applies: B, title: "FBT returns recommended", heading: "Fringe Benefits Tax Returns",
       text: "We have adjusted your [Financial year] Financials to include a fringe benefit contribution for the [Vehicle] using the statutory formula method. We recommend that you keep a motor vehicle logbook for a 12-week period in the current year to confirm your kilometres travelled.\nWe also strongly recommend that you complete fringe benefit returns, which are due in June each year based on the period April to March. We will email you in [Month and year] with all the information on registering for fringe benefits tax." },
     trust_loss: { group: "trust", notes: true, applies: ["trust"], title: "Current year tax loss (trust)", heading: "Recognition and Treatment of Current Year Tax Loss",
@@ -570,8 +574,8 @@ main{max-width:1400px;margin:0 auto;padding:22px 32px 110px;display:block}
   }
 
   // ---------- What kind of document is it ----------
-  const KIND_LABEL = { planning: "Tax planning", template: "Progress report template", skip: "Not in the pack", itr: "Income Tax Return", fs: "Financial Statements", minutes: "Minutes", amendedMinutes: "Amended Minutes (to be emailed)", dividend: "Dividend Statements", div7a: "Loan Agreements", slip: "ATO Payment Slip", org: "Organisational Chart", workpaper: "Workpaper", collation: "Collation spreadsheet", data: "Last year’s report data", own: "Earlier output (not used)", other: "Other document" };
-  const KIND_ORDER = ["fs", "itr", "minutes", "dividend", "div7a", "slip", "other"];
+  const KIND_LABEL = { amendedBas: "Amended Business Activity Statement", planning: "Tax planning", template: "Progress report template", skip: "Not in the pack", itr: "Income Tax Return", fs: "Financial Statements", minutes: "Minutes", amendedMinutes: "Amended Minutes (to be emailed)", dividend: "Dividend Statements", div7a: "Loan Agreements", slip: "ATO Payment Slip", org: "Organisational Chart", workpaper: "Workpaper", collation: "Collation spreadsheet", data: "Last year’s report data", own: "Earlier output (not used)", other: "Other document" };
+  const KIND_ORDER = ["fs", "itr", "minutes", "dividend", "div7a", "amendedBas", "slip", "other"];
   // where: "trf" (Tax Returns and Financials), "wp" (Workpapers), "prior" (last year), or "" (dropped in)
   function classify(name, text, where) {
     const n = name.toLowerCase(), t = (text || "").slice(0, 8000).replace(/\s+/g, " ");
@@ -587,6 +591,8 @@ main{max-width:1400px;margin:0 auto;padding:22px 32px 110px;display:block}
     if (/cover letter & progress report|^correspondence - /.test(n)) return "own";
     if (/taxplan \+ forecast|tax plan report/i.test(t) || (/tax plan/.test(n) && where === "tp")) return /supersc?eded|old version/.test(n) ? "skip" : "planning";
     if (/(company|individual|trust|partnership) tax return \d{4}/i.test(t) || /tax return.*cannot be lodged as a paper/i.test(t)) return "itr";
+    if (/amend|revision/.test(n) && /activity statement|\bbas\b|\bias\b/.test(n) || /activity statement revision request/i.test(t)) return "amendedBas";
+    if (/structure details|client structure mapper/i.test(t) && !/tax return/i.test(t.slice(0, 400))) return "org";
     if (/activity statement|\b(bas|ias)\b|payroll tax|bank statement|loan statement|credit card|general ledger|trial balance|journal|depreciation schedule|disposal schedule|payroll|amorti[sz]ation|invoice|receipt/.test(n)) return "skip";
     if (/organi[sz]ational chart|org chart|structure chart|structure diagram/.test(n)) return "org";
     if (/payment slip|payment advice/.test(n) || /^\s*(ato )?payment slip/i.test(t) || (/Biller code\s+75556/i.test(t) && /ATO direct credit account|OnlineServices\/Pay/i.test(t))) return "slip";
@@ -760,6 +766,64 @@ main{max-width:1400px;margin:0 auto;padding:22px 32px 110px;display:block}
     });
     if (out.fig.taxPayable !== undefined && out.fig.final !== undefined) out.fig.taxPaid = out.fig.taxPayable - out.fig.final;
     if (out.fig.taxable === undefined && out.br1.wpTaxable !== undefined) out.fig.taxable = out.br1.wpTaxable;
+    const d7s = vis.filter(n => /div ?7a loan/i.test(n));
+    if (d7s.length) { try { const parts = d7s.map(n => readDiv7aSheet(rows(n))).filter(x => x.loans.length); if (parts.length) out.div7a = { loans: parts.flatMap(x => x.loans), rate: parts.find(x => x.rate) ? parts.find(x => x.rate).rate : null, rates: Object.assign({}, ...parts.map(x => x.rates)) }; } catch (e) { /* layout not recognised */ } }
+    const fsn = vis.find(n => /fbt contribution/i.test(n));
+    if (fsn) { try { out.fbt = readFbtSheet(rows(fsn)); } catch (e) { /* layout not recognised */ } }
+    return out;
+  }
+  // Division 7A loan sheet: each loan year's opening balance, repayments, interest and closing balance
+  function readDiv7aSheet(r) {
+    const num = v => { if (typeof v === "number") return Math.round(v * 100); const s = String(v || "").replace(/[$,\s]/g, ""); if (!s || s === "-") return 0; const n = parseFloat(s.replace(/[()]/g, "")); return isNaN(n) ? 0 : Math.round((/\(/.test(s) ? -n : n) * 100); };
+    const out = { loans: [], rate: null, rates: {} };
+    let cur = null;
+    r.forEach(row => {
+      const a = String(row[0] || "").trim();
+      const m = a.match(/^(\d{4}) Loan$/);
+      if (m) { cur = { year: +m[1], opening: null, payments: 0, interest: 0, closing: 0, drawn: 0 }; out.loans.push(cur); return; }
+      if (cur) {
+        if (/total interest/i.test(String(row[4] || ""))) { cur.interest = num(row[5]); cur.closing = num(row[7]); cur = null; return; }
+        if (cur.opening === null && row[7] !== undefined && row[7] !== null && String(row[7]).trim() !== "") { cur.opening = num(row[7]); if (!row[2]) return; }
+        cur.payments += num(row[6]); cur.drawn += num(row[5]) + (String(row[4] || "").match(/\d/) ? num(row[4]) : 0);
+      }
+      if (/^minimum repayment on/i.test(a)) { const y = +row[4], v = num(row[6]); const l = out.loans.find(x => x.year === y); if (l) l.minThisYear = v; }
+      if (typeof row[10] === "number" && row[10] > 2000 && row[11] !== undefined) { const rt = typeof row[11] === "number" ? row[11] : parseFloat(String(row[11]).replace("%", "")) / 100; if (rt) out.rates[row[10]] = rt; }
+    });
+    out.loans = out.loans.filter(l => l.opening || l.payments || l.closing || l.interest);
+    return out;
+  }
+  // ATO client lodgment list (saved from Online services for agents): due date and status for each client's return
+  function parseLodgements(rows, year) {
+    const out = [];
+    const key = (r, re) => Object.keys(r).find(k => re.test(k));
+    rows.forEach(r => {
+      const kName = key(r, /client.*name|^name$|entity name|taxpayer/i), kType = key(r, /type|form|obligation|description/i), kPer = key(r, /period|year|income year/i), kDue = key(r, /due/i), kStat = key(r, /status/i), kAbn = key(r, /abn/i), kTfn = key(r, /tfn/i), kLod = key(r, /lodg(e)?(ment)?\s*date|date lodged|received/i);
+      const type = String(kType ? r[kType] : ""); if (type && !/income tax|itr|tax return|company|trust|individual|partnership/i.test(type)) return;
+      const per = String(kPer ? r[kPer] : ""); if (per && year && !new RegExp(String(year)).test(per)) return;
+      out.push({ name: String(kName ? r[kName] : "").trim(), abn: String(kAbn ? r[kAbn] : "").replace(/\D/g, ""), tfn: String(kTfn ? r[kTfn] : "").replace(/\D/g, ""), due: String(kDue ? r[kDue] : "").trim(), status: String(kStat ? r[kStat] : "").trim(), lodged: String(kLod ? r[kLod] : "").trim(), type });
+    });
+    return out;
+  }
+  // Each vehicle on the FBT contribution sheet: employee, vehicle, registration, method, values, logbook %
+  function readFbtSheet(r) {
+    const lab = row => (row || []).slice(0, 3).filter(x => typeof x === "string").join(" ").replace(/\s+/g, " ").trim();
+    const at = re => r.findIndex(row => re.test(lab(row)));
+    const out = { yearEnd: null, vehicles: [] };
+    const ye = r.slice(0, 6).map(row => row.find(x => typeof x === "string" && /\d{4}/.test(x) && /march/i.test(x)) || (typeof row[1] === "number" ? null : null)).find(Boolean);
+    const yr = (ye || "").match(/(\d{4})/); if (yr) out.yearEnd = +yr[1];
+    if (!out.yearEnd) { const row = r.find(rr => /fbt year end/i.test(lab(rr))); const v = row && row.find(x => typeof x === "number" && x > 20000); if (v) out.yearEnd = new Date(Math.round((v - 25569) * 864e5)).getUTCFullYear(); }
+    const iEmp = at(/^vehicle$/i), iDesc = at(/^vehicle description/i), iReg = at(/^registration/i), iMeth = at(/method which provides the lesser/i), iGross = at(/^gross taxable value under this method/i), iLog = at(/log book business use percentage/i);
+    const contribRows = r.map((row, i) => [i, row]).filter(([i, row]) => i > iMeth && iMeth >= 0 && /employee contribution/i.test(lab(row)));
+    const pick = (i, col) => { if (i < 0) return null; const row = r[i] || []; for (let k = col; k <= col + 2; k++) { const v = row[k]; if (v !== null && v !== undefined && String(v).trim() !== "") return v; } return null; };
+    for (let g = 0; g < 6; g++) {
+      const desc = pick(iDesc, 3 + 3 * g); if (!desc || /^enter/i.test(String(desc))) continue;
+      const meth = String(pick(iMeth, 3 + 3 * g) || "");
+      const gross = Number(String(pick(iGross, 4 + 3 * g) || 0).replace(/[^\d.-]/g, "")) || 0;
+      const contrib = contribRows.reduce((s2, [, row]) => s2 + (Number(String(row[5 + 3 * g] || 0).replace(/[^\d.-]/g, "")) || 0), 0);
+      let pct = pick(iLog, 4 + 3 * g); if (typeof pct === "number" && pct <= 1) pct = Math.round(pct * 10000) / 100;
+      const emp = pick(iEmp, 2 + 3 * g);
+      out.vehicles.push({ description: String(desc).trim(), rego: String(pick(iReg, 3 + 3 * g) || "").trim(), employee: emp && !/^enter/i.test(String(emp)) ? String(emp).trim() : "", method: /operating/i.test(meth) ? "operating" : "statutory", gross: Math.round(gross * 100), contribution: Math.round(contrib * 100), businessUse: pct || null });
+    }
     return out;
   }
   // The firm's "Progress Report - Template" spreadsheet: one tab per entity plus an Individuals tab
@@ -826,7 +890,7 @@ main{max-width:1400px;margin:0 auto;padding:22px 32px 110px;display:block}
     return out;
   }
   function parseCollationSheet(XLSX, bytes) {
-    const wb = XLSX.read(bytes, { type: "array" });
+    const wb = XLSX.read(bytes, { type: "array", bookFiles: true });
     const ws = wb.Sheets["Collation"] || wb.Sheets[wb.SheetNames[0]];
     const rows = XLSX.utils.sheet_to_json(ws, { header: 1, raw: false, defval: "" });
     const out = { group: "", entities: [] };
@@ -834,11 +898,36 @@ main{max-width:1400px;margin:0 auto;padding:22px 32px 110px;display:block}
     const hi = rows.findIndex(r => r.some(c => /list ent/i.test(c)));
     if (hi < 0) return out;
     const nameCol = rows[hi].findIndex(c => /list ent/i.test(c));
-    for (const r of rows.slice(hi + 1)) {
-      const nm = (r[nameCol] || "").trim(); if (!nm) { if (r.every(c => !String(c).trim() || /^\d+\.?$/.test(String(c).trim()))) continue; else continue; }
+    // the column headings say which document each column is for
+    const colKind = rows[hi].map(h => { const t = String(h || "").toLowerCase(); return /amended minutes/.test(t) ? "amendedMinutes" : /financial statement/.test(t) ? "fs" : /income tax return|tax return/.test(t) ? "itr" : /minutes/.test(t) ? "minutes" : /dividend/.test(t) ? "dividend" : /div ?7a|loan agreement/.test(t) ? "div7a" : /^other/.test(t) ? "other" : null; });
+    // tick boxes drawn as Excel controls: read which cells they sit on and whether they're ticked
+    const ticked = new Set();
+    try {
+      const files = wb.files || {}; const get = p => { const f = files[p] || files["/" + p]; if (!f) return ""; const b = f.content || f._data || f; return typeof b === "string" ? b : new TextDecoder().decode(b instanceof Uint8Array ? b : new Uint8Array(b)); };
+      Object.keys(files).filter(p => /xl\/worksheets\/sheet\d+\.xml$/.test(p)).forEach(sp => {
+        const xml = get(sp); const rels = get(sp.replace("worksheets/", "worksheets/_rels/") + ".rels");
+        (xml.match(/<control\b[\s\S]*?<\/control>/g) || []).forEach(ctl => {
+          const rid = (ctl.match(/r:id="([^"]+)"/) || [])[1]; const col = +((ctl.match(/<xdr:from>\s*<xdr:col>(\d+)<\/xdr:col>[\s\S]*?<xdr:row>(\d+)<\/xdr:row>/) || [])[1]); const row = +((ctl.match(/<xdr:from>[\s\S]*?<xdr:row>(\d+)<\/xdr:row>/) || [])[1]);
+          const tgt = rid && (rels.match(new RegExp('Id="' + rid + '"[^>]*Target="([^"]+)"')) || [])[1]; if (!tgt) return;
+          const prop = get("xl/" + tgt.replace(/^\.\.\//, "")); if (/checked="Checked"/i.test(prop)) ticked.add(row + ":" + col);
+        });
+      });
+    } catch (e) { /* no tick box controls */ }
+    const range = XLSX.utils.decode_range(ws["!ref"] || "A1"); const off = range.s.c, roff = range.s.r;
+    rows.slice(hi + 1).forEach((r, k) => {
+      const nm = (r[nameCol] || "").trim(); if (!nm) return;
       const note = r.slice(nameCol + 1).filter(c => String(c).length > 25).join(" ");
-      out.entities.push({ name: nm, note });
-    }
+      const docs = new Set(); let other = "";
+      colKind.forEach((kind, ci) => {
+        if (!kind || ci === nameCol) return; const v = String(r[ci] || "").trim();
+        const isTick = (v && v.length <= 25 && !/^(no|n|false|0|-)$/i.test(v)) || ticked.has((roff + hi + 1 + k) + ":" + (off + ci));
+        if (!isTick) return;
+        if (kind === "other") { other = v; if (/pay ?slip|payment/i.test(v)) docs.add("slip"); if (/bas|activity statement/i.test(v)) docs.add("amendedBas"); if (/org/i.test(v)) docs.add("org"); }
+        else docs.add(kind);
+      });
+      out.entities.push({ name: nm, note, docs: [...docs], other });
+    });
+    out.anyTicks = out.entities.some(e => e.docs.length);
     return out;
   }
 
@@ -877,7 +966,12 @@ main{max-width:1400px;margin:0 auto;padding:22px 32px 110px;display:block}
     if (e.type === "company") {
       if (f.final > 0) add("pay_tax", "The company has an amount payable.");
       if (f.curLiab !== undefined && f.curAssets !== undefined && f.curLiab > f.curAssets) add("insolvent", "Current liabilities are more than current assets on the return.", { "Financial year": String(Y) });
-      if ((e.wpTabs && e.wpTabs["Employee contribution"]) || b.fbtContrib) add("fbt_stat", "The FBT contribution sheet is in use in the workpaper. Switch to the operating cost version if that method was used.", { "FBT year start": String(Y - 1), "FBT year end": String(Y) });
+      const fv = (e.wpFbt && e.wpFbt.vehicles) || [];
+      const vline = v => `- ${v.description}${v.rego ? ` (${v.rego})` : ""}${v.gross ? `: taxable value ${abs0(v.gross)}, employee contribution ${abs0(v.contribution)}` : ""}`;
+      const fy = e.wpFbt && e.wpFbt.yearEnd ? { "FBT year start": String(e.wpFbt.yearEnd - 1), "FBT year end": String(e.wpFbt.yearEnd) } : { "FBT year start": String(Y - 1), "FBT year end": String(Y) };
+      if (fv.some(v => v.method === "statutory")) add("fbt_stat", "The FBT contribution sheet in the workpaper uses the statutory formula method.", Object.assign({ "Vehicles, one per line starting with - ": fv.filter(v => v.method === "statutory").map(vline).join("\n") }, fy));
+      if (fv.some(v => v.method === "operating")) { const ov = fv.filter(v => v.method === "operating"); add("fbt_contrib", "The FBT contribution sheet in the workpaper uses the operating cost method.", Object.assign({ "Vehicles, one per line starting with - ": ov.map(vline).join("\n"), "Business-use percentage": ov.map(v => v.businessUse ? v.businessUse + "%" : "").filter(Boolean).join(" and ") }, fy)); }
+      if (!fv.length && ((e.wpTabs && e.wpTabs["Employee contribution"]) || b.fbtContrib)) add("fbt_stat", "The FBT contribution sheet is in use in the workpaper. Switch to the operating cost version if that method was used.", { "FBT year start": String(Y - 1), "FBT year end": String(Y) });
     }
     if (e.type === "trust" && e.wpTabs && e.wpTabs["Div 7A"]) add("upe_pre2009", "The Div 7A tab is in use in the trust workpaper.", { "Financial year": String(Y) });
     if (e.rnn) add(e.rnnNoop ? "rnn_noop" : "rnn", "Marked as return not necessary.", { "Financial year end": "30 June " + Y, "trust/company": e.type === "company" ? "company" : "trust" });
@@ -1294,7 +1388,7 @@ main{max-width:1400px;margin:0 auto;padding:22px 32px 110px;display:block}
     if (!(f.final > 0)) return "-";
     if (isOverdue(e, model)) return "Immediately";
     const d = dueDate(e, model);
-    return fmtDate(d) + (e.type === "individual" && d.getUTCMonth() === 4 && d.getUTCDate() >= 15 && d.getUTCDate() <= 17 ? "*" : "");
+    return fmtDate(d) + (model.footnoteDate && e.type === "individual" && d.getUTCMonth() === 4 && d.getUTCDate() >= 15 && d.getUTCDate() <= 17 ? "*" : "");
   }
   function dueWords(e, model) { return isOverdue(e, model) ? "immediately" : "by " + fmtDate(dueDate(e, model)); }
 
@@ -1347,8 +1441,9 @@ main{max-width:1400px;margin:0 auto;padding:22px 32px 110px;display:block}
     L.push(fmtDate(model.reportDate)); L.push("");
     (model.address || []).forEach(a => L.push(a)); L.push("");
     L.push("Dear " + (model.greeting || "[Greeting]")); L.push("");
-    L.push(`**${yl} Income Tax ${one ? "Return" : "Returns"}**`); L.push("");
-    L.push(`${voice} ${yl} Income Tax ${one ? "Return has" : "Returns have"} been completed and ${one ? "is" : "are"} now ready for review, and approval for lodgement.`); L.push("");
+    const am = model.amended ? "Amended " : "";
+    L.push(`**${yl} ${am}Income Tax ${one ? "Return" : "Returns"}**`); L.push("");
+    L.push(`${model.amended && v === "single" ? "The" : voice} ${yl} ${am}Income Tax ${one ? "Return has" : "Returns have"} been completed and ${one ? "is" : "are"} now ready for review, and approval for lodgement.`); L.push("");
     L.push(`We have estimated ${lower} final tax position to be ${pos}.`); L.push("");
     L.push("**Please carefully review and sign all documents where marked, and return them to our office as soon as possible for electronic lodgement with the Taxation Office.**"); L.push("");
     L.push(`If you have any questions about your tax ${one ? "return" : "returns"}, please contact our office immediately.`); L.push("");
@@ -1401,7 +1496,7 @@ main{max-width:1400px;margin:0 auto;padding:22px 32px 110px;display:block}
       if (e.minuteDiffs && e.minuteDiffs.length) add("warn", `${e.name}: the distributions on the trust return don’t match the trust distribution minute. ${e.minuteDiffs.join("; ")}. Check the minute and update it before it goes in the pack.`);
       if (e.divDiffs && e.divDiffs.length) add("warn", `${e.name}: the dividends don’t agree between documents. ${e.divDiffs.join("; ")}.`);
       if (e.fsCheck && e.br1 && e.br1.fsProfit !== undefined && Math.abs(e.fsCheck - e.br1.fsProfit) > 100) add("warn", `${e.name}: net profit in the financial statements (${money(e.fsCheck)}) is different from the workpaper (${money(e.br1.fsProfit)}). Check you have the final versions of both.`);
-      if (isTaxpayer(e) && e.type === "company" && (e.fig || {}).final > 0 && !e.due) add("warn", `${e.name}: the payment due date is set to ${fmtDate(dueDate(e, model))}. Check the lodgement program and change it in step 3 if the return is due earlier.`);
+      if (isTaxpayer(e) && e.type === "company" && (e.fig || {}).final > 0 && !e.due && !(e.lodge && e.lodge.due)) add("warn", `${e.name}: the payment due date is set to ${fmtDate(dueDate(e, model))}. Check the lodgement program and change it in step 3 if the return is due earlier.`);
       if (e.bench && e.bench.on && (e.bench.expPct === undefined || e.bench.expPct === "" || !e.bench.industry || !e.bench.year)) add("block", `${e.name}: fill in the ATO benchmark business type, data year and total expenses percentage, or untick the benchmarks.`);
       if (e.d7 && e.d7.on && (!String(e.d7.borrowers || "").trim() || !String(e.d7.agreementYear || "").trim() || !(e.d7.rows || []).some(r => r.desc || r.rep || r.bal))) add("block", `${e.name}: the Division 7A section is ticked but the loan agreement details or repayments aren’t filled in.`);
       if (e.d7 && !e.d7.on && e.wpTabs && e.wpTabs["Div 7A"] && isBiz(e)) add("info", `${e.name}: the Div 7A tab is in use in the workpaper. Tick “Include the Division 7A loans section” in step 3 and enter the figures if the report needs it.`);
@@ -1409,9 +1504,19 @@ main{max-width:1400px;margin:0 auto;padding:22px 32px 110px;display:block}
     });
     (files || []).filter(f => !f.entityId && !["data", "collation", "own", "workpaper", "org", "template", "skip", "planning"].includes(f.kind) && f.kind !== "amendedMinutes").forEach(f => add("warn", `${f.name} isn’t matched to an entity yet, so it won’t go in the collation.`));
     (files || []).filter(f => f.misfiled).forEach(f => add("warn", f.misfiled));
+    if (model.entities.filter(e => !e.rnn).length > 1 && !(files || []).some(f => f.kind === "org")) add("warn", "There’s no organisational chart in the documents. Group packs include one after the cover letter and progress report.");
+    if (model.collationTicks) (model.collation || []).forEach(c => {
+      const e = model.entities.find(x => sameName(x.name, c.name)); if (!e) { add("warn", `The collation spreadsheet lists ${c.name}, but there are no documents for it yet.`); return; }
+      c.docs.filter(k => k !== "amendedMinutes" && k !== "org").forEach(k => { if (!(files || []).some(f => f.entityId === e.id && f.kind === k)) add("warn", `The collation spreadsheet ticks ${KIND_LABEL[k] || k} for ${e.name}, but it hasn’t been added.`); });
+    });
+    model.entities.forEach(e => {
+      if (!e.lodge) return;
+      if (/lodged|processed|finalised/i.test(e.lodge.status) && !/not lodged/i.test(e.lodge.status)) add("warn", `${e.name}: the ATO shows the ${model.year} return as ${e.lodge.status.toLowerCase()}${e.lodge.lodged ? " on " + e.lodge.lodged : ""}. Check this isn’t a duplicate.`);
+      if (/overdue/i.test(e.lodge.status)) add("warn", `${e.name}: the ATO shows the ${model.year} return as overdue${e.lodge.due ? " (due " + e.lodge.due + ")" : ""}.`);
+    });
     (files || []).filter(f => f.kind === "workpaper" && f.entityId && f.wpClient && !f.unused).forEach(f => { const e = model.entities.find(x => x.id === f.entityId); if (e && !sameName(e.name, f.wpClient)) add("warn", `${f.name} is the workpaper for ${f.wpClient}, but it’s set against ${e.name}. Add ${e.name}’s own workpaper from its client folder.`); });
     (files || []).filter(f => f.kind === "amendedMinutes").forEach(f => add("info", `${f.name} is amended minutes, so it’s left out of the pack (to be emailed).`));
-    if (model.entities.some(e => e.type === "individual" && (e.fig || {}).final > 0 && !isOverdue(e, model) && dueDate(e, model).getUTCMonth() === 4)) add("info", `The 15 May footnote says returns lodged from ${fmtDate(model.footnoteDate)}. Check that date is right for ${model.year} returns.`);
+    if (model.footnoteDate && model.entities.some(e => e.type === "individual" && (e.fig || {}).final > 0 && !isOverdue(e, model) && dueDate(e, model).getUTCMonth() === 4)) add("info", `The 15 May footnote says returns lodged from ${fmtDate(model.footnoteDate)}. Check that date is right for ${model.year} returns.`);
     if (!model.assets.signature) add("info", "The signature is added when you’re signed in to Microsoft. This preview leaves a gap for it.");
     return out;
   }
@@ -1425,13 +1530,16 @@ main{max-width:1400px;margin:0 auto;padding:22px 32px 110px;display:block}
 
   function runs(text) {
     const out = []; let bold = false;
-    String(text).split(/\*\*\*|\*\*/).forEach((part, i) => { if (i) bold = !bold; (part.match(/\S+|\s+/g) || []).forEach(t => out.push([t, bold])); });
+    // ** bold **, *** bold italic ***
+    let style = 0; const toks = String(text).split(/(\*\*\*|\*\*)/);
+    toks.forEach(part => { if (part === "***") { style = style === 2 ? 0 : 2; return; } if (part === "**") { style = style === 1 ? 0 : 1; return; } (part.match(/\S+|\s+/g) || []).forEach(t => out.push([t, style])); });
     return out;
   }
   const plain = t => String(t).replace(/\*\*\*|\*\*/g, "");
 
   async function kit(PDFLib, fontkit, assets) {
     const doc = await PDFLib.PDFDocument.create(); doc.registerFontkit(fontkit);
+    const skew = PDFLib.degrees ? PDFLib.degrees(12) : null;
     const emb = async (b, fb) => doc.embedFont(b || fb, { subset: true });
     const k = {
       doc, PDFLib,
@@ -1449,6 +1557,7 @@ main{max-width:1400px;margin:0 auto;padding:22px 32px 110px;display:block}
     const lh = await PDFLib.PDFDocument.load(assets["Letterhead_Blank.pdf"]);
     [k.lh1, k.lh2] = await doc.embedPages([lh.getPage(0), lh.getPage(lh.getPageCount() > 1 ? 1 : 0)]);
     if (assets.signature) { try { k.sig = await doc.embedPng(assets.signature.bytes); k.sigW = assets.signature.width; } catch (e) { k.sig = null; } }
+    k.skew = skew;
     return k;
   }
   // letter-spaced text
@@ -1525,19 +1634,19 @@ main{max-width:1400px;margin:0 auto;padding:22px 32px 110px;display:block}
         for (const [t, b] of runs(text)) { const tw = width(t, b, size); if (/^\s+$/.test(t)) { if (cur.length) { cur.push([t, b]); w += tw; } continue; } if (w + tw > maxW && cur.length) { while (cur.length && /^\s+$/.test(cur[cur.length - 1][0])) cur.pop(); lines.push(cur); cur = []; w = 0; } cur.push([t, b]); w += tw; }
         if (cur.length) lines.push(cur); return lines.length ? lines : [[]];
       },
-      drawRuns(parts, x, y, size, color) { parts.forEach(([t, b]) => { if (!/^\s+$/.test(t)) S.p.drawText(t, { x, y, size, font: b ? bold : reg, color: color || C.ink }); x += width(t, b, size); }); },
-      paraHeight(text, size, indent) { const lh = size * 1.42; let h = 0; String(text).split(/\n/).forEach(l => { const b = /^- /.test(l); h += api.wrap(b ? l.slice(2) : l, size, R - L - (indent || 0) - (b ? 16 : 0)).length * lh; }); return h; },
+      drawRuns(parts, x, y, size, color) { parts.forEach(([t, b]) => { if (!/^\s+$/.test(t)) S.p.drawText(t, Object.assign({ x, y, size, font: b ? bold : reg, color: color || C.ink }, b === 2 && k.skew ? { ySkew: k.skew } : {})); x += width(t, b, size); }); },
+      paraHeight(text, size, indent) { const lh = size * 1.45; let h = 0; String(text).split(/\n/).forEach(l => { const b = /^- /.test(l); h += api.wrap(b ? l.slice(2) : l, size, R - L - (indent || 0) - (b ? 16 : 0)).length * lh; }); return h; },
       para(text, opts) {
-        opts = opts || {}; const size = opts.size || 9.6, lh = size * 1.42, indent = opts.indent || 0;
+        opts = opts || {}; const size = opts.size || 10, lh = size * 1.45, indent = opts.indent || 0;
         const parts = String(text).split(/\n/);
         parts.forEach((l, li) => {
           const bullet = /^- /.test(l); const tx = bullet ? l.slice(2) : l;
-          if (li > 0 && !bullet) S.y -= 5;
+          if (li > 0 && !bullet) S.y -= 7;
           const x0 = L + indent + (bullet ? 16 : 0);
           const lines = api.wrap(tx, size, R - x0);
           lines.forEach((parts, i) => { api.need(lh); if (bullet && i === 0) S.p.drawText("•", { x: L + indent + 5, y: S.y - size, size, font: reg, color: opts.color || C.ink }); api.drawRuns(parts, x0, S.y - size, size, opts.color); S.y -= lh; });
         });
-        S.y -= opts.after === undefined ? 7 : opts.after;
+        S.y -= opts.after === undefined ? 10 : opts.after;
       },
       // "SUMMARY" kicker + big title
       title(kicker, big) {
@@ -1574,11 +1683,18 @@ main{max-width:1400px;margin:0 auto;padding:22px 32px 110px;display:block}
         if (S.p === pageStart) S.p.drawRectangle({ x: L, y: S.y + 2, width: 2.5, height: top - S.y - 2, color: C.sage });
         S.y -= 14;
       },
-      h4(text, keepWith) { api.need(20 + (keepWith || 0)); S.y -= 3; tracked(S.p, text.toUpperCase(), L, S.y - 10, bold, 10, C.ink, 0.5); S.y -= 18; },
-      h5(text, keepWith) { api.need(18 + (keepWith || 0)); S.p.drawText(text, { x: L, y: S.y - 10, size: 10, font: bold, color: C.ink }); S.y -= 16; },
+      h4(text, keepWith) { api.need(26 + (keepWith || 0)); S.y -= 9; tracked(S.p, text.toUpperCase(), L, S.y - 10, bold, 10, C.ink, 0.5); S.y -= 18; },
+      h5(text, keepWith) { api.need(24 + (keepWith || 0)); S.y -= 6; S.p.drawText(text, { x: L, y: S.y - 10, size: 10, font: bold, color: C.ink }); S.y -= 16; },
+      // a sub-heading inside a section: bold italic, as in the firm's reports
+      subhead(text, keepWith) { api.need(22 + (keepWith || 0)); S.y -= 4; S.p.drawText(text, Object.assign({ x: L, y: S.y - 10, size: 10, font: bold, color: C.ink }, k.skew ? { ySkew: k.skew } : {})); S.y -= 15; },
       // table: cols [{label, w, align}], rows [[cells]], total row optional
       tableHeight(rows, hasTotal, wrapHead) { return 26 + (wrapHead ? 9 : 0) + rows.length * 17 + (hasTotal ? 19 : 0) + 8; },
       table(cols, rows, total) {
+        const all = rows.concat(total ? [total] : []);
+        if (all.some(r => r.some(x => /\$[\d,]+\.\d{2}\b/.test(String(x))))) {
+          const fix = x => typeof x === "string" ? x.replace(/(\$[\d,]+)(?![\d,]*\.\d)/g, "$1.00") : x;
+          rows = rows.map(r => r.map(fix)); if (total) total = total.map(fix);
+        }
         const wrapHead = cols.some(c => c.label.includes("\n"));
         const h = api.tableHeight(rows, !!total, wrapHead);
         if (h < TOP - BOTTOM) api.need(h);
@@ -1777,7 +1893,7 @@ main{max-width:1400px;margin:0 auto;padding:22px 32px 110px;display:block}
     steps.forEach((st, i) => {
       if (st.t === "h5") lay.h5(st.text, 30);
       else if (st.t === "p") lay.para(st.text, { after: st.after });
-      else if (st.t === "sub") { lay.need(32); lay.S.p.drawText(st.title + ":", { x: L, y: lay.S.y - 9.6, size: 9.6, font: lay._bold, color: lay._ink }); lay.S.y -= 13.6; lay.para(st.text, { after: 9 }); }
+      else if (st.t === "sub") { lay.subhead(st.title + ":", 20); lay.para(st.text, { after: 11 }); }
       else if (st.t === "gap") lay.gap(st.h);
       else if (st.t === "avt") drawAvtTable(lay, st);
       else if (st.t === "notes") lay.h5("Other Issues / Notes", 40);
@@ -1880,13 +1996,13 @@ main{max-width:1400px;margin:0 auto;padding:22px 32px 110px;display:block}
     drawLetter(k, coverLetter(model));
     const letterPages = doc.getPageCount();
 
-    // 2. Report cover (sage cover, white logo)
-    const cp = doc.addPage([W, H]); cp.drawPage(k.front, { x: 0, y: 0, width: W, height: H });
+    // 2. Report cover: left out (the cover letter and the collation front page already carry it)
+    if (model.reportCover) { const cp = doc.addPage([W, H]); cp.drawPage(k.front, { x: 0, y: 0, width: W, height: H });
     centredTracked(cp, `${Y} ANNUAL TAX`, 512, gBold, 16, C.deep, 1.4);
     centredTracked(cp, "YEAR-END SUMMARY", 478, gBold, 24, C.white, 2.2);
     let cy = 418; centredTracked(cp, "PREPARED FOR", cy, gBold, 13, C.deep, 1.4); cy -= 34;
     wrapPlain(name.toUpperCase(), gBold, 18, 1.6, 400).forEach(t => { centredTracked(cp, t, cy, gBold, 18, C.white, 1.6); cy -= 25; });
-    ["Prepared by Indepth Accounting", "2/8 Denna Street, Maroochydore QLD 4558", "07 5391 1220  |  info@indepthaccounting.com.au"].forEach((t, i) => { const f = i ? reg : bold; cp.drawText(t, { x: W / 2 - f.widthOfTextAtSize(t, 9) / 2, y: 96 - i * 13, size: 9, font: f, color: C.ink }); });
+    ["Prepared by Indepth Accounting", "2/8 Denna Street, Maroochydore QLD 4558", "07 5391 1220  |  info@indepthaccounting.com.au"].forEach((t, i) => { const f = i ? reg : bold; cp.drawText(t, { x: W / 2 - f.widthOfTextAtSize(t, 9) / 2, y: 96 - i * 13, size: 9, font: f, color: C.ink }); }); }
 
     const lay = Layout(k, model); lay._bold = bold; lay._ink = C.ink; lay._new = model.design === "new";
 
@@ -1902,7 +2018,7 @@ main{max-width:1400px;margin:0 auto;padding:22px 32px 110px;display:block}
     const secs = [`${Y} Tax Summary${group ? " for Your Group" : ""}`]; if (biz.length) secs.push(`${Y} Business Income Summary`); if (people.length) secs.push(`${Y} Personal Income Summary`); secs.push("Actions for you");
     secs.forEach((s, i) => lay.para(`${i + 1}.  ${s}`, { indent: 16, after: 2 }));
     lay.gap(10);
-    if (model.introLines) { lay.para("Please carefully read each section and highlight on your report any areas that you would like to discuss with us."); lay.para("We look forward to continuing to help you to make great financial decisions so you can live your best life."); }
+
     lay.para("Your Indepth Accounting Team", { after: 12 });
     const teamP = (model.team || []).filter(t => t.name);
     if (teamP.some(t => t.photo)) {
@@ -2261,11 +2377,14 @@ main{max-width:1400px;margin:0 auto;padding:22px 32px 110px;display:block}
   async function buildPack(PDFLib, fontkit, assets, model, reportBytes, files) {
     const k = await kit(PDFLib, fontkit, assets);
     const { doc, C, gBold, gMed, helv, helvB } = k;
+    let compSig = null; try { if (model.assets && model.assets.compSigBytes) compSig = await doc.embedPng(model.assets.compSigBytes); } catch (e) { compSig = null; }
     const Y = model.year, v = voiceOf(model);
     const name = reportName(model);
     const ents = model.entities;
     const docsFor = e => {
-      const list = files.filter(f => f.entityId === e.id && KIND_ORDER.includes(f.kind) && f.bytes && !(f.kind === "itr" && f.year && f.year !== Y && !(model.earlierYears || []).includes(f.year)));
+      const tick = (model.collation || []).find(c => sameName(c.name, e.name));
+      const wanted = model.collationTicks && tick && tick.docs.length ? new Set(tick.docs.concat(tick.docs.includes("itr") ? [] : []).concat(["slip"].filter(k => tick.docs.includes(k)))) : null;
+      const list = files.filter(f => f.entityId === e.id && KIND_ORDER.includes(f.kind) && f.bytes && !(f.kind === "itr" && f.year && f.year !== Y && !(model.earlierYears || []).includes(f.year)) && (!wanted || wanted.has(f.kind) || f.kind === "other" && f.forcePack));
       return list.sort((a, b) => KIND_ORDER.indexOf(a.kind) - KIND_ORDER.indexOf(b.kind) || (b.year || 0) - (a.year || 0));
     };
     const orgs = files.filter(f => f.kind === "org" && f.bytes);
@@ -2295,7 +2414,7 @@ main{max-width:1400px;margin:0 auto;padding:22px 32px 110px;display:block}
     ents.forEach(e => {
       const ds = docsFor(e).filter(f => loaded.get(f.id)); if (!ds.length) return;
       entries.push(["entity", e.name, n]); n += 1; plan.push({ e, ds });
-      ds.forEach(f => { entries.push(["doc", f.kind === "other" ? otherLabel(f.name) : f.kind === "itr" && f.year && f.year !== Y ? `${f.year} Income Tax Return` : KIND_LABEL[f.kind], n]); n += loaded.get(f.id).getPageCount(); });
+      ds.forEach(f => { entries.push(["doc", f.kind === "other" || f.kind === "amendedBas" ? otherLabel(f.name) : f.kind === "itr" && f.year && f.year !== Y ? `${f.year} Income Tax Return` : KIND_LABEL[f.kind], n]); n += loaded.get(f.id).getPageCount(); });
     });
     const perPage = 30; const tocPages = Math.max(1, Math.ceil(entries.length / perPage));
     if (tocPages > 1) entries.forEach(en => en[2] += tocPages - 1);
@@ -2321,7 +2440,22 @@ main{max-width:1400px;margin:0 auto;padding:22px 32px 110px;display:block}
     for (const { e, ds } of plan) {
       const dp = doc.addPage([W, H]); dp.drawPage(k.divider, { x: 0, y: 0, width: W, height: H });
       let yy = 475.5; for (const ln of wrapPlain(e.name.toUpperCase(), gMed, 20, 2, 420)) { centredTracked(dp, ln, yy, gMed, 20, C.sage, 2); yy -= 26.5; }
-      for (const f of ds) { const d = loaded.get(f.id); (await doc.copyPages(d, d.getPageIndices())).forEach(p => doc.addPage(p)); }
+      for (const f of ds) {
+        const d = loaded.get(f.id); const pages = await doc.copyPages(d, d.getPageIndices());
+        pages.forEach((p, pi) => {
+          doc.addPage(p);
+          // compilation report: Renee's signature above her name
+          if (f.kind === "fs" && compSig) (f.sigSpots || []).filter(s => s.page === pi).forEach(s => p.drawImage(compSig, { x: s.x, y: s.y + s.h + 2, width: 70, height: 70 * compSig.height / compSig.width }));
+          // ATO payment slip: show the amount payable on this year's return
+          if (f.kind === "slip" && pi === 0 && e.fig && e.fig.final > 0 && model.slipAmount !== false) {
+            const t1 = `${Y} income tax return: amount payable ${money(e.fig.final)}`, due = dueCell(e, model).replace("*", ""), t2 = due && due !== "-" ? `Due ${due}` : "";
+            const { width: pw, height: ph } = p.getSize(); const bw = Math.max(helvB.widthOfTextAtSize(t1, 11), helv.widthOfTextAtSize(t2, 10)) + 24;
+            p.drawRectangle({ x: pw - bw - 30, y: ph - 92, width: bw, height: t2 ? 44 : 30, color: C.white, borderColor: C.deep, borderWidth: 1.2 });
+            p.drawText(t1, { x: pw - bw - 18, y: ph - 70 + (t2 ? 0 : -6), size: 11, font: helvB, color: C.black });
+            if (t2) p.drawText(t2, { x: pw - bw - 18, y: ph - 85, size: 10, font: helv, color: C.black });
+          }
+        });
+      }
     }
     // Links from the contents
     for (const [pi, yy, pg] of tocLinks) {
@@ -2338,10 +2472,10 @@ main{max-width:1400px;margin:0 auto;padding:22px 32px 110px;display:block}
   function packName(model, files) {
     const hasFS = files.some(f => f.kind === "fs" && f.entityId);
     const multi = returnsCount(model) > 1;
-    return `Correspondence - ${model.year} - ${hasFS ? "Financial Statements and " : ""}Income Tax Return${multi ? "s" : ""}.pdf`;
+    return `Correspondence - ${model.year} - ${model.amended ? "Amended " : ""}${hasFS ? "Financial Statements and " : ""}Income Tax Return${multi ? "s" : ""}.pdf`;
   }
 
-  root.PRCore = { parseTaxPlanReport, checkAction, parsePlanning, comparePlanning, buildPlanningReport, parseFS, parseMinutes, parseDividendStatement, compareMinute, samePerson, defaultDue, parseProgressTemplate, MONTHS, SHORTM, D, fmtDate, isoDate, fromIso, todayUTC, toCents, money, absMoney, pct, abbrev, joinList, norm, sameName, pdfText, classify, KIND_LABEL, KIND_ORDER, otherLabel, parseReturn, parseWorkpaper, parseCollationSheet, suggest, autoVals, fillText, checks, coverLetter, voiceOf, reportName, totals, yearsAvailable, dueCell, isTaxpayer, buildReport, buildPack, packName, returnsCount, grandFinal };
+  root.PRCore = { parseLodgements, readDiv7aSheet, parseTaxPlanReport, checkAction, parsePlanning, comparePlanning, buildPlanningReport, parseFS, parseMinutes, parseDividendStatement, compareMinute, samePerson, defaultDue, parseProgressTemplate, MONTHS, SHORTM, D, fmtDate, isoDate, fromIso, todayUTC, toCents, money, absMoney, pct, abbrev, joinList, norm, sameName, pdfText, classify, KIND_LABEL, KIND_ORDER, otherLabel, parseReturn, parseWorkpaper, parseCollationSheet, suggest, autoVals, fillText, checks, coverLetter, voiceOf, reportName, totals, yearsAvailable, dueCell, isTaxpayer, buildReport, buildPack, packName, returnsCount, grandFinal };
 })(typeof window !== "undefined" ? window : globalThis);
 
 </script>
@@ -2455,6 +2589,12 @@ main{max-width:1400px;margin:0 auto;padding:22px 32px 110px;display:block}
       catch (e) { wb = XLSX.read(await getBytes(OLD_REPORT_PATH)); }
       return XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { defval: "" });
     },
+    async readLodgements() {
+      for (const nm of ["ATO Lodgment List.csv", "ATO Lodgement List.csv", "ATO Lodgment List.xlsx", "ATO Lodgement List.xlsx"]) {
+        try { const b = await getBytes(PR_FOLDER + "/" + nm); const wb = /\.csv$/i.test(nm) ? XLSX.read(new TextDecoder().decode(b).replace(/^\ufeff/, ""), { type: "string", raw: true }) : XLSX.read(b); return XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { defval: "", raw: false }); } catch (e) { /* try the next name */ }
+      }
+      throw new Error("No lodgement list");
+    },
     async readRelationships() {
       const wb = XLSX.read(new TextDecoder().decode(await getBytes(REL_PATH)).replace(/^\ufeff/, ""), { type: "string", raw: true });
       return XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { defval: "", raw: false });
@@ -2498,7 +2638,7 @@ const SIGNERS = {
 const SIGNATURES = { Renee: ["Signature_Renee.png", 75], Claudine: ["Signature_Claudine.png", 112], Hazel: ["Signature_Hazel.png", 71] };
 const TYPES = [["individual", "Individual"], ["company", "Company"], ["trust", "Trust"], ["partnership", "Partnership"]];
 const TEAM_KEY = "indepth-pr-team-v1", XPM_KEY = "indepth-bas-xpm-v1";
-const KEEP = ["[Client] Client", "[Client] Address", "[Client] Town/City", "[Client] State/Region", "[Client] Post Code", "[Contact] Salutation", "[Contact] Addressee", "[Client] Account Manager"];
+const KEEP = ["[Client] Client", "[Client] Address", "[Client] Town/City", "[Client] State/Region", "[Client] Post Code", "[Client] Postal Address", "[Client] Postal Town/City", "[Client] Postal State/Region", "[Client] Postal Post Code", "[Contact] Contact", "[Contact] Position", "[Contact] Salutation", "[Contact] Addressee", "[Client] Account Manager"];
 
 const today = C.todayUTC();
 const S = { files: [], entities: [], notes: [], built: null, xpm: null, seq: 1, addrAuto: true, greetAuto: true };
@@ -2530,7 +2670,7 @@ try { $("team").value = localStorage.getItem(TEAM_KEY) || ""; } catch (e) {}
 $("team").addEventListener("input", () => { try { localStorage.setItem(TEAM_KEY, $("team").value); } catch (e) {} });
 $("year").addEventListener("change", () => { setFootnote(); S.entities.forEach(e => refreshSuggestions(e)); renderAll(); });
 ["reportDate", "signer", "groupName", "earlier", "footnote", "team", "design", "lookingAhead", "avtIntro"].forEach(id => $(id).addEventListener("input", () => refreshChecks()));
-$("introLines").addEventListener("change", () => { S.introTouched = true; refreshChecks(); });
+
 $("voice").addEventListener("change", () => { updateVoice(); refreshChecks(); });
 $("address").addEventListener("input", () => { S.addrAuto = false; refreshChecks(); });
 $("greeting").addEventListener("input", () => { S.greetAuto = false; refreshChecks(); });
@@ -2544,18 +2684,18 @@ function model() {
   const m = {
     year: Y, reportDate: C.fromIso($("reportDate").value) || today, groupName: $("groupName").value.trim(), voice: $("voice").value,
     address: $("address").value.split("\n").map(s => s.trim()).filter(Boolean), greeting: $("greeting").value.trim(),
-    earlierYears: earlier, footnoteDate: C.fromIso($("footnote").value) || C.D(Y + 1, 2, 13), team, signerLines: SIGNERS[signer],
-    introLines: $("introLines").checked, design: $("design").value, avtIntro: $("avtIntro") ? $("avtIntro").value : "", lookingAhead: $("lookingAhead").value,
+    earlierYears: earlier, footnoteDate: $("footnoteOn").checked ? (C.fromIso($("footnote").value) || C.D(Y + 1, 2, 13)) : null, team, signerLines: SIGNERS[signer],
+    introLines: false, amended: $("amendedOn").checked, slipAmount: $("slipAmount").checked, collation: S.collation || [], collationTicks: !!S.collationAny, design: $("design").value, avtIntro: $("avtIntro") ? $("avtIntro").value : "", lookingAhead: $("lookingAhead").value,
     instDates: { company: [C.D(Y, 9, 28), C.D(Y + 1, 1, 28), C.D(Y + 1, 3, 28), C.D(Y + 1, 6, 28)], individual: [C.D(Y, 9, 28), C.D(Y + 1, 1, 28), C.D(Y + 1, 3, 28), C.D(Y + 1, 6, 28)] },
     entities: S.entities.map(e => Object.assign({}, e, { docs: S.files.filter(f => f.entityId === e.id).map(f => ({ kind: f.kind, year: f.year })) })),
-    assets: { signature: ASSETS[sigName] ? { bytes: ASSETS[sigName], width: SIGNATURES[signer][1] } : null },
+    assets: { signature: ASSETS[sigName] ? { bytes: ASSETS[sigName], width: SIGNATURES[signer][1] } : null, compSigBytes: ASSETS["Signature_Renee.png"] || null },
   };
   return m;
 }
 function updateVoice() {
   const m = model(); const v = C.voiceOf(m);
   $("voiceHint").textContent = { single: "Reads as one entity: no family or group wording, and the entity name goes on the cover.", family: "Reads as a family: “your family’s”, with the group name on the cover.", group: "Reads as a business group: “your group’s”, with the group name on the cover." }[v];
-  if (!S.introTouched) $("introLines").checked = v !== "single";
+
 }
 
 // ---------- client report (shared with the activity statement tool on this computer) ----------
@@ -2582,7 +2722,7 @@ function useRelationships(rows) {
   const clients = new Map(), groups = new Map();
   rows.forEach(r => {
     const name = String(r["[Client] Client"] || "").trim(); if (!name) return;
-    const c = clients.get(name) || { name, structure: r["[Client] Business Structure"], groups: new Set(), rel: [] }; clients.set(name, c);
+    const c = clients.get(name) || { name, structure: r["[Client] Business Structure"], abn: String(r["[Client] Business Number"] || "").replace(/\D/g, ""), groups: new Set(), rel: [] }; clients.set(name, c);
     String(r["[Client] Group(s)"] || "").split(/,\s+/).map(g => g.trim()).filter(Boolean).forEach(g => { c.groups.add(g); if (!groups.has(g)) groups.set(g, new Set()); groups.get(g).add(name); });
     const other = String(r["[Client Relationship] Related Client"] || "").trim();
     if (other) c.rel.push({ other, type: String(r["[Client Relationship] Relationship Type"] || "").trim(), shares: r["[Client Relationship] Shares"] });
@@ -2607,9 +2747,25 @@ async function chooseGroup(g) {
   S.expected = members; S.groupMembers = members;
   if (!$("groupName").value.trim() || S.groupAuto) { $("groupName").value = g; S.groupAuto = true; }
   let added = 0;
-  if (Platform.signedIn()) { try { const namesL = await Platform.listClientFolders(); members.map(m => bestFolder(m, namesL)).filter(Boolean).forEach(f => { if (!S.folders.includes(f)) { S.folders.push(f); added++; } }); renderChosen(); suggestFolders(); } catch (e) {} }
+  if (Platform.signedIn()) { try { const namesL = await Platform.listClientFolders(); for (const m of members) { const f = await resolveFolder(m, namesL); if (f && !S.folders.includes(f)) { S.folders.push(f); added++; } } renderChosen(); suggestFolders(); } catch (e) {} }
+  fillAddress();
   $("groupHint").textContent = `${members.length} clients in ${g}: ${members.join(", ")}.` + (added ? ` Their ${added} client folder${added === 1 ? " is" : "s are"} ready in step 2.` : "");
   updateVoice(); refreshChecks(); updateStepper();
+}
+// ATO lodgement list: due date and status for each return
+S.lodgements = null;
+function useLodgements(rows) { S.lodgements = C.parseLodgements(rows, +$("year").value); applyLodgements(); }
+function abnOf(name) { if (!S.rel) return ""; const c = S.rel.clients.get(name) || [...S.rel.clients.values()].find(x => C.sameName(x.name, name)); return c && c.abn ? c.abn : ""; }
+function applyLodgements() {
+  if (!S.lodgements) return;
+  S.entities.forEach(e => {
+    const abn = abnOf(e.name);
+    const hit = S.lodgements.find(l => abn && l.abn && l.abn === abn) || S.lodgements.find(l => l.name && C.sameName(l.name, e.name));
+    if (!hit) return;
+    e.lodge = hit;
+    const m = hit.due.match(/(\d{1,2})[\/ -](\d{1,2}|[A-Za-z]{3,})[\/ -](\d{4})/);
+    if (m && !e.dueTyped) { const mon = isNaN(+m[2]) ? ["jan","feb","mar","apr","may","jun","jul","aug","sep","oct","nov","dec"].indexOf(m[2].slice(0, 3).toLowerCase()) : +m[2] - 1; if (mon >= 0) e.due = C.isoDate(C.D(+m[3], mon, +m[1])); }
+  });
 }
 function useXpm(rows, label) {
   S.xpm = rows.filter(r => r["[Client] Client"]).map(r => Object.fromEntries(KEEP.map(k => [k, r[k]]))); S.xpmInfo = label;
@@ -2621,16 +2777,43 @@ function lookupClient(name) {
   let hits = S.xpm.filter(r => r["[Client] Client"] === name);
   if (!hits.length) hits = S.xpm.filter(r => C.norm(r["[Client] Client"]) === C.norm(name));
   if (!hits.length) return null;
-  const r = hits.find(x => String(x["[Client] Address"] || "").trim()) || hits[0];
-  const line2 = [r["[Client] Town/City"], r["[Client] State/Region"], r["[Client] Post Code"]].filter(x => x !== "" && x !== null && x !== undefined).join(" ");
-  return { address: [r["[Client] Address"], line2].filter(x => x && String(x).trim()), greetings: [...new Set(hits.map(x => x["[Contact] Salutation"] || x["[Contact] Addressee"]).filter(Boolean))] };
+  // postal address first if there is one, otherwise the street address
+  const post = hits.find(x => String(x["[Client] Postal Address"] || "").trim());
+  const r = post || hits.find(x => String(x["[Client] Address"] || "").trim()) || hits[0];
+  const P = post ? "[Client] Postal " : "[Client] ";
+  const line1 = post ? r["[Client] Postal Address"] : r["[Client] Address"];
+  const line2 = [r[P + "Town/City"], r[P + "State/Region"], r[P + "Post Code"]].filter(x => x !== "" && x !== null && x !== undefined).join(" ");
+  const contacts = hits.map(x => ({ name: String(x["[Contact] Contact"] || "").replace(/\s*\(.*$/, "").trim(), position: String(x["[Contact] Position"] || ""), sal: String(x["[Contact] Salutation"] || x["[Contact] Addressee"] || "").trim() })).filter(x => x.sal);
+  return { address: [line1, line2].filter(x => x && String(x).trim()), greetings: [...new Set(contacts.map(x => x.sal))], contacts, manager: r["[Client] Account Manager"] };
+}
+const joinNames = list => list.length < 2 ? (list[0] || "") : list.slice(0, -1).join(", ") + " & " + list[list.length - 1];
+function greetingChoices() {
+  const seen = new Map();
+  const names = S.entities.length ? S.entities.map(e => e.name) : (S.groupMembers || []);
+  names.forEach(n => { const cl = lookupClient(n); if (cl) cl.contacts.forEach(c => { if (!seen.has(c.sal)) seen.set(c.sal, { ...c, entity: n }); }); });
+  const people = [...seen.values()];
+  const isDirector = c => /director|trustee|partner/i.test(c.position) || names.some(en => relSigners(en).some(n => C.samePerson(n, c.name)));
+  const directors = people.filter(isDirector).map(c => c.sal);
+  const out = []; const add = (label, value, why) => { if (value && !out.some(o => o.value === value)) out.push({ label, value, why }); };
+  if (directors.length > 1) add(joinNames(directors), joinNames(directors), "Directors together");
+  people.forEach(c => add(c.sal, c.sal, c.position || (isDirector(c) ? "Director" : "Contact")));
+  if (people.length > 1 && people.length <= 4) add(joinNames(people.map(c => c.sal)), joinNames(people.map(c => c.sal)), "Everyone");
+  return out;
+}
+function renderGreetChips() {
+  const box = $("greetChips"); if (!box) return; box.innerHTML = "";
+  const ch = greetingChoices(); if (ch.length < 2) return;
+  box.appendChild(h("span", { class: "status", style: "margin:0 6px 0 0" }, "Choose:"));
+  ch.forEach(o => box.appendChild(h("button", { type: "button", class: "chip", title: o.why, "aria-pressed": $("greeting").value === o.value ? "true" : "false", onclick: () => { $("greeting").value = o.value; S.greetAuto = false; renderGreetChips(); refreshChecks(); updateStepper(); } }, o.label)));
 }
 function fillAddress() {
-  const first = S.entities.find(e => lookupClient(e.name)) || S.entities[0];
+  const pool = S.entities.length ? S.entities : (S.groupMembers || []).map(n => ({ name: n }));
+  const first = pool.find(e => lookupClient(e.name) && lookupClient(e.name).address.length) || pool.find(e => lookupClient(e.name)) || pool[0];
   if (!first) return;
   const cl = lookupClient(first.name);
   if (S.addrAuto) $("address").value = [first.name].concat(cl ? cl.address : []).join("\n");
-  if (S.greetAuto && cl && cl.greetings.length) $("greeting").value = cl.greetings[0];
+  if (S.greetAuto) { const ch = greetingChoices(); if (ch.length) $("greeting").value = ch[0].value; else if (cl && cl.greetings.length) $("greeting").value = cl.greetings[0]; }
+  renderGreetChips();
   refreshChecks();
 }
 
@@ -2670,10 +2853,23 @@ $("files").onchange = e => { const list = [...e.target.files]; e.target.value = 
 function findEntity(name) { return S.entities.find(e => C.sameName(e.name, name)); }
 function newEntity(name, type) { const e = { id: uid("e"), name, type: type || "company", rnn: false, rnnNoop: false, fig: {}, prior: {}, inst: [0, 0, 0, 0], dist: [], divs: [], d7: { on: false, rows: [{}], withdrawn: [], minRows: [{}], met: true }, paras: {}, custom: "", signatories: "", due: "" }; S.entities.push(e); return e; }
 
+async function compilationSpots(bytes) {
+  const doc = await pdfjsLib.getDocument({ data: new Uint8Array(bytes) }).promise; const spots = [];
+  for (let p = 1; p <= Math.min(doc.numPages, 6); p++) {
+    const page = await doc.getPage(p); const tc = await page.getTextContent();
+    const text = tc.items.map(i => i.str).join(" ");
+    if (!/compilation report/i.test(text) || !/Renee\s+Cooper/i.test(text)) continue;
+    // the "Renee Cooper" that sits above "Director" near the bottom of the page
+    const hits = tc.items.filter(i => /Renee\s*Cooper/i.test(i.str));
+    const it = hits.sort((x, y) => x.transform[5] - y.transform[5])[0];
+    if (it) spots.push({ page: p - 1, x: it.transform[4], y: it.transform[5], h: Math.abs(it.transform[3]) || 9 });
+  }
+  return spots;
+}
 async function addFiles(list) {
   const fresh = [];
   for (const item of list) {
-    if (!/\.(pdf|xlsx|xlsm|xls|json)$/i.test(item.name)) continue;
+    if (!/\.(pdf|xlsx|xlsm|xls|json|csv)$/i.test(item.name)) continue;
     if (S.files.some(f => f.name === item.name && (f.folder || "") === (item.folder || "") && f.size === item.size)) continue;
     $("readStatus").textContent = `Reading ${item.name}…`;
     let bytes; try { bytes = await item.get(); } catch (e) { $("readStatus").textContent = `Couldn’t open ${item.name}.`; continue; }
@@ -2684,12 +2880,13 @@ async function addFiles(list) {
         let tx = { text: "" }; try { tx = await C.pdfText(pdfjsLib, bytes.slice()); } catch (e) { f.note = "This PDF couldn’t be read, so set what it is yourself"; }
         f.text = tx.text; f.kind = C.classify(item.name, tx.text, f.where);
         if (f.kind === "itr") f.parsed = C.parseReturn(tx.text);
-        else if (f.kind === "fs") f.parsed = C.parseFS(tx.text);
+        else if (f.kind === "fs") { f.parsed = C.parseFS(tx.text); try { f.sigSpots = await compilationSpots(bytes.slice()); } catch (e) { f.sigSpots = []; } }
         else if (f.kind === "minutes") f.parsed = C.parseMinutes(tx.text);
         else if (f.kind === "dividend") f.parsed = C.parseDividendStatement(tx.text);
         else if (f.kind === "planning") { f.parsed = C.parseTaxPlanReport(tx.text, item.name); f.note = f.parsed.plans.length ? `Tax plan report${f.parsed.prepared ? ` (${f.parsed.prepared})` : ""}: recommended scenario for ${f.parsed.plans.length} taxpayers, ${f.parsed.actions.length} actions` : "Couldn’t read the tax plan figures from this PDF"; }
         if (f.kind === "skip" && /supersc?eded/i.test(item.name)) f.note = "Superseded tax plan, not used";
       } else if (/\.json$/i.test(item.name)) { f.kind = "data"; f.parsed = JSON.parse(new TextDecoder().decode(bytes)); }
+      else if (/lodg/i.test(item.name) && /\.(csv|xlsx)$/i.test(item.name)) { f.kind = "skip"; const wb = /\.csv$/i.test(item.name) ? XLSX.read(new TextDecoder().decode(bytes).replace(/^\ufeff/, ""), { type: "string", raw: true }) : XLSX.read(bytes); useLodgements(XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { defval: "", raw: false })); f.note = `ATO lodgement list: ${S.lodgements.length} income tax returns read`; }
       else {
         f.kind = C.classify(item.name, "", f.where);
         if (f.kind === "collation") f.parsed = C.parseCollationSheet(XLSX, bytes);
@@ -2713,7 +2910,7 @@ async function addFiles(list) {
     } catch (err) { console.error(err); f.note = "Couldn’t use this file"; }
   });
   $("readStatus").textContent = fresh.length ? `Added ${fresh.length} file${fresh.length === 1 ? "" : "s"}.` : "";
-  matchDocs(); S.entities.forEach(refreshSuggestions); fillAddress(); updateVoice(); renderAll(); suggestFolders();
+  matchDocs(); applyLodgements(); S.entities.forEach(refreshSuggestions); fillAddress(); updateVoice(); renderAll(); suggestFolders();
 }
 function useReturn(f, r) {
   if (!r.name || !r.kind) { f.note = "Couldn’t read the entity name"; return; }
@@ -2765,8 +2962,30 @@ function useWorkpaper(f, w) {
   }
   f.entityId = e.id; f.note = ""; applyWp(e, w);
 }
+function fillDiv7a(e, d7w) {
+  if (!d7w || !d7w.loans.length || e.type !== "company") return;
+  const Y = +$("year").value, d = e.d7;
+  const filled = (d.rows || []).some(r => r.rep || r.bal) || (d.minRows || []).some(r => r.bal);
+  if (filled) return;
+  const old = d7w.loans.filter(l => l.year < Y), now = d7w.loans.find(l => l.year === Y);
+  d.rows = old.filter(l => l.payments || l.closing).map(l => ({ date: `30 June ${Y}`, desc: `${l.year} loan`, rep: l.payments, int: l.interest, bal: l.closing }));
+  if (!d.rows.length) d.rows = [{}];
+  d.withdrawn = now && now.closing ? [now.closing] : [];
+  d.minRows = d7w.loans.filter(l => l.closing > 0).map(l => ({ year: String(l.year), bal: l.closing, terms: String(Math.max(0, 7 - (Y - l.year))) }));
+  if (!d.minRows.length) d.minRows = [{}];
+  d.met = old.every(l => !l.minThisYear || l.payments >= l.minThisYear - 100);
+  d.fromWp = true; d.rates = d7w.rates || {};
+  if (d7w.loans.some(l => l.closing > 0)) d.on = true;
+  calcMinimums(e);
+}
+// next year's minimum repayments, once next year's benchmark rate is known
+function calcMinimums(e) {
+  const d = e.d7, r = parseFloat(String(d.nextRate || "").replace("%", "")) / 100; if (!r) return;
+  (d.minRows || []).forEach(m => { const n = +m.terms; if (m.bal && n > 0) m.min = Math.round(m.bal * r / (1 - Math.pow(1 + r, -n))); });
+}
 function applyWp(e, w) {
-  e.br1 = w.br1; e.wpOthers = w.others; e.wpTabs = w.tabs;
+  e.br1 = w.br1; e.wpOthers = w.others; e.wpTabs = w.tabs; e.wpFbt = w.fbt || null;
+  if (w.div7a) fillDiv7a(e, w.div7a);
   if (w.br1.fsProfit !== undefined) e.fig.fsProfit = w.br1.fsProfit;
   fillMissing(e.fig, w.fig || {}); e.src = Object.assign(e.src || {}, { workpaper: true });
 }
@@ -2784,6 +3003,7 @@ function useCollation(c) {
   S.order = c.entities.map(x => x.name);
   S.notes = c.entities.filter(x => x.note);
   S.expected = c.entities.map(x => x.name);
+  S.collation = c.entities; S.collationAny = !!c.anyTicks;
 }
 function matchDocs() {
   S.files.filter(f => f.pendingWp && !f.entityId).forEach(f => {
@@ -2919,7 +3139,7 @@ function renderEntities() {
         g.appendChild(labelled("Tax payable (tax assessed)", moneyField(f, "taxPayable", "Tax payable")));
         g.appendChild(labelled("Tax already paid (PAYG and credits)", moneyField(f, "taxPaid", "Tax already paid")));
         g.appendChild(labelled("Final position (+ payable, - refund)", moneyField(f, "final", "Final position", () => { refreshSuggestions(e); renderIssues(); })));
-        if (f.final > 0) { const d = h("input", { type: "date", value: e.due || C.isoDate(C.defaultDue(e, { year: Y, reportDate: C.fromIso($("reportDate").value) || new Date() })) }); d.addEventListener("change", () => { e.due = d.value; refreshChecks(); }); g.appendChild(labelled("Payment due date", d)); }
+        if (f.final > 0) { const d = h("input", { type: "date", value: e.due || C.isoDate(C.defaultDue(e, { year: Y, reportDate: C.fromIso($("reportDate").value) || new Date() })) }); d.addEventListener("change", () => { e.due = d.value; e.dueTyped = true; refreshChecks(); }); g.appendChild(labelled("Payment due date", d)); if (e.lodge) g.appendChild(h("p", { class: "hint", style: "flex-basis:100%" }, `ATO lodgement list: ${e.lodge.status || "status not given"}${e.lodge.due ? ", due " + e.lodge.due : ""}.`)); }
       }
       if (biz) {
         g.appendChild(labelled("Revenue", moneyField(f, "revenue", "Revenue")));
@@ -2982,7 +3202,9 @@ function renderEntities() {
           inner2.appendChild(tableEditor(d.rows, [{ key: "date", label: "Date" }, { key: "desc", label: "Description" }, { key: "rep", label: "Repayment", money: true }, { key: "int", label: "Interest", money: true }, { key: "bal", label: "Balance", money: true }]));
           const wd = { v: (d.withdrawn || []).map(C.money).join(", ") };
           inner2.appendChild(labelled("New amounts withdrawn this year (separate with commas)", textField(wd, "v", "Withdrawn", { onInput: () => { d.withdrawn = (wd.v.match(/\$?[\d,]+(?:\.\d{2})?/g) || []).map(C.toCents); } })));
-          inner2.appendChild(h("p", { class: "hint" }, `Minimum repayments for ${Y + 1}`));
+          if (d.fromWp) inner2.appendChild(h("p", { class: "hint" }, "Filled from the Division 7A loan sheet in the workpaper. Add who the agreement is with, and check the figures."));
+          inner2.appendChild(h("div", { class: "row", style: "max-width:520px" }, labelled(`Benchmark interest rate for ${Y + 1} (%)`, textField(d, "nextRate", "Next year's benchmark rate", { attrs: { inputmode: "decimal", placeholder: "Published by the ATO each July" }, onInput: () => { calcMinimums(e); } }))));
+          inner2.appendChild(h("p", { class: "hint" }, `Minimum repayments for ${Y + 1}${d.nextRate ? " (worked out from the balance, remaining terms and the rate)" : ""}`));
           inner2.appendChild(tableEditor(d.minRows, [{ key: "year", label: "Year loan made" }, { key: "bal", label: "Balance", money: true }, { key: "terms", label: "Remaining terms" }, { key: "min", label: "Minimum repayment", money: true }]));
           inner2.appendChild(h("label", { class: "tick", style: "margin-top:8px" }, h("input", { type: "checkbox", checked: d.met !== false, onchange: ev => { d.met = ev.target.checked; refreshChecks(); } }), `The ${Y} minimum repayment was met`));
         }
@@ -3087,7 +3309,7 @@ function goStep(n) {
   document.querySelectorAll(".stepper button").forEach(b => b.setAttribute("aria-current", +b.dataset.go === S.step ? "step" : "false"));
   $("navBack").disabled = S.step === 1;
   $("navNext").hidden = S.step === 5;
-  const nextName = ["", "Documents", "Entities and figures", "Issues and recommendations", "Check and build"][S.step];
+  const nextName = ["", "Letter and report details", "Entities and figures", "Issues and recommendations", "Check and build"][S.step];
   $("navNext").textContent = nextName ? "Next: " + nextName : "Next";
   window.scrollTo({ top: 0 });
   updateStepper();
@@ -3097,9 +3319,9 @@ $("navBack").onclick = () => goStep(S.step - 1);
 $("navNext").onclick = () => goStep(S.step + 1);
 function updateStepper() {
   const set = (n, text, cls) => { const s = $("st" + n); if (s) s.textContent = text; const b = document.querySelector(`.stepper button[data-go="${n}"]`); if (b) { b.classList.toggle("done", cls === "done"); b.classList.toggle("attn", cls === "attn"); } };
-  set(1, $("groupName").value.trim() || ($("address").value.trim() ? $("address").value.split("\n")[0] : "Client and letter"), $("groupName").value.trim() || $("address").value.trim() ? "done" : "");
+  set(2, $("groupName").value.trim() || ($("address").value.trim() ? $("address").value.split("\n")[0] : "Fills in from the documents"), $("groupName").value.trim() || $("address").value.trim() ? "done" : "");
   const nf = S.files.length, nu = S.files.filter(f => !f.entityId && !["org", "data", "collation", "template", "own", "skip", "planning"].includes(f.kind)).length;
-  set(2, nf ? `${nf} file${nf === 1 ? "" : "s"}${nu ? `, ${nu} need an entity` : ""}` : "Nothing added yet", nf ? (nu ? "attn" : "done") : "");
+  set(1, nf ? `${nf} file${nf === 1 ? "" : "s"}${nu ? `, ${nu} need an entity` : ""}` : "Nothing added yet", nf ? (nu ? "attn" : "done") : "");
   set(3, S.entities.length ? `${S.entities.length} entit${S.entities.length === 1 ? "y" : "ies"}` : "None yet", S.entities.length ? "done" : "");
   const ticked = S.entities.reduce((s2, e) => s2 + Object.values(e.paras).filter(p => p.on).length, 0);
   set(4, S.entities.length ? `${ticked} paragraph${ticked === 1 ? "" : "s"} ticked` : "None yet", S.entities.length ? "done" : "");
@@ -3185,6 +3407,7 @@ function renderChosen() {
   const box = $("sfChosen"); box.innerHTML = "";
   S.folders.forEach((n, i) => box.appendChild(h("span", { class: "chip" }, n + "  ", h("button", { class: "linkbtn", "aria-label": "Remove folder " + n, onclick: () => { S.folders.splice(i, 1); renderChosen(); suggestFolders(); } }, "Remove"))));
   $("sfShow").disabled = !S.folders.length;
+  Object.entries(S.folderNotes || {}).filter(([, t]) => S.folders.some(f => t.includes(`“${f}”`))).forEach(([, t]) => box.appendChild(h("p", { class: "hint", style: "flex-basis:100%;margin:4px 0 0" }, t)));
 }
 function addFolder(n) { if (n && !S.folders.includes(n)) { S.folders.push(n); renderChosen(); suggestFolders(); } }
 $("sfAdd").onclick = () => addFolder($("sfClient").value);
@@ -3194,7 +3417,7 @@ async function suggestFolders() {
   let namesL = []; try { namesL = await Platform.listClientFolders(); } catch (e) { return; }
   const wanted = new Set([...(S.expected || []), ...S.entities.map(e => e.name)]);
   const seen = new Set(S.files.map(f => f.folder).filter(Boolean));
-  const sug = [...wanted].map(n => bestFolder(n, namesL)).filter(n => n && !S.folders.includes(n) && !seen.has(n));
+  const sug = []; for (const n of wanted) { const f = await resolveFolder(n, namesL); if (f && !S.folders.includes(f) && !seen.has(f)) sug.push(f); }
   [...new Set(sug)].forEach(n => box.appendChild(h("button", { class: "chip", type: "button", onclick: () => addFolder(n) }, "Add " + n)));
   if (sug.length) box.prepend(h("span", { class: "status", style: "margin:0 6px 0 0" }, "Other entities in this group:"));
 }
@@ -3230,7 +3453,24 @@ $("sfShow").onclick = async () => {
     } }, "Add ticked files")));
   } catch (e) { box.innerHTML = ""; box.appendChild(h("p", { class: "status" }, e.status === 403 ? "You don’t have access to one of those folders." : "Couldn’t read the folders from SuiteFiles.")); }
 };
-function bestFolder(name, namesL) { const n = C.norm(name); return namesL.find(x => C.norm(x) === n) || namesL.find(x => C.sameName(x, name)) || ""; }
+const folderKey = s => String(s).toLowerCase().replace(/[_'’`]/g, "").replace(/&/g, " and ").replace(/[.,()]/g, " ").replace(/\b(pty|ltd|limited|the|atf|as trustee for)\b/g, " ").replace(/\s+/g, " ").trim();
+function folderMatches(name, namesL) { const k = folderKey(name); const exact = namesL.filter(x => folderKey(x) === k); return exact.length ? exact : namesL.filter(x => C.sameName(x, name)); }
+function bestFolder(name, namesL) { const m = folderMatches(name, namesL); return (S.folderPick && S.folderPick[name] && m.includes(S.folderPick[name])) ? S.folderPick[name] : (m[0] || ""); }
+// two folders for one client: look inside each and keep the one with this year's files
+async function resolveFolder(name, namesL) {
+  const m = folderMatches(name, namesL); if (m.length < 2) return m[0] || "";
+  const Y = +$("year").value; const counts = [];
+  for (const f of m) {
+    let n = 0;
+    for (const sub of [`${Y}/Tax Returns and Financials`, `${Y}/Workpapers`]) { try { n += (await Platform.listFiles(`${Platform.clientsPath}/${f}/${sub}`)).length; } catch (e) {} }
+    if (!n) { try { n = (await Platform.listFiles(`${Platform.clientsPath}/${f}`)).length / 100; } catch (e) {} }
+    counts.push([f, n]);
+  }
+  counts.sort((x, y) => y[1] - x[1]);
+  S.folderPick = S.folderPick || {}; S.folderPick[name] = counts[0][0];
+  S.folderNotes = S.folderNotes || {}; S.folderNotes[name] = `There are ${m.length} folders for ${name} (${m.join("; ")}). Using “${counts[0][0]}”, which has the ${Y} files.`;
+  return counts[0][0];
+}
 async function showSave(m) {
   $("saveBox").hidden = false;
   $("saveSub").value = `${m.year}/Tax Returns and Financials`;
@@ -3260,6 +3500,7 @@ Platform.start({
       fillClientSelect($("sfClient"), "");
       try { const rows = await Platform.readReport(); useXpm(rows, "from SuiteFiles"); } catch (e) { /* keep the saved copy */ }
       try { useRelationships(await Platform.readRelationships()); } catch (e) { /* no relationships report */ }
+      try { useLodgements(await Platform.readLodgements()); } catch (e) { /* no lodgement list saved yet */ }
     }
   },
 });
@@ -3268,8 +3509,19 @@ try { $("barLogo").src = "data:image/png;base64," + ASSETS_B64["Logo.png"]; } ca
 goStep(1);
 ["groupName", "address"].forEach(id => $(id).addEventListener("input", updateStepper));
 $("groupPick").addEventListener("change", () => chooseGroup($("groupPick").value.trim()));
+["amendedOn", "slipAmount"].forEach(id => $(id).addEventListener("change", () => refreshChecks()));
+function renderEarlier() {
+  const Y = +$("year").value, box = $("earlierYears"); box.innerHTML = "";
+  const chosen = ($("earlier").value.match(/\d{4}/g) || []).map(Number);
+  [Y - 1, Y - 2, Y - 3, Y - 4].forEach(y => box.appendChild(h("label", { class: "tick chip", style: "margin:0" }, h("input", { type: "checkbox", checked: chosen.includes(y), onchange: () => { const t = [...box.querySelectorAll("input:checked")].map(i => +i.closest("label").textContent.trim()); $("earlier").value = t.sort().join(", "); refreshChecks(); } }), String(y))));
+  box.hidden = !$("earlierOn").checked;
+}
+$("earlierOn").addEventListener("change", () => { if (!$("earlierOn").checked) $("earlier").value = ""; renderEarlier(); refreshChecks(); });
+$("footnoteOn").addEventListener("change", () => { $("footnoteWrap").hidden = !$("footnoteOn").checked; refreshChecks(); });
+$("year").addEventListener("change", renderEarlier);
+renderEarlier();
 $("groupName").addEventListener("input", () => { S.groupAuto = false; });
-window.__pr = { S, model, renderAll, goStep, useRelationships, chooseGroup, staffPhoto, ASSETS };
+window.__pr = { S, model, renderAll, goStep, useRelationships, chooseGroup, staffPhoto, ASSETS, useXpm };
 })();
 
 
