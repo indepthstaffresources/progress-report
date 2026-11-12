@@ -1117,6 +1117,40 @@ button.chip:hover{background:var(--ix-tint2)}
     });
     return res;
   }
+  // Plain-English reasons, biggest first, from the line comparison, the actions and the headline figures
+  function whyDifferent(r) {
+    const p = r.plan, a = r.actual, out = [];
+    const td = r.taxableDiff; if (td === null || td === undefined) return out;
+    if (Math.abs(td) < 100000 && Math.abs(r.taxDiff || 0) < 100000) { out.push("Taxable income and tax finished within $1,000 of the plan."); }
+    else out.push(`Taxable income finished ${abs0(td)} ${td > 0 ? "higher" : "lower"} than the plan${r.taxDiff ? `, so tax is ${abs0(r.taxDiff)} ${r.taxDiff > 0 ? "higher" : "lower"}` : ""}. The main reasons:`);
+    const effects = [];
+    (r.actions || []).filter(x => x.status === "Partly done" || x.status === "Not done").forEach(x => effects.push({ amt: null, text: `The recommended action “${x.action.replace(/\.$/, "")}” was ${x.status.toLowerCase()}. ${x.note.replace(/\$([\d,]+)\.00/g, "$$$1")}` }));
+    r.lines.forEach(l => {
+      if (l.planned !== undefined && l.actual !== undefined && l.diff !== null && Math.abs(l.diff) >= 100000) {
+        const up = l.diff > 0;
+        effects.push({ amt: l.diff, text: `${l.label}: ${abs0(l.actual)} in the final figures against ${abs0(l.planned)} in the plan, which ${up ? "added" : "took"} ${abs0(l.diff)} ${up ? "to" : "off"} taxable income.` });
+      } else if (l.planned === undefined && l.actual && Math.abs(l.actual) >= 100000) {
+        effects.push({ amt: l.actual, text: `${l.label}: ${abs0(l.actual)} in the final workpaper that wasn’t in the plan, which ${l.actual > 0 ? "added" : "took"} ${abs0(l.actual)} ${l.actual > 0 ? "to" : "off"} taxable income.` });
+      } else if (l.cat && l.actual === undefined && l.planned && Math.abs(l.planned) >= 100000 && r.e.br1) {
+        effects.push({ amt: -l.planned, text: `${l.label}: ${abs0(l.planned)} in the plan but not in the final workpaper, which ${-l.planned > 0 ? "added" : "took"} ${abs0(l.planned)} ${-l.planned > 0 ? "to" : "off"} taxable income.` });
+      }
+    });
+    const explained = effects.reduce((s2, x) => s2 + (x.amt || 0), 0), rest = td - explained;
+    effects.sort((x, y) => (x.amt === null ? -1 : y.amt === null ? 1 : Math.abs(y.amt) - Math.abs(x.amt)));
+    effects.forEach(x => out.push(x.text));
+    if (Math.abs(rest) >= 500000) {
+      const sameBasis = !(p.items || []).some(i => /income tax expense/i.test(i.label));
+      const prof = sameBasis && p.netProfit !== undefined && a.net !== undefined ? ` The final accounts show ${a.net < 0 ? "a loss" : "a profit"} of ${abs0(a.net)} against the projected profit of ${abs0(p.netProfit)} used in the plan.` : "";
+      const inProfit = r.lines.filter(l => !l.cat && l.planned && l.actual === undefined && Math.abs(l.planned) >= 500000 && !/income tax expense/i.test(l.label));
+      const ip = inProfit.length ? ` The plan also adjusted for ${joinList(inProfit.map(l => `“${l.label}” (${abs0(l.planned)})`))}, which are part of the profit in the final accounts rather than separate adjustments.` : "";
+      out.push(`The remaining ${abs0(rest)} ${rest > 0 ? "higher" : "lower"} comes from differences between the projection the plan was based on and the final accounts.${prof}${ip}`);
+    }
+    if (p.plannedFinal !== undefined && a.final !== undefined && Math.abs(a.final - p.plannedFinal) >= 100000) {
+      const pd = (a.payg || 0) - (p.paygTotal || 0);
+      out.push(`At lodgement the client ${a.final >= 0 ? "pays" : "gets back"} ${absMoney(a.final)} instead of the ${abs0(p.plannedFinal)} ${p.plannedFinal >= 0 ? "payable" : "refund"} in the plan.` + (Math.abs(pd) >= 100000 ? ` ${abs0(pd)} ${pd > 0 ? "more" : "less"} PAYG was paid during the year than the plan counted${pd > 0 ? " (for example an instalment the plan left out)" : ""}${r.taxDiff ? `, and tax is ${abs0(r.taxDiff)} ${r.taxDiff > 0 ? "higher" : "lower"}` : ""}.` : ""));
+    }
+    return out;
+  }
   async function buildPlanningReport(PDFLib, fontkit, assets, model, files) {
     const res = comparePlanning(model, files);
     const k = await kit(PDFLib, fontkit, assets); const { doc, C, bold } = k;
@@ -1143,6 +1177,7 @@ button.chip:hover{background:var(--ix-tint2)}
           .filter(x => x[1] !== undefined || x[2] !== undefined).map(([l, pl, ac]) => [l, pl !== undefined ? money(pl) : "-", ac !== undefined ? money(ac) : "-", pl !== undefined && ac !== undefined ? sd(ac - pl) : "-"]);
         lay.table([{ label: "", w: 190 }, { label: "PLANNING", w: 90, align: "right" }, { label: "FINAL", w: 90, align: "right" }, { label: "DIFFERENCE", w: 100, align: "right" }], rows);
         if (p.netProfit !== undefined && a.net !== undefined) lay.para("The planning profit is usually before accounting depreciation and income tax, so compare taxable income and tax first.", { size: 8, after: 8 });
+        const why = whyDifferent(r); if (why.length) { lay.h4("Why it’s different", 60); lay.para(why[0], { after: 4 }); if (why.length > 1) lay.para(why.slice(1).map(w => "- " + w).join("\n"), { after: 10 }); }
         if (r.actions && r.actions.length) {
           lay.h4("Recommended actions", 60);
           lay.para(r.actions.map(x => `- **${x.status}:** ${x.action.replace(/\.$/, "")} (due ${x.due}). ${x.note}`).join("\n"), { after: 10 });
@@ -1158,7 +1193,7 @@ button.chip:hover{background:var(--ix-tint2)}
             lines.map(l => [l.label, l.planned !== undefined ? money(l.planned) : "Not in planning", l.actual !== undefined ? money(l.actual) : (l.cat ? (r.e.br1 ? "Not in workpaper" : "No workpaper added") : "-"), l.diff !== null ? sd(l.diff) : "-"]));
           const big = lines.filter(l => l.diff !== null && Math.abs(l.diff) > 500000).sort((x, y) => Math.abs(y.diff) - Math.abs(x.diff));
           const notes = [];
-          big.forEach(l => notes.push(`${l.label}: ${absMoney(l.actual)} in the final workpaper, compared with ${absMoney(l.planned)} in the planning (a difference of ${absMoney(l.diff)} to taxable income).`));
+          void big;
           lines.filter(l => l.note).forEach(l => notes.push(`${l.label}: ${l.note}`));
           if (notes.length) { lay.h4("Things to note", 40); lay.para(notes.map(n => "- " + n).join("\n"), { after: 10 }); }
         }
